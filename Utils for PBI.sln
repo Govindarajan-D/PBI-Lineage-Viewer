@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils for PBI", "Utils for PBI\Utils for PBI.csproj", "{5C2C019D-C4AC-444E-B33F-0CB2B65DB849}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerBIConnections", "PowerBIConnections\PowerBIConnections.csproj", "{0758C87F-DB55-470C-A1A2-525EB14C9669}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C2C019D-C4AC-444E-B33F-0CB2B65DB849}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C2C019D-C4AC-444E-B33F-0CB2B65DB849}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C2C019D-C4AC-444E-B33F-0CB2B65DB849}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C2C019D-C4AC-444E-B33F-0CB2B65DB849}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0758C87F-DB55-470C-A1A2-525EB14C9669}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0758C87F-DB55-470C-A1A2-525EB14C9669}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0758C87F-DB55-470C-A1A2-525EB14C9669}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0758C87F-DB55-470C-A1A2-525EB14C9669}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D7558974-8579-4A84-986C-4319A233A009}
+	EndGlobalSection
+EndGlobal
