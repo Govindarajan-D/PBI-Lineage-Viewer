@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace Utils_for_PBI
+namespace Utils_for_PBI.Forms
 {
     internal static class Program
     {

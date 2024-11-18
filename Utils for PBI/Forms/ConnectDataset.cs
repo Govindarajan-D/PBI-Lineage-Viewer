@@ -8,9 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Utils_for_PBI.Interaction;
+using Utils_for_PBI.Models;
 
-namespace Utils_for_PBI.View
+namespace Utils_for_PBI.Forms
 {
     public partial class ConnectDataset : Form
     {
@@ -36,8 +36,8 @@ namespace Utils_for_PBI.View
         private void ConnectDatasetOkButton_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
-            var selectedItem = this.DesktopModelComboBox.SelectedItem as DatasetConnection;
-            TomAPIConnection.Connect(selectedItem);
+            var SelectedItem = this.DesktopModelComboBox.SelectedItem as DatasetConnection;
+            TomAPIConnection.Connect(SelectedItem);
             this.Close();
         }
     }

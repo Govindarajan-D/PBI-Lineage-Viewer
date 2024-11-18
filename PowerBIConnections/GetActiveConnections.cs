@@ -127,6 +127,7 @@ namespace PowerBIConnections.Connections
 
     }
 
+//TO-DO: Wrap this in a SafeHandle or Implement class to handle this better
     public static class ManagedIpHelper
     {
         public static TcpTable GetExtendedTcpTable(bool sorted = false)
@@ -143,6 +144,8 @@ namespace PowerBIConnections.Connections
                     if (IpHelper.GetExtendedTcpTable(tcpTable, ref tcpTableLength, true, IpHelper.AfInet, IpHelper.TcpTableType.OwnerPidAll, 0) == 0)
                     {
                         IpHelper.TcpTable table = (IpHelper.TcpTable)Marshal.PtrToStructure(tcpTable, typeof(IpHelper.TcpTable));
+
+
 
                         IntPtr rowPtr = (IntPtr)((long)tcpTable + Marshal.SizeOf(table.length));
                         for (int i = 0; i < table.length; ++i)

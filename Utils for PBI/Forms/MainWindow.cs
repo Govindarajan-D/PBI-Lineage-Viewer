@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using PowerBIConnections.Connections;
-using Utils_for_PBI.View;
+using Utils_for_PBI.Forms;
 
-namespace Utils_for_PBI
+namespace Utils_for_PBI.Forms
 {
     public partial class MainWindow : Form
     {
@@ -29,6 +29,11 @@ namespace Utils_for_PBI
             ConnectDataset ConnectDatasetWindow = new ConnectDataset();
             ConnectDatasetWindow.ShowDialog();
 
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

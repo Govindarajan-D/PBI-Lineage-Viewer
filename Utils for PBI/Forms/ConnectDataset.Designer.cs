@@ -1,4 +1,4 @@
-﻿namespace Utils_for_PBI.View
+﻿namespace Utils_for_PBI.Forms
 {
     partial class ConnectDataset
     {
