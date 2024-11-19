@@ -38,7 +38,13 @@ namespace Utils_for_PBI.Forms
             this.DialogResult = DialogResult.OK;
             var SelectedItem = this.DesktopModelComboBox.SelectedItem as DatasetConnection;
             TomAPIConnection.Connect(SelectedItem);
+            AdomdConnection.Connect(SelectedItem);
             this.Close();
+        }
+
+        private void ConnectDatasetRefreshButton_Click(object sender, EventArgs e)
+        {
+            LoadModelConnections();
         }
     }
 }

@@ -19,6 +19,8 @@ namespace PowerBIConnections.Connections
             var sessions = new List<DatasetConnection>();
             var tcpTable = ManagedIpHelper.GetExtendedTcpTable();
 
+            var processes = Process.GetProcessesByName("msmdsrv");
+
             foreach (Process process in Process.GetProcessesByName("msmdsrv"))
             {
                 var tcpRow = tcpTable.SingleOrDefault((r) => r.ProcessId == process.Id &&

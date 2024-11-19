@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Tabular = Microsoft.AnalysisServices.Tabular;
-using AdomdClient = Microsoft.AnalysisServices.AdomdClient;
 using PowerBIConnections.Connections;
 
 //TO-DO: Move it to a separate project if necessary for creating DLLs
@@ -26,13 +25,13 @@ namespace Utils_for_PBI.Models
 
         }
 
-        public static void Connect(DatasetConnection connection)
+        public static void Connect(DatasetConnection datasetConnection)
         {
             if(IsConnected)
             {
                 Disconnect(IsConnected);
             }
-            server.Connect(connection.ConnectString);
+            server.Connect(datasetConnection.ConnectString);
             database = server.Databases[0];
             model = database.Model;
             IsConnected = true;
@@ -45,4 +44,5 @@ namespace Utils_for_PBI.Models
         }
         
     }
+
 }
