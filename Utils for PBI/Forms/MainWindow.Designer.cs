@@ -36,8 +36,10 @@
             aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ActivityArea = new System.Windows.Forms.SplitContainer();
             StatusBar = new System.Windows.Forms.StatusStrip();
+            view_dependencies = new System.Windows.Forms.Button();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ActivityArea).BeginInit();
+            ActivityArea.Panel2.SuspendLayout();
             ActivityArea.SuspendLayout();
             SuspendLayout();
             // 
@@ -61,14 +63,14 @@
             // connectToolStripMenuItem
             // 
             connectToolStripMenuItem.Name = "connectToolStripMenuItem";
-            connectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            connectToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             connectToolStripMenuItem.Text = "Connect";
             connectToolStripMenuItem.Click += connectToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            exitToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
@@ -91,8 +93,12 @@
             ActivityArea.Location = new System.Drawing.Point(0, 24);
             ActivityArea.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ActivityArea.Name = "ActivityArea";
+            // 
+            // ActivityArea.Panel2
+            // 
+            ActivityArea.Panel2.Controls.Add(view_dependencies);
             ActivityArea.Size = new System.Drawing.Size(933, 495);
-            ActivityArea.SplitterDistance = 233;
+            ActivityArea.SplitterDistance = 232;
             ActivityArea.SplitterWidth = 2;
             ActivityArea.TabIndex = 1;
             // 
@@ -104,6 +110,16 @@
             StatusBar.Size = new System.Drawing.Size(933, 22);
             StatusBar.TabIndex = 2;
             StatusBar.Text = "StatusBar";
+            // 
+            // view_dependencies
+            // 
+            view_dependencies.Location = new System.Drawing.Point(175, 143);
+            view_dependencies.Name = "view_dependencies";
+            view_dependencies.Size = new System.Drawing.Size(231, 85);
+            view_dependencies.TabIndex = 0;
+            view_dependencies.Text = "View Dependencies";
+            view_dependencies.UseVisualStyleBackColor = true;
+            view_dependencies.Click += viewdependencies_Click;
             // 
             // MainWindow
             // 
@@ -120,6 +136,7 @@
             Load += MainWindow_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            ActivityArea.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)ActivityArea).EndInit();
             ActivityArea.ResumeLayout(false);
             ResumeLayout(false);
@@ -136,5 +153,6 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.SplitContainer ActivityArea;
         private System.Windows.Forms.StatusStrip StatusBar;
+        private System.Windows.Forms.Button view_dependencies;
     }
 }

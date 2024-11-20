@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using PowerBIConnections.Connections;
 using Utils_for_PBI.Forms;
+using Utils_for_PBI.Models;
 
 namespace Utils_for_PBI.Forms
 {
@@ -34,6 +35,11 @@ namespace Utils_for_PBI.Forms
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void viewdependencies_Click(object sender, EventArgs e)
+        {
+            AdomdConnection.RetrieveCalcDependency();
         }
     }
 }
