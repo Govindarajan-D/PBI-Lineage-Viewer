@@ -9,6 +9,7 @@ using Tabular = Microsoft.AnalysisServices.Tabular;
 using PowerBIConnections.Connections;
 
 //TO-DO: Move it to a separate project if necessary for creating DLLs
+//TO-DO: If nothing populated in dropdown, disable connect button
 
 
 namespace Utils_for_PBI.Models
@@ -18,7 +19,7 @@ namespace Utils_for_PBI.Models
         public static Tabular.Server server = new Tabular.Server();
         public static Tabular.Database database;
         public static Tabular.Model model;
-        public static bool IsConnected = false;
+        public static bool isConnected = false;
 
         static TomAPIConnection()
         {
@@ -27,19 +28,19 @@ namespace Utils_for_PBI.Models
 
         public static void Connect(DatasetConnection datasetConnection)
         {
-            if(IsConnected)
+            if(isConnected)
             {
-                Disconnect(IsConnected);
+                Disconnect(isConnected);
             }
             server.Connect(datasetConnection.ConnectString);
             database = server.Databases[0];
             model = database.Model;
-            IsConnected = true;
+            isConnected = true;
         }
 
         public static void Disconnect(bool endSession = true)
         {
-            IsConnected = false;
+            isConnected = false;
             server.Disconnect(endSession);
         }
         

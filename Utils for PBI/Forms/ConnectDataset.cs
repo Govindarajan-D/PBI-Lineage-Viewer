@@ -14,6 +14,9 @@ namespace Utils_for_PBI.Forms
 {
     public partial class ConnectDataset : Form
     {
+        public delegate void NotifyHandler(string message);
+        public event NotifyHandler NotifyAction;
+
         public ConnectDataset()
         {
             InitializeComponent();
@@ -22,10 +25,19 @@ namespace Utils_for_PBI.Forms
 
         public void LoadModelConnections()
         {
-            //MessageBox.Show("MyFunction was called", "Checkpoint");
-            var ActiveSessions = ActiveConnections.GetActiveConnections();
-            DesktopModelComboBox.DataSource = ActiveSessions;
-            DesktopModelComboBox.DisplayMember = "DisplayName";
+            var activeSessions = ActiveConnections.GetActiveConnections();
+            if (activeSessions.Count != 0)
+            {
+                ConnectDatasetOkButton.Enabled = true;
+                ConnectDatasetOkButton.BackColor = Color.LightSkyBlue;
+                DesktopModelComboBox.DataSource = activeSessions;
+                DesktopModelComboBox.DisplayMember = "DisplayName";
+            }
+            else
+            {
+                ConnectDatasetOkButton.Enabled = false;
+                ConnectDatasetOkButton.BackColor = Color.LightGray;
+            }
         }
         private void ConnectDatasetCancelButton_Click(object sender, EventArgs e)
         {
@@ -36,10 +48,15 @@ namespace Utils_for_PBI.Forms
         private void ConnectDatasetOkButton_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
-            var SelectedItem = this.DesktopModelComboBox.SelectedItem as DatasetConnection;
-            TomAPIConnection.Connect(SelectedItem);
-            AdomdConnection.Connect(SelectedItem);
+            var selectedItem = this.DesktopModelComboBox.SelectedItem as DatasetConnection;
+            if (selectedItem != null)
+            {
+                TomAPIConnection.Connect(selectedItem);
+                AdomdConnection.Connect(selectedItem);
+            }
             this.Close();
+
+            NotifyAction?.Invoke("Connection Established");
         }
 
         private void ConnectDatasetRefreshButton_Click(object sender, EventArgs e)

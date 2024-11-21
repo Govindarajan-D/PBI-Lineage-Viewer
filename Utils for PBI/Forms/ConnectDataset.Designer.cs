@@ -179,7 +179,7 @@
             // 
             // ConnectDatasetOkButton
             // 
-            ConnectDatasetOkButton.BackColor = System.Drawing.Color.DodgerBlue;
+            ConnectDatasetOkButton.BackColor = System.Drawing.Color.LightGray;
             ConnectDatasetOkButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             ConnectDatasetOkButton.Font = new System.Drawing.Font("Open Sans", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
             ConnectDatasetOkButton.ForeColor = System.Drawing.SystemColors.WindowText;

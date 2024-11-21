@@ -27,8 +27,9 @@ namespace Utils_for_PBI.Forms
 
         private void connectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ConnectDataset ConnectDatasetWindow = new ConnectDataset();
-            ConnectDatasetWindow.ShowDialog();
+            ConnectDataset connectDatasetWindow = new ConnectDataset();
+            connectDatasetWindow.NotifyAction += EnableControls;
+            connectDatasetWindow.ShowDialog();
 
         }
 
@@ -39,7 +40,26 @@ namespace Utils_for_PBI.Forms
 
         private void viewdependencies_Click(object sender, EventArgs e)
         {
-            AdomdConnection.RetrieveCalcDependency();
+            if (AdomdConnection.isConnected && TomAPIConnection.isConnected)
+            {
+                AdomdConnection.RetrieveCalcDependency();
+            }
+        }
+
+//TO-DO: Add enable and disable code while connecting and disconnecting respectively
+        private void OnConnection()
+        {
+
+        }
+
+        private void OnDisconnection()
+        {
+
+        }
+
+        private void EnableControls(string message)
+        {
+            OnConnection();
         }
     }
 }
