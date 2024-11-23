@@ -26,9 +26,9 @@ namespace Utils_for_PBI.Forms
         {
         }
 
-        private void connectToolStripMenuItem_Click(object sender, EventArgs e)
+        private void connectDesktopModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ConnectDataset connectDatasetWindow = new ConnectDataset();
+            ConnectDesktopDataset connectDatasetWindow = new ConnectDesktopDataset();
             connectDatasetWindow.NotifyAction += EnableControls;
             connectDatasetWindow.ShowDialog();
 
@@ -46,7 +46,7 @@ namespace Utils_for_PBI.Forms
             string fileUri = new Uri(filePath).AbsoluteUri;
             DisplayLineageWebView.CoreWebView2.Navigate(fileUri);
 
-            if (AdomdConnection.isConnected && TomAPIConnection.isConnected)
+            if (AdomdConnection.isConnected)
             {
                 AdomdConnection.RetrieveCalcDependency();
             }

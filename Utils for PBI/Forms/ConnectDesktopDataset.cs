@@ -12,12 +12,12 @@ using Utils_for_PBI.Models;
 
 namespace Utils_for_PBI.Forms
 {
-    public partial class ConnectDataset : Form
+    public partial class ConnectDesktopDataset : Form
     {
         public delegate void NotifyHandler(string message);
         public event NotifyHandler NotifyAction;
 
-        public ConnectDataset()
+        public ConnectDesktopDataset()
         {
             InitializeComponent();
             LoadModelConnections();
@@ -28,15 +28,15 @@ namespace Utils_for_PBI.Forms
             var activeSessions = ActiveConnections.GetActiveConnections();
             if (activeSessions.Count != 0)
             {
-                ConnectDatasetOkButton.Enabled = true;
-                ConnectDatasetOkButton.BackColor = Color.LightSkyBlue;
+                ConnectDesktopDatasetOkButton.Enabled = true;
+                ConnectDesktopDatasetOkButton.BackColor = Color.LightSkyBlue;
                 DesktopModelComboBox.DataSource = activeSessions;
                 DesktopModelComboBox.DisplayMember = "DisplayName";
             }
             else
             {
-                ConnectDatasetOkButton.Enabled = false;
-                ConnectDatasetOkButton.BackColor = Color.LightGray;
+                ConnectDesktopDatasetOkButton.Enabled = false;
+                ConnectDesktopDatasetOkButton.BackColor = Color.LightGray;
             }
         }
         private void ConnectDatasetCancelButton_Click(object sender, EventArgs e)

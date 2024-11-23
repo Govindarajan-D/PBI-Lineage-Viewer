@@ -66,14 +66,14 @@
             // connectToolStripMenuItem
             // 
             connectToolStripMenuItem.Name = "connectToolStripMenuItem";
-            connectToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
-            connectToolStripMenuItem.Text = "Connect";
-            connectToolStripMenuItem.Click += connectToolStripMenuItem_Click;
+            connectToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            connectToolStripMenuItem.Text = "Connect Desktop Model";
+            connectToolStripMenuItem.Click += connectDesktopModelToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            exitToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
