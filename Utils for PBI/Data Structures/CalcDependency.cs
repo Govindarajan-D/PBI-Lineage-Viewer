@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Utils_for_PBI.Models;
 
 namespace Utils_for_PBI.Data_Structures
 {
@@ -28,8 +30,30 @@ namespace Utils_for_PBI.Data_Structures
         }
     }
 
+    //TO-DO: Add colors and change weightage if required
     public class CalcDepedencyData
     {
         public List<CalcDependencyDataRow> calcDepedencyData = new List<CalcDependencyDataRow>();
+
+        public void ParseIntoJSON()
+        {
+            var result = calcDepedencyData.Where(c => !c.SOURCE_TABLE.Contains("DateTableTemplate"))
+                                          .Select(r => new
+                                          {
+                                              data = new
+                                              {
+                                                  name = r.OBJECT,
+                                                  faveColor = r.OBJECT_TYPE.ToUpper() switch
+                                                  {
+                                                      "CALC_COLUMN" => "#",
+                                                      "MEASURE" => "#"
+                                                      _ => "#"
+                                                  },
+                                                  faveShape = "rectangle"
+                                              }
+                                          });
+
+            string dependencyJSON = JsonSerializer.Serialize(result);
+        }
     }
 }
