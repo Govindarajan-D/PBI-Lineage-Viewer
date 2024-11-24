@@ -34,6 +34,7 @@ namespace Utils_for_PBI.Data_Structures
     public class CalcDepedencyData
     {
         public List<CalcDependencyDataRow> calcDepedencyData = new List<CalcDependencyDataRow>();
+        public string dependencyNodesJSON, dependencyEdgesJSON;
 
         public void ParseIntoJSON()
         {
@@ -79,8 +80,8 @@ namespace Utils_for_PBI.Data_Structures
 
                                                     });
 
-            string dependencyNodesJSON = JsonSerializer.Serialize(nodesJSON, new JsonSerializerOptions { WriteIndented = true});
-            string dependencyEdgesJSON = JsonSerializer.Serialize(edgesJSON, new JsonSerializerOptions { WriteIndented = true });
+            dependencyNodesJSON = JsonSerializer.Serialize(nodesJSON, new JsonSerializerOptions { WriteIndented = true});
+            dependencyEdgesJSON = JsonSerializer.Serialize(edgesJSON, new JsonSerializerOptions { WriteIndented = true });
         }
     }
 }

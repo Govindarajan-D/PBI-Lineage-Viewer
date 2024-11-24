@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using PowerBIConnections.Connections;
 using Utils_for_PBI.Forms;
 using Utils_for_PBI.Models;
+using Utils_for_PBI.Server;
 
 
 namespace Utils_for_PBI.Forms
@@ -17,6 +18,7 @@ namespace Utils_for_PBI.Forms
     public partial class MainWindow : Form
     {
         public List<GenerateLineagePage> lineagePages;
+        private JSONDataServer dataServer;
         public MainWindow()
         {
             InitializeComponent();
@@ -52,6 +54,9 @@ namespace Utils_for_PBI.Forms
             {
                 var dependencies = AdomdConnection.RetrieveCalcDependency();
                 dependencies.ParseIntoJSON();
+
+                dataServer = new JSONDataServer("http://localhost:8080/utilspbi/", dependencies);
+                dataServer.Start();
             }
 
         }
@@ -64,7 +69,7 @@ namespace Utils_for_PBI.Forms
 
         private void OnDisconnection()
         {
-
+            dataServer.Stop();
         }
 
         private void EnableControls(string message)
