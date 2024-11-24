@@ -27,7 +27,7 @@ namespace Utils_for_PBI.Forms
         */
         static async Task CheckPrerequisitesAsync()
         {
-            string appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "UtilsPBI");
+            string appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "UtilsPBI", "js");
 
             Dictionary<String, String> filesDict = new Dictionary<string, string>();
             filesDict.Add("cytoscape.min.js", "https://unpkg.com/cytoscape@3.30.0/dist/cytoscape.min.js");

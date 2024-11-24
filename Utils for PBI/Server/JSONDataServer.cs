@@ -60,7 +60,7 @@ namespace Utils_for_PBI.Server
             var request = context.Request;
             var response = context.Response;
 
-            response.AddHeader("Access-Control-Allow-Origin", "*");  // Allow all origins, adjust this as necessary
+            response.AddHeader("Access-Control-Allow-Origin", "*");  // Allow all origins
             response.AddHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");  // Allow these methods
             response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");  // Allow these headers
 
