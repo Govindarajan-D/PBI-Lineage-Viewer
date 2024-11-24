@@ -37,23 +37,50 @@ namespace Utils_for_PBI.Data_Structures
 
         public void ParseIntoJSON()
         {
-            var result = calcDepedencyData.Where(c => !c.SOURCE_TABLE.Contains("DateTableTemplate"))
-                                          .Select(r => new
-                                          {
-                                              data = new
-                                              {
-                                                  name = r.OBJECT,
-                                                  faveColor = r.OBJECT_TYPE.ToUpper() switch
-                                                  {
-                                                      "CALC_COLUMN" => "#",
-                                                      "MEASURE" => "#"
-                                                      _ => "#"
-                                                  },
-                                                  faveShape = "rectangle"
-                                              }
-                                          });
+            var cleansedDependencyData = calcDepedencyData.Where(c => !c.SOURCE_TABLE.Contains("DateTableTemplate"));
+            var objectNodes = cleansedDependencyData.Select(c => new
+                                                {
+                                                    c.OBJECT,
+                                                    c.OBJECT_TYPE
+                                                }).Distinct();
 
-            string dependencyJSON = JsonSerializer.Serialize(result);
+            var refObjectNodes = cleansedDependencyData.Select(c => new
+                                                    {
+                                                        OBJECT = c.REFERENCED_OBJECT,
+                                                        OBJECT_TYPE = c.REFERENCED_OBJECT_TYPE
+                                                    }).Distinct();
+            var allNodes = objectNodes.Union(refObjectNodes).Distinct();
+
+            var nodesJSON = allNodes.Select(r => new
+                                    {
+                                        data = new
+                                        {
+                                            id = r.OBJECT,
+                                            name = r.OBJECT,
+                                            faveColor = r.OBJECT_TYPE.ToUpper() switch
+                                            {
+                                                "CALC_COLUMN" => "#",
+                                                "MEASURE" => "#",
+                                                _ => "#"
+                                            },
+                                            faveShape = "rectangle"
+                                        }
+                                    });
+
+            var edgesJSON = cleansedDependencyData.Select(c => new
+                                                    {
+                                                        data = new
+                                                        {
+                                                            source = c.OBJECT,
+                                                            target = c.REFERENCED_OBJECT,
+                                                            faveColor = "#",
+                                                            strength = 60
+                                                        }
+
+                                                    });
+
+            string dependencyNodesJSON = JsonSerializer.Serialize(nodesJSON, new JsonSerializerOptions { WriteIndented = true});
+            string dependencyEdgesJSON = JsonSerializer.Serialize(edgesJSON, new JsonSerializerOptions { WriteIndented = true });
         }
     }
 }

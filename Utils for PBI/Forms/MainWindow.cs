@@ -16,6 +16,7 @@ namespace Utils_for_PBI.Forms
 {
     public partial class MainWindow : Form
     {
+        public List<GenerateLineagePage> lineagePages;
         public MainWindow()
         {
             InitializeComponent();
@@ -41,14 +42,16 @@ namespace Utils_for_PBI.Forms
 
         private void viewdependencies_Click(object sender, EventArgs e)
         {
-            string filePath = GenerateLineagePage.GenerateHTMLPage();
+            GenerateLineagePage showDependencyGraph = new GenerateLineagePage();
+            string filePath = showDependencyGraph.GenerateHTMLPage();
 
             string fileUri = new Uri(filePath).AbsoluteUri;
             DisplayLineageWebView.CoreWebView2.Navigate(fileUri);
 
             if (AdomdConnection.isConnected)
             {
-                AdomdConnection.RetrieveCalcDependency();
+                var dependencies = AdomdConnection.RetrieveCalcDependency();
+                dependencies.ParseIntoJSON();
             }
 
         }
