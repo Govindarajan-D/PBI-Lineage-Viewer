@@ -361,10 +361,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/Class1.cs
-/HTMLtobin/HTMLtobin - Backup (1).csproj
-/HTMLtobin/HTMLtobin - Backup.csproj
-/HTMLtobin/HTMLtobin.csproj
-/HTMLtobin/LineageGraph.bin
-/HTMLtobin/LineageGraph.html
-/HTMLtobin/Program.cs
