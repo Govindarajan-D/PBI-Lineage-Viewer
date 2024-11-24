@@ -24,8 +24,24 @@
 <body>
     <div id="cy"></div>
     <script>
-        document.addEventListener('DOMContentLoaded', function() { // on dom ready
 
+
+        document.addEventListener('DOMContentLoaded', function() { // on dom ready
+        
+        function fetchData(){
+            const nodesURL = "http://localhost:8080/utilspbi/api/nodesdata";
+            const edgesURL = "http://localhost:8080/utilspbi/api/edgesdata";
+
+            Promise.all([
+                fetch(nodesURL).then(response => response.json()),
+                fetch(edgesURL).then(response => response.json())
+            ])
+            .then(([nodes, edges]) => {
+                showLineage(nodes, edges)
+            })
+
+        }
+        function showLineage(nodes, edges){
         var cy = cytoscape({
             container: document.querySelector('#cy'),
 
@@ -90,26 +106,8 @@
             }
           ],
             elements: {
-                nodes: [
-                    { data: { id: 'a', name: 'Activation', weight: 50, faveColor: '#6FB1FC', faveShape: 'rectangle' } },
-                    { data: { id: 'b', name: 'User Profile', weight: 45, faveColor: '#EDA1ED', faveShape: 'rectangle' } },
-                    { data: { id: 'c', name: 'Billing', weight: 75, faveColor: '#86B342', faveShape: 'rectangle' } },
-                    { data: { id: 'd', name: 'Sales', weight: 70, faveColor: '#F5A45D', faveShape: 'rectangle' } },
-                    { data: { id: 'e', name: 'Device', weight: 70, faveColor: '#F5A45D', faveShape: 'rectangle' } },
-                    { data: { id: 'f', name: 'Loan', weight: 70, faveColor: '#F5A45D', faveShape: 'rectangle' } },
-                    { data: { id: 'j', name: 'Support', weight: 70, faveColor: '#F5A45D', faveShape: 'rectangle' } },
-                    { data: { id: 'k', name: 'Sink Event', weight: 70, faveColor: '#F5A45D', faveShape: 'rectangle' } }
-                ],
-                edges: [
-                    { data: { source: 'a', target: 'b', faveColor: '#6FB1FC', strength: 90 } },
-                    { data: { source: 'b', target: 'c', faveColor: '#6FB1FC', strength: 70 } },
-                    { data: { source: 'c', target: 'd', faveColor: '#6FB1FC', strength: 80 } },
-                    { data: { source: 'c', target: 'e', faveColor: '#EDA1ED', strength: 95 } },
-                    { data: { source: 'c', target: 'f', faveColor: '#EDA1ED', strength: 60 }, classes: 'questionable' },
-
-                    { data: { source: 'd', target: 'j', faveColor: '#86B342', strength: 100 } },
-                    { data: { source: 'e', target: 'j', faveColor: '#86B342', strength: 100 } }
-                ]
+                nodes: nodes,
+                edges: edges
             }
         });
 
@@ -129,7 +127,9 @@
                 cy.elements().removeClass('faded');
             }
         });
-
+        }
+        //showLineage(1,2);
+        fetchData();
         }); // on dom ready
     </script>
 </body>

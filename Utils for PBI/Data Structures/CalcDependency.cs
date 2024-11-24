@@ -60,9 +60,9 @@ namespace Utils_for_PBI.Data_Structures
                                             name = r.OBJECT,
                                             faveColor = r.OBJECT_TYPE.ToUpper() switch
                                             {
-                                                "CALC_COLUMN" => "#",
-                                                "MEASURE" => "#",
-                                                _ => "#"
+                                                "CALC_COLUMN" => "#26b1ff",
+                                                "MEASURE" => "#26b1cc",
+                                                _ => "#2613ff"
                                             },
                                             faveShape = "rectangle"
                                         }
@@ -74,7 +74,7 @@ namespace Utils_for_PBI.Data_Structures
                                                         {
                                                             source = c.OBJECT,
                                                             target = c.REFERENCED_OBJECT,
-                                                            faveColor = "#",
+                                                            faveColor = "#5c658d",
                                                             strength = 60
                                                         }
 
