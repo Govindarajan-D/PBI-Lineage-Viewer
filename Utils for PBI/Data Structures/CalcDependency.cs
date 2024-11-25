@@ -72,8 +72,8 @@ namespace Utils_for_PBI.Data_Structures
                                                     {
                                                         data = new
                                                         {
-                                                            source = c.OBJECT,
-                                                            target = c.REFERENCED_OBJECT,
+                                                            source = c.REFERENCED_OBJECT,
+                                                            target = c.OBJECT,
                                                             faveColor = "#5c658d",
                                                             strength = 60
                                                         }

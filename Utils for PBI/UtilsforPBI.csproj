@@ -35,6 +35,6 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.0" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="rename &quot;$(TargetDir)LineageGraph.html&quot; &quot;LineageGraph.bin&quot;" />
+    <Exec Command="del /f /q &quot;$(TargetDir)LineageGraph.bin&quot; &amp;&amp; rename &quot;$(TargetDir)LineageGraph.html&quot; &quot;LineageGraph.bin&quot;" />
   </Target>
 </Project>

@@ -5,6 +5,13 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+/* TO-DO:
+ * Build script in github for automated building of exe
+ * Add Installer for the program
+ * Make classes more aligned with best practices
+ * See if async can be done for any other parts
+ */
+
 namespace Utils_for_PBI.Forms
 {
     internal static class Program

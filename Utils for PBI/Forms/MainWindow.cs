@@ -55,6 +55,7 @@ namespace Utils_for_PBI.Forms
                 var dependencies = AdomdConnection.RetrieveCalcDependency();
                 dependencies.ParseIntoJSON();
 
+                //TO-DO: (High) Check if a server is already started and then start
                 dataServer = new JSONDataServer("http://localhost:8080/utilspbi/", dependencies);
                 dataServer.Start();
             }

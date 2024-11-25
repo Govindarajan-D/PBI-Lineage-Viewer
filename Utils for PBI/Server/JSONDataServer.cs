@@ -13,6 +13,7 @@ namespace Utils_for_PBI.Server
     public class JSONDataServer
     {
         public HttpListener dataServer;
+        public bool isStarted = false;
         public CancellationTokenSource cancellationTokenSource;
         public CalcDepedencyData calcDepedencyData;
 
@@ -28,6 +29,7 @@ namespace Utils_for_PBI.Server
         {
             dataServer.Start();
             Debug.WriteLine("Server Started");
+            isStarted = true;
             Task.Run(() => HandleRequests(cancellationTokenSource.Token));
         }
         public void Stop()
