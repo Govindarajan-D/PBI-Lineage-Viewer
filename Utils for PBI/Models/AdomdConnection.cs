@@ -8,8 +8,20 @@ using System.Threading.Tasks;
 using Utils_for_PBI.Data_Structures;
 using AdomdClient = Microsoft.AnalysisServices.AdomdClient;
 
+
+
+
+//TO-DO: Move it to a separate project if necessary for creating DLLs
 namespace Utils_for_PBI.Models
 {
+    /// <summary>
+    /// The Adomd Connection class establishes a adomd connection which is used to retrive the DMV data
+    /// The DMV Data is stored in object of CalcDependency type. The reader enumerates records which is mapped to CalcDependency object
+    /// in the MapRowToObject() function
+    ///
+    /// </summary>
+
+    //TO-DO: Inherit from IDisposable and add Dispose/Close method()
     public static class AdomdConnection
     {
         public static AdomdClient.AdomdConnection adomdConnection;

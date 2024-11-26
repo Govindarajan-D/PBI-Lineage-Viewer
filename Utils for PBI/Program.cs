@@ -4,12 +4,14 @@ using System.Net.Http;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 
 /* TO-DO:
  * Build script in github for automated building of exe
  * Add Installer for the program
- * Make classes more aligned with best practices
+ * Make classes more aligned with best practices (IDisposable)
  * See if async can be done for any other parts
+ * Memory Leakage Check (windbg, MS CLR profiler)
  */
 
 namespace Utils_for_PBI.Forms
@@ -23,16 +25,24 @@ namespace Utils_for_PBI.Forms
         [STAThread]
         static void Main(string[] args)
         {
-
-            CheckPrerequisitesAsync().GetAwaiter().GetResult();
+            /* GetAwaiter().GetResult() waits for the function to complete (Synchronous)
+             * Task.Run() runs asynchronously and in case if needs to be run synchronously, 
+             * the GetAwaiter() line can be uncommented and the Task.Run() can be commented
+             */
+            
+            //DownloadJSLibs().GetAwaiter().GetResult();
+            
+            Task.Run(() => DownloadJSLibs());
             Application.Run(new MainWindow());
         }
-        /*
-         * CheckPrerequisitesAsync is used to check if the AppData folder is created for this application
-         * and the necessary JS files for lineage graph are cached. The files are downloaded only if it does
-         * not already exist (after first run, the files are not downloaded again unless the files have been deleted)
-        */
-        static async Task CheckPrerequisitesAsync()
+
+        /// <summary>
+        ///  DownloadJSLibs is used to check if the AppData folder is created for this application 
+        ///  and the necessary JS files for lineage graph are cached.The files are downloaded only if it does not 
+        ///  already exist (after first run, the files are not downloaded again unless the files have been deleted)
+        ///
+        /// </summary>
+        static async Task DownloadJSLibs()
         {
             string appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "UtilsPBI", "js");
 
