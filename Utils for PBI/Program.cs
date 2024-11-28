@@ -19,14 +19,14 @@ namespace Utils_for_PBI.Forms
     internal static class Program
     {
         /*
-         * STAThread ensures the Main programs runs a single thread, but Main() cannot be run
+         * STAThread ensures the Main program runs as a single thread, but Main() cannot be run
          * as Async Task as there seems to be a bug that does not allow STAThread and Async together
         */
         [STAThread]
         static void Main(string[] args)
         {
-            /* GetAwaiter().GetResult() waits for the function to complete (Synchronous)
-             * Task.Run() runs asynchronously and in case if needs to be run synchronously, 
+            /* GetAwaiter().GetResult() waits for the function to complete (Synchronous) while
+             * Task.Run() runs asynchronously and in case if it needs to be run synchronously, 
              * the GetAwaiter() line can be uncommented and the Task.Run() can be commented
              */
             

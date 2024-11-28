@@ -16,24 +16,24 @@ namespace Utils_for_PBI.Models
 {
     /// <summary>
     /// The Adomd Connection class establishes a adomd connection which is used to retrive the DMV data
-    /// The DMV Data is stored in object of CalcDependency type. The reader enumerates records which is mapped to CalcDependency object
-    /// in the MapRowToObject() function
+    /// The DMV Data is stored in object of CalcDependency type. The reader enumerates records 
+    /// which is mapped to CalcDependency object in the MapRowToObject() function
     ///
     /// </summary>
 
     //TO-DO: Inherit from IDisposable and add Dispose/Close method()
-    public static class AdomdConnection
+    public class AdomdConnection : IDisposable
     {
-        public static AdomdClient.AdomdConnection adomdConnection;
-        public static bool isConnected = false;
+        public AdomdClient.AdomdConnection adomdConnection;
+        public bool isConnected = false;
 
-        public static void Connect(DatasetConnection datasetConnection)
+        public void Connect(DatasetConnection datasetConnection)
         {
             adomdConnection = new AdomdClient.AdomdConnection("Datasource=" + datasetConnection.ConnectString);
             isConnected = true;
     }
 
-        public static CalcDepedencyData RetrieveCalcDependency()
+        public CalcDepedencyData RetrieveCalcDependency()
         {
             String dependencySQLQuery = @"SELECT OBJECT_TYPE, [TABLE] AS SOURCE_TABLE, OBJECT, EXPRESSION, REFERENCED_OBJECT_TYPE, REFERENCED_TABLE, REFERENCED_OBJECT FROM $SYSTEM.DISCOVER_CALC_DEPENDENCY";
             CalcDepedencyData calcDepedencyData = new CalcDepedencyData();
@@ -54,7 +54,7 @@ namespace Utils_for_PBI.Models
             return calcDepedencyData;
         }
 
-        public static CalcDependencyDataRow MapRowToObject(IDataRecord dataRecord)
+        public CalcDependencyDataRow MapRowToObject(IDataRecord dataRecord)
         {
             return new CalcDependencyDataRow
             {
@@ -68,8 +68,19 @@ namespace Utils_for_PBI.Models
             };
         }
 
-        public static void Disconnect(bool endSession = false)
+        public void Disconnect(bool endSession = true)
         {
+            isConnected = false;
+            Dispose(endSession);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        public void Dispose(bool endSession)
+        {
+            
             adomdConnection.Close(endSession);
         }
     }

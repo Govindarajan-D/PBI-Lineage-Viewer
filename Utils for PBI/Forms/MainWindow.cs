@@ -19,6 +19,8 @@ namespace Utils_for_PBI.Forms
     {
         public List<GenerateLineagePage> lineagePages;
         private JSONDataServer dataServer;
+        private AdomdConnection _adomdConnection;
+        private TomAPIConnection _tomAPIConnection;
         public MainWindow()
         {
             InitializeComponent();
@@ -33,8 +35,19 @@ namespace Utils_for_PBI.Forms
         {
             ConnectDesktopDataset connectDatasetWindow = new ConnectDesktopDataset();
             connectDatasetWindow.NotifyAction += EnableControls;
-            connectDatasetWindow.ShowDialog();
 
+            if (connectDatasetWindow.ShowDialog() == DialogResult.OK)
+            {
+                var connection = connectDatasetWindow.returnConnection;
+                if (connection != null)
+                {
+                    _tomAPIConnection = new TomAPIConnection();
+                    _adomdConnection = new AdomdConnection();
+
+                    _tomAPIConnection.Connect(connection);
+                    _adomdConnection.Connect(connection);
+                }
+            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -50,9 +63,9 @@ namespace Utils_for_PBI.Forms
             string fileUri = new Uri(filePath).AbsoluteUri;
             DisplayLineageWebView.CoreWebView2.Navigate(fileUri);
 
-            if (AdomdConnection.isConnected)
+            if (_adomdConnection.isConnected)
             {
-                var dependencies = AdomdConnection.RetrieveCalcDependency();
+                var dependencies = _adomdConnection.RetrieveCalcDependency();
                 dependencies.ParseIntoJSON();
 
                 //TO-DO: (High) Check if a server is already started and then start

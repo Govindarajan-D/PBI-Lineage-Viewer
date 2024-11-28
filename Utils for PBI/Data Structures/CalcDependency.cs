@@ -8,6 +8,10 @@ using Utils_for_PBI.Models;
 
 namespace Utils_for_PBI.Data_Structures
 {
+    /// <summary>
+    /// CalcDependencyDataRow represents the object fields for storing the data from the Semantic Model's DMV
+    ///
+    /// </summary>
     public class CalcDependencyDataRow
     {
         public string OBJECT_TYPE { get; set; }
@@ -30,12 +34,19 @@ namespace Utils_for_PBI.Data_Structures
         }
     }
 
+    /// <summary>
+    /// CalcDependencyData is a list of CalcDependencyRow. Effectively it is a table of rows which is used to process DMV data
+    /// </summary>
     //TO-DO: Add colors and change weightage if required
     public class CalcDepedencyData
     {
         public List<CalcDependencyDataRow> calcDepedencyData = new List<CalcDependencyDataRow>();
         public string dependencyNodesJSON, dependencyEdgesJSON;
 
+        /// <summary>
+        /// Converts the List of Rows (CalcDependencyData) into a particular JSON string which is acceptable by the JS script for lineage
+        /// LINQ is used to process the data into a json object for nodes and links which will be used in the frontend for lineage
+        /// </summary>
         public void ParseIntoJSON()
         {
             var cleansedDependencyData = calcDepedencyData.Where(c => !c.SOURCE_TABLE.Contains("DateTableTemplate"));

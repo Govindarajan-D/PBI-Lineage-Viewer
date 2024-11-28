@@ -14,6 +14,7 @@ namespace Utils_for_PBI.Forms
 {
     public partial class ConnectDesktopDataset : Form
     {
+        public DatasetConnection returnConnection;
         public delegate void NotifyHandler(string message);
         public event NotifyHandler NotifyAction;
 
@@ -48,12 +49,7 @@ namespace Utils_for_PBI.Forms
         private void ConnectDatasetOkButton_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
-            var selectedItem = this.DesktopModelComboBox.SelectedItem as DatasetConnection;
-            if (selectedItem != null)
-            {
-                TomAPIConnection.Connect(selectedItem);
-                AdomdConnection.Connect(selectedItem);
-            }
+            returnConnection = this.DesktopModelComboBox.SelectedItem as DatasetConnection;
             this.Close();
 
             NotifyAction?.Invoke("Connection Established");
