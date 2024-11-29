@@ -12,7 +12,7 @@ using PowerBIConnections.Connections;
 
 namespace Utils_for_PBI.Models
 {
-    public class TomAPIConnection
+    public class TomAPIConnection : IDisposable
     {
         public Tabular.Server server = new Tabular.Server();
         public Tabular.Database database;
@@ -38,8 +38,20 @@ namespace Utils_for_PBI.Models
 
         public void Disconnect(bool endSession = true)
         {
+            Dispose(endSession);
+            
+        }
+
+        public void Dispose()
+        {
+            Dispose(true); 
+        }
+
+        public void Dispose(bool endSession)
+        {
             isConnected = false;
             server.Disconnect(endSession);
+            GC.SuppressFinalize(this); 
         }
         
     }

@@ -1,4 +1,6 @@
-﻿using PowerBIConnections.Connections;
+﻿using log4net;
+using log4net.Config;
+using PowerBIConnections.Connections;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -6,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils_for_PBI.Data_Structures;
+using Utils_for_PBI.Forms;
 using AdomdClient = Microsoft.AnalysisServices.AdomdClient;
 
 
@@ -24,6 +27,8 @@ namespace Utils_for_PBI.Models
     //TO-DO: Inherit from IDisposable and add Dispose/Close method()
     public class AdomdConnection : IDisposable
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(AdomdConnection));
+
         public AdomdClient.AdomdConnection adomdConnection;
         public bool isConnected = false;
 
@@ -31,6 +36,8 @@ namespace Utils_for_PBI.Models
         {
             adomdConnection = new AdomdClient.AdomdConnection("Datasource=" + datasetConnection.ConnectString);
             isConnected = true;
+
+            Logger.Info("ADOMD Connection Established");
     }
 
         public CalcDepedencyData RetrieveCalcDependency()
@@ -67,10 +74,9 @@ namespace Utils_for_PBI.Models
                 REFERENCED_OBJECT = Convert.ToString(dataRecord["REFERENCED_OBJECT"])
             };
         }
-
+        //TO-DO: Simplify the below code
         public void Disconnect(bool endSession = true)
         {
-            isConnected = false;
             Dispose(endSession);
         }
 
@@ -80,8 +86,9 @@ namespace Utils_for_PBI.Models
         }
         public void Dispose(bool endSession)
         {
-            
+            isConnected = false;
             adomdConnection.Close(endSession);
+            GC.SuppressFinalize(this);
         }
     }
 }

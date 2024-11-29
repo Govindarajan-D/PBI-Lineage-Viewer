@@ -10,6 +10,10 @@ using Utils_for_PBI.Data_Structures;
 
 namespace Utils_for_PBI.Server
 {
+    /// <summary>
+    ///  JSONDataServer starts a HTTP Listener that serves Calculation dependency data in JSON format
+    ///  The Server runs in multi-threaded mode. 
+    /// </summary>
     public class JSONDataServer
     {
         public HttpListener dataServer;

@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerBIConnections", "Power
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E4E3AF53-B213-4C61-8DB6-C3C990866ECF}"
 	ProjectSection(SolutionItems) = preProject
+		Utils for PBI\log4net.config = Utils for PBI\log4net.config
 		WIPGraph.html = WIPGraph.html
+		Readme.md = Readme.md
 	EndProjectSection
 EndProject
 Global

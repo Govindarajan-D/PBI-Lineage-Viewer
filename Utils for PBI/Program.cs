@@ -5,6 +5,8 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
+using log4net;
+using log4net.Config;
 
 /* TO-DO:
  * Build script in github for automated building of exe
@@ -12,12 +14,21 @@ using System.Diagnostics.Metrics;
  * Make classes more aligned with best practices (IDisposable)
  * See if async can be done for any other parts
  * Memory Leakage Check (windbg, MS CLR profiler)
+ * Enhance Logging with Try-Catch Exceptions
+ * Literal values as resources
  */
+
+[assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config")]
+
 
 namespace Utils_for_PBI.Forms
 {
+    /// <summary>
+    ///  Program class is the entry point of the application. Contains the Main() function
+    /// </summary>
     internal static class Program
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
         /*
          * STAThread ensures the Main program runs as a single thread, but Main() cannot be run
          * as Async Task as there seems to be a bug that does not allow STAThread and Async together
@@ -25,6 +36,8 @@ namespace Utils_for_PBI.Forms
         [STAThread]
         static void Main(string[] args)
         {
+
+            //XmlConfigurator.Configure(new System.IO.FileInfo("log4net.config"));
             /* GetAwaiter().GetResult() waits for the function to complete (Synchronous) while
              * Task.Run() runs asynchronously and in case if it needs to be run synchronously, 
              * the GetAwaiter() line can be uncommented and the Task.Run() can be commented
@@ -33,6 +46,8 @@ namespace Utils_for_PBI.Forms
             //DownloadJSLibs().GetAwaiter().GetResult();
             
             Task.Run(() => DownloadJSLibs());
+
+            Logger.Info("Launching Application");
             Application.Run(new MainWindow());
         }
 
@@ -60,14 +75,15 @@ namespace Utils_for_PBI.Forms
                 var fileFullPath = Path.Combine(appDataPath, fileName);
                 if (!File.Exists(fileFullPath))
                 {
+                    Logger.Info($"Downloading {fileName}");
                     using var client = new HttpClient();
                     using var response = await client.GetAsync(fileURL, HttpCompletionOption.ResponseHeadersRead);
                     response.EnsureSuccessStatusCode();
                     await using var fs = new FileStream(fileFullPath, FileMode.OpenOrCreate, FileAccess.Write);
                     await response.Content.CopyToAsync(fs);
+                    Logger.Info($"Downloaded {fileName}");
                 }
             }
-
         }
     }
 }
