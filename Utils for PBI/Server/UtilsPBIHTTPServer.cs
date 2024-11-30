@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,36 +15,40 @@ namespace Utils_for_PBI.Server
     ///  JSONDataServer starts a HTTP Listener that serves Calculation dependency data in JSON format
     ///  The Server runs in multi-threaded mode. 
     /// </summary>
-    public class JSONDataServer
+    public class UtilsPBIHTTPServer
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(UtilsPBIHTTPServer));
+
         public HttpListener dataServer;
         public bool isStarted = false;
         public CancellationTokenSource cancellationTokenSource;
         public CalcDepedencyData calcDepedencyData;
+        public String serverPrefix;
 
-        public JSONDataServer(string urlAddress, CalcDepedencyData argCalcDepedencyData)
+        public UtilsPBIHTTPServer(string urlAddress, CalcDepedencyData argCalcDepedencyData)
         {
             calcDepedencyData = argCalcDepedencyData;
             dataServer = new HttpListener();
-            dataServer.Prefixes.Add(urlAddress);
+            serverPrefix = urlAddress;
+            dataServer.Prefixes.Add(serverPrefix);
 
             cancellationTokenSource = new CancellationTokenSource();
         }
         public void Start()
         {
             dataServer.Start();
-            Debug.WriteLine("Server Started");
             isStarted = true;
             Task.Run(() => HandleRequests(cancellationTokenSource.Token));
+            Logger.Info($"HTTP Server started at: {serverPrefix}");
         }
         public void Stop()
         {
             cancellationTokenSource.Cancel();
             dataServer.Stop();
+            Logger.Info($"HTTP Server running at: {serverPrefix} stopped");
         }
         public async Task HandleRequests(CancellationToken token)
         {
-            Debug.WriteLine("Incoming Request");
             while (true)
             {
                 try
@@ -56,7 +61,7 @@ namespace Utils_for_PBI.Server
                 }
                 catch(Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Logger.Error(ex.Message);
                 }
             }
         }
@@ -70,8 +75,6 @@ namespace Utils_for_PBI.Server
             response.AddHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");  // Allow these methods
             response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");  // Allow these headers
 
-
-            Debug.WriteLine(request.RawUrl);
             switch (request.RawUrl)
             {
                 case "/utilspbi/api/nodesdata":
@@ -96,7 +99,5 @@ namespace Utils_for_PBI.Server
             response.ContentLength64 = buffer.Length;
             await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
         }
-
-
     }
 }

@@ -62,9 +62,9 @@ namespace Utils_for_PBI.Forms
             string appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "UtilsPBI", "js");
 
             Dictionary<String, String> filesDict = new Dictionary<string, string>();
-            filesDict.Add("cytoscape.min.js", "https://unpkg.com/cytoscape@3.30.0/dist/cytoscape.min.js");
-            filesDict.Add("dagre.js", "https://unpkg.com/dagre@0.8.5/dist/dagre.js");
-            filesDict.Add("cytoscape-dagre.js", "https://unpkg.com/cytoscape-dagre@2.5.0/cytoscape-dagre.js");
+            filesDict.Add(Constants.cytoscapeMinJS, Constants.cytoscapeMinJSURL);
+            filesDict.Add(Constants.dagreJS, Constants.dagreJSURL);
+            filesDict.Add(Constants.cytoscapeDagreJS, Constants.cytoscapeDagreJSURL);
 
             if (!Directory.Exists(appDataPath))
             {
@@ -79,8 +79,17 @@ namespace Utils_for_PBI.Forms
                     using var client = new HttpClient();
                     using var response = await client.GetAsync(fileURL, HttpCompletionOption.ResponseHeadersRead);
                     response.EnsureSuccessStatusCode();
-                    await using var fs = new FileStream(fileFullPath, FileMode.OpenOrCreate, FileAccess.Write);
-                    await response.Content.CopyToAsync(fs);
+
+                    try
+                    {
+                        await using var fs = new FileStream(fileFullPath, FileMode.OpenOrCreate, FileAccess.Write);
+                        await response.Content.CopyToAsync(fs);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex.Message);
+                        MessageBox.Show($"Error: {ex.Message}", "Error downloading JS to local system", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                     Logger.Info($"Downloaded {fileName}");
                 }
             }
