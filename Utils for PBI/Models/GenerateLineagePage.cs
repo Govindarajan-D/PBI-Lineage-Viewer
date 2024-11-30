@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Utils_for_PBI.Models
@@ -12,7 +13,17 @@ namespace Utils_for_PBI.Models
         public string HTMLFileLocation;
         public string GenerateHTMLPage()
         {
-            string HTMLContent = Encoding.UTF8.GetString(File.ReadAllBytes("LineageGraph.bin"));
+            string HTMLContent;
+            var assembly = Assembly.GetExecutingAssembly();
+            var HTMLFileResource = Constants.lineageGraphHTML;
+
+
+            using (Stream stream = assembly.GetManifestResourceStream(HTMLFileResource))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                HTMLContent = reader.ReadToEnd();
+            }
+
             string appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "UtilsPBI");
             Directory.CreateDirectory(appDataPath);
             HTMLFileLocation = Path.Combine(appDataPath, "Lineage.html");

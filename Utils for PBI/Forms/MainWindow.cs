@@ -18,7 +18,7 @@ namespace Utils_for_PBI.Forms
     public partial class MainWindow : Form
     {
         public List<GenerateLineagePage> lineagePages;
-        private UtilsPBIHTTPServer dataServer;
+        private UtilsPBIHTTPServer _dataServer;
         private AdomdConnection _adomdConnection;
         private TomAPIConnection _tomAPIConnection;
         public MainWindow()
@@ -69,8 +69,8 @@ namespace Utils_for_PBI.Forms
                 dependencies.ParseIntoJSON();
 
                 //TO-DO: (High) Check if a server is already started and then start
-                dataServer = new UtilsPBIHTTPServer("http://localhost:8080/utilspbi/", dependencies);
-                dataServer.Start();
+                _dataServer = new UtilsPBIHTTPServer("http://localhost:8080/utilspbi/", dependencies);
+                _dataServer.Start();
             }
 
         }
@@ -83,7 +83,7 @@ namespace Utils_for_PBI.Forms
 
         private void OnDisconnection()
         {
-            dataServer.Stop();
+            _dataServer.Stop();
         }
 
         private void EnableControls(string message)

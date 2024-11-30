@@ -16,6 +16,7 @@ using log4net.Config;
  * Memory Leakage Check (windbg, MS CLR profiler)
  * Enhance Logging with Try-Catch Exceptions
  * Literal values as resources
+ * Add Testing
  */
 
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config")]

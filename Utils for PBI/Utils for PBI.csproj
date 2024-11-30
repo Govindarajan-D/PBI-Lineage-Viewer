@@ -11,6 +11,12 @@
     <StartupObject>Utils_for_PBI.Forms.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="LineageGraph.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="LineageGraph.html" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\PowerBIConnections\PowerBIConnections.csproj" />
   </ItemGroup>
   <ItemGroup>

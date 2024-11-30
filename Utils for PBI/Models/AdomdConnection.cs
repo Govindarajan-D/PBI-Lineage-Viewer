@@ -7,11 +7,10 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Utils_for_PBI.Data_Structures;
 using Utils_for_PBI.Forms;
 using AdomdClient = Microsoft.AnalysisServices.AdomdClient;
-
-
 
 
 //TO-DO: Move it to a separate project if necessary for creating DLLs
@@ -31,10 +30,19 @@ namespace Utils_for_PBI.Models
 
         public AdomdClient.AdomdConnection adomdConnection;
         public bool isConnected = false;
+        public bool endAdomdSession = true;
 
         public void Connect(DatasetConnection datasetConnection)
         {
-            adomdConnection = new AdomdClient.AdomdConnection("Datasource=" + datasetConnection.ConnectString);
+            try
+            {
+                adomdConnection = new AdomdClient.AdomdConnection("Datasource=" + datasetConnection.ConnectString);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
+                MessageBox.Show($"Error: {ex.Message}", "Error establishing ADOMD connection", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             isConnected = true;
 
             Logger.Info("ADOMD Connection Established");
@@ -44,7 +52,16 @@ namespace Utils_for_PBI.Models
         {
             String dependencySQLQuery = @"SELECT OBJECT_TYPE, [TABLE] AS SOURCE_TABLE, OBJECT, EXPRESSION, REFERENCED_OBJECT_TYPE, REFERENCED_TABLE, REFERENCED_OBJECT FROM $SYSTEM.DISCOVER_CALC_DEPENDENCY";
             CalcDepedencyData calcDepedencyData = new CalcDepedencyData();
-            adomdConnection.Open();
+            try
+            {
+                adomdConnection.Open();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
+                MessageBox.Show($"Error: {ex.Message}", "Error establishing ADOMD connection", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
             AdomdClient.AdomdCommand adomdCommand = new AdomdClient.AdomdCommand(dependencySQLQuery, adomdConnection);
             AdomdClient.AdomdDataReader records = adomdCommand.ExecuteReader();
 
@@ -77,17 +94,14 @@ namespace Utils_for_PBI.Models
         //TO-DO: Simplify the below code
         public void Disconnect(bool endSession = true)
         {
-            Dispose(endSession);
+            endAdomdSession = endSession;
+            Dispose();
         }
 
         public void Dispose()
         {
-            Dispose(true);
-        }
-        public void Dispose(bool endSession)
-        {
             isConnected = false;
-            adomdConnection.Close(endSession);
+            adomdConnection.Close(endAdomdSession);
             GC.SuppressFinalize(this);
         }
     }
