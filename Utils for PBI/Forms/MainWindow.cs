@@ -78,7 +78,7 @@ namespace Utils_for_PBI.Forms
 //TO-DO: Add enable and disable code while connecting and disconnecting respectively
         private void OnConnection()
         {
-            
+            viewDependenciesBtn.Enabled = true;
         }
 
         private void OnDisconnection()

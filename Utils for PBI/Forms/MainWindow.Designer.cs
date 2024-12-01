@@ -35,7 +35,7 @@
             helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ActivityArea = new System.Windows.Forms.SplitContainer();
-            view_dependencies = new System.Windows.Forms.Button();
+            viewDependenciesBtn = new System.Windows.Forms.Button();
             DisplayLineageWebView = new Microsoft.Web.WebView2.WinForms.WebView2();
             StatusBar = new System.Windows.Forms.StatusStrip();
             menuStrip1.SuspendLayout();
@@ -99,7 +99,7 @@
             // 
             // ActivityArea.Panel1
             // 
-            ActivityArea.Panel1.Controls.Add(view_dependencies);
+            ActivityArea.Panel1.Controls.Add(viewDependenciesBtn);
             // 
             // ActivityArea.Panel2
             // 
@@ -109,15 +109,16 @@
             ActivityArea.SplitterWidth = 2;
             ActivityArea.TabIndex = 1;
             // 
-            // view_dependencies
+            // viewDependenciesBtn
             // 
-            view_dependencies.Location = new System.Drawing.Point(3, 3);
-            view_dependencies.Name = "view_dependencies";
-            view_dependencies.Size = new System.Drawing.Size(226, 65);
-            view_dependencies.TabIndex = 0;
-            view_dependencies.Text = "View Dependencies";
-            view_dependencies.UseVisualStyleBackColor = true;
-            view_dependencies.Click += viewdependencies_Click;
+            viewDependenciesBtn.Enabled = false;
+            viewDependenciesBtn.Location = new System.Drawing.Point(3, 3);
+            viewDependenciesBtn.Name = "viewDependenciesBtn";
+            viewDependenciesBtn.Size = new System.Drawing.Size(226, 65);
+            viewDependenciesBtn.TabIndex = 0;
+            viewDependenciesBtn.Text = "View Dependencies";
+            viewDependenciesBtn.UseVisualStyleBackColor = true;
+            viewDependenciesBtn.Click += viewdependencies_Click;
             // 
             // DisplayLineageWebView
             // 
@@ -175,7 +176,7 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.SplitContainer ActivityArea;
         private System.Windows.Forms.StatusStrip StatusBar;
-        private System.Windows.Forms.Button view_dependencies;
+        private System.Windows.Forms.Button viewDependenciesBtn;
         private Microsoft.Web.WebView2.WinForms.WebView2 DisplayLineageWebView;
     }
 }

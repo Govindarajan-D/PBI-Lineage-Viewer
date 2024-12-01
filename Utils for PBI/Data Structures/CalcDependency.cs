@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Microsoft.AnalysisServices.Tabular;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
+using Json = System.Text.Json;
 using System.Threading.Tasks;
 using Utils_for_PBI.Models;
 
@@ -49,7 +50,9 @@ namespace Utils_for_PBI.Data_Structures
         /// </summary>
         public void ParseIntoJSON()
         {
-            var cleansedDependencyData = calcDepedencyData.Where(c => !c.SOURCE_TABLE.Contains("DateTableTemplate"));
+            List<String> objectTypeNotInFilter = new List<String> { "HIERARCHY", "ATTRIBUTE_HIERARCHY", "ACTIVE_RELATIONSHIP", "RELATIONSHIP" };
+            var cleansedDependencyData = calcDepedencyData.Where(c => !c.SOURCE_TABLE.Contains("DateTable"))
+                                                          .Where(e => !e.OBJECT_TYPE.Contains("ACTIVE_RELATIONSHIP") && !e.OBJECT_TYPE.Contains("RELATIONSHIP"));
             var objectNodes = cleansedDependencyData.Select(c => new
                                                 {
                                                     c.OBJECT,
@@ -91,8 +94,8 @@ namespace Utils_for_PBI.Data_Structures
 
                                                     });
 
-            dependencyNodesJSON = JsonSerializer.Serialize(nodesJSON, new JsonSerializerOptions { WriteIndented = true});
-            dependencyEdgesJSON = JsonSerializer.Serialize(edgesJSON, new JsonSerializerOptions { WriteIndented = true });
+            dependencyNodesJSON = Json.JsonSerializer.Serialize(nodesJSON, new Json.JsonSerializerOptions { WriteIndented = true});
+            dependencyEdgesJSON = Json.JsonSerializer.Serialize(edgesJSON, new Json.JsonSerializerOptions { WriteIndented = true });
         }
     }
 }

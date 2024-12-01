@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using log4net;
 using log4net.Config;
+using System.Runtime.Versioning;
 
 /* TO-DO:
  * Build script in github for automated building of exe
@@ -17,6 +18,7 @@ using log4net.Config;
  * Enhance Logging with Try-Catch Exceptions
  * Literal values as resources
  * Add Testing
+ * Try preset for Cytoscape
  */
 
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config")]
@@ -27,6 +29,7 @@ namespace Utils_for_PBI.Forms
     /// <summary>
     ///  Program class is the entry point of the application. Contains the Main() function
     /// </summary>
+    [SupportedOSPlatform("windows")]
     internal static class Program
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
