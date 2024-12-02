@@ -69,8 +69,11 @@ namespace Utils_for_PBI.Forms
                 dependencies.ParseIntoJSON();
 
                 //TO-DO: (High) Check if a server is already started and then start
-                _dataServer = new UtilsPBIHTTPServer("http://localhost:8080/utilspbi/", dependencies);
-                _dataServer.Start();
+                if (_dataServer == null)
+                {
+                    _dataServer = new UtilsPBIHTTPServer("http://localhost:8080/utilspbi/", dependencies);
+                    _dataServer.Start();
+                }
             }
 
         }

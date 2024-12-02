@@ -19,6 +19,11 @@ using System.Runtime.Versioning;
  * Literal values as resources
  * Add Testing
  * Try preset for Cytoscape
+ */ 
+
+/* TO-DO in HTML Page
+ * Use mapData for width control
+ * Use selectors and filters
  */
 
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config")]
