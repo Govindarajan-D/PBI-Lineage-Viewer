@@ -9,9 +9,11 @@ using System.Management;
 using System.Collections;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 namespace PowerBIConnections.Connections
 {
+    [SupportedOSPlatform("windows")]
     public static class ActiveConnections
     {
         public static List<DatasetConnection> GetActiveConnections()
@@ -38,6 +40,7 @@ namespace PowerBIConnections.Connections
             return sessions;
         }
     }
+    [SupportedOSPlatform("windows")]
     public static class ProcessExtensions
     {
         public static Process GetParent(this Process process)

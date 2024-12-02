@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,6 +16,7 @@ using Utils_for_PBI.Server;
 
 namespace Utils_for_PBI.Forms
 {
+    [SupportedOSPlatform("windows")]
     public partial class MainWindow : Form
     {
         public List<GenerateLineagePage> lineagePages;
@@ -34,7 +36,7 @@ namespace Utils_for_PBI.Forms
         private void connectDesktopModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ConnectDesktopDataset connectDatasetWindow = new ConnectDesktopDataset();
-            connectDatasetWindow.NotifyAction += EnableControls;
+            connectDatasetWindow.NotifyAction += OnConnection;
 
             if (connectDatasetWindow.ShowDialog() == DialogResult.OK)
             {
@@ -48,15 +50,7 @@ namespace Utils_for_PBI.Forms
                     _adomdConnection.Connect(connection);
                 }
             }
-        }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
-        private void viewdependencies_Click(object sender, EventArgs e)
-        {
             GenerateLineagePage showDependencyGraph = new GenerateLineagePage();
             string filePath = showDependencyGraph.GenerateHTMLPage();
 
@@ -75,13 +69,17 @@ namespace Utils_for_PBI.Forms
                     _dataServer.Start();
                 }
             }
-
         }
 
-//TO-DO: Add enable and disable code while connecting and disconnecting respectively
-        private void OnConnection()
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            viewDependenciesBtn.Enabled = true;
+            Application.Exit();
+        }
+
+        //TO-DO: Add enable and disable code while connecting and disconnecting respectively
+        private void OnConnection(string message)
+        {
+            EnableControls();
         }
 
         private void OnDisconnection()
@@ -89,9 +87,9 @@ namespace Utils_for_PBI.Forms
             _dataServer.Stop();
         }
 
-        private void EnableControls(string message)
+        private void EnableControls()
         {
-            OnConnection();
+
         }
     }
 }

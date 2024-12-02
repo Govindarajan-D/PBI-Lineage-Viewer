@@ -34,15 +34,9 @@
             exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            ActivityArea = new System.Windows.Forms.SplitContainer();
-            viewDependenciesBtn = new System.Windows.Forms.Button();
             DisplayLineageWebView = new Microsoft.Web.WebView2.WinForms.WebView2();
             StatusBar = new System.Windows.Forms.StatusStrip();
             menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)ActivityArea).BeginInit();
-            ActivityArea.Panel1.SuspendLayout();
-            ActivityArea.Panel2.SuspendLayout();
-            ActivityArea.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)DisplayLineageWebView).BeginInit();
             SuspendLayout();
             // 
@@ -90,45 +84,15 @@
             aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             aboutToolStripMenuItem.Text = "About";
             // 
-            // ActivityArea
-            // 
-            ActivityArea.Dock = System.Windows.Forms.DockStyle.Fill;
-            ActivityArea.Location = new System.Drawing.Point(0, 24);
-            ActivityArea.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            ActivityArea.Name = "ActivityArea";
-            // 
-            // ActivityArea.Panel1
-            // 
-            ActivityArea.Panel1.Controls.Add(viewDependenciesBtn);
-            // 
-            // ActivityArea.Panel2
-            // 
-            ActivityArea.Panel2.Controls.Add(DisplayLineageWebView);
-            ActivityArea.Size = new System.Drawing.Size(933, 495);
-            ActivityArea.SplitterDistance = 232;
-            ActivityArea.SplitterWidth = 2;
-            ActivityArea.TabIndex = 1;
-            // 
-            // viewDependenciesBtn
-            // 
-            viewDependenciesBtn.Enabled = false;
-            viewDependenciesBtn.Location = new System.Drawing.Point(3, 3);
-            viewDependenciesBtn.Name = "viewDependenciesBtn";
-            viewDependenciesBtn.Size = new System.Drawing.Size(226, 65);
-            viewDependenciesBtn.TabIndex = 0;
-            viewDependenciesBtn.Text = "View Dependencies";
-            viewDependenciesBtn.UseVisualStyleBackColor = true;
-            viewDependenciesBtn.Click += viewdependencies_Click;
-            // 
             // DisplayLineageWebView
             // 
             DisplayLineageWebView.AllowExternalDrop = true;
             DisplayLineageWebView.CreationProperties = null;
             DisplayLineageWebView.DefaultBackgroundColor = System.Drawing.Color.White;
             DisplayLineageWebView.Dock = System.Windows.Forms.DockStyle.Fill;
-            DisplayLineageWebView.Location = new System.Drawing.Point(0, 0);
+            DisplayLineageWebView.Location = new System.Drawing.Point(0, 24);
             DisplayLineageWebView.Name = "DisplayLineageWebView";
-            DisplayLineageWebView.Size = new System.Drawing.Size(699, 495);
+            DisplayLineageWebView.Size = new System.Drawing.Size(933, 473);
             DisplayLineageWebView.Source = new System.Uri(" https://www.microsoft.com", System.UriKind.Absolute);
             DisplayLineageWebView.TabIndex = 0;
             DisplayLineageWebView.ZoomFactor = 1D;
@@ -147,8 +111,8 @@
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(933, 519);
+            Controls.Add(DisplayLineageWebView);
             Controls.Add(StatusBar);
-            Controls.Add(ActivityArea);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -157,10 +121,6 @@
             Load += MainWindow_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
-            ActivityArea.Panel1.ResumeLayout(false);
-            ActivityArea.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)ActivityArea).EndInit();
-            ActivityArea.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)DisplayLineageWebView).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -174,9 +134,7 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.SplitContainer ActivityArea;
         private System.Windows.Forms.StatusStrip StatusBar;
-        private System.Windows.Forms.Button viewDependenciesBtn;
         private Microsoft.Web.WebView2.WinForms.WebView2 DisplayLineageWebView;
     }
 }
