@@ -1,3 +1,5 @@
+![master](https://github.com/Govindarajan-D/Utilities-for-PBI/actions/workflows/dotnet.yml/badge.svg)
+
 # Utils for PBI
 
 Utils for PBI is a lineage graphing tool that makes it easy to understand the lineage in terms of tables and measures. 
