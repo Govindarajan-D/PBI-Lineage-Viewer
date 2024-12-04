@@ -158,6 +158,7 @@
             OnlineModelComboBox.Name = "OnlineModelComboBox";
             OnlineModelComboBox.Size = new System.Drawing.Size(554, 23);
             OnlineModelComboBox.TabIndex = 4;
+            OnlineModelComboBox.SelectedIndexChanged += ConnectOnlineModelComboBox_SelectedIndexChanged;
             // 
             // ConnectDesktopDatasetCancelButton
             // 

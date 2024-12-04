@@ -40,7 +40,7 @@ namespace Utils_for_PBI.Forms
 
             if (connectDatasetWindow.ShowDialog() == DialogResult.OK)
             {
-                var connection = connectDatasetWindow.returnConnection;
+                var connection = connectDatasetWindow.selectedConnection;
                 if (connection != null)
                 {
                     _tomAPIConnection = new TomAPIConnection();

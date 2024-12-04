@@ -37,8 +37,8 @@ namespace Utils_for_PBI.Models
         {
             try
             {
-                //adomdConnection = new AdomdClient.AdomdConnection("Datasource=" + datasetConnection.ConnectString);
-                adomdConnection = new AdomdClient.AdomdConnection($"Provider=MSOLAP;Data Source=powerbi://api.powerbi.com/v1.0/myorg/SemanticLink%20Test;");
+                adomdConnection = new AdomdClient.AdomdConnection("Datasource=" + datasetConnection.ConnectString);
+                //adomdConnection = new AdomdClient.AdomdConnection($"Provider=MSOLAP;Data Source=powerbi://api.powerbi.com/v1.0/myorg/SemanticLink%20Test;");
                 
             }
             catch (Exception ex)
