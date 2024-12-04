@@ -9,11 +9,13 @@ using Tabular = Microsoft.AnalysisServices.Tabular;
 using PowerBIConnections.Connections;
 using log4net.Repository.Hierarchy;
 using log4net;
+using System.Runtime.Versioning;
 
 //TO-DO: Move it to a separate project if necessary for creating DLLs
 
 namespace Utils_for_PBI.Models
 {
+    [SupportedOSPlatform("windows")]
     public class TomAPIConnection : IDisposable
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(TomAPIConnection));

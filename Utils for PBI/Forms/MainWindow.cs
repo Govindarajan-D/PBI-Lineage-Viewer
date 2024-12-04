@@ -35,7 +35,7 @@ namespace Utils_for_PBI.Forms
 
         private void connectDesktopModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ConnectDesktopDataset connectDatasetWindow = new ConnectDesktopDataset();
+            ConnectDataset connectDatasetWindow = new ConnectDataset();
             connectDatasetWindow.NotifyAction += OnConnection;
 
             if (connectDatasetWindow.ShowDialog() == DialogResult.OK)
@@ -88,6 +88,11 @@ namespace Utils_for_PBI.Forms
         }
 
         private void EnableControls()
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }

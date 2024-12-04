@@ -12,13 +12,13 @@ using Utils_for_PBI.Models;
 
 namespace Utils_for_PBI.Forms
 {
-    public partial class ConnectDesktopDataset : Form
+    public partial class ConnectDataset : Form
     {
         public DatasetConnection returnConnection;
         public delegate void NotifyHandler(string message);
         public event NotifyHandler NotifyAction;
 
-        public ConnectDesktopDataset()
+        public ConnectDataset()
         {
             InitializeComponent();
             LoadModelConnections();

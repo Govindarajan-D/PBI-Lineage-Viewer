@@ -36,6 +36,7 @@
             aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             DisplayLineageWebView = new Microsoft.Web.WebView2.WinForms.WebView2();
             StatusBar = new System.Windows.Forms.StatusStrip();
+            ConnectDatasetPlaceholderLabel = new System.Windows.Forms.Label();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)DisplayLineageWebView).BeginInit();
             SuspendLayout();
@@ -60,14 +61,14 @@
             // connectToolStripMenuItem
             // 
             connectToolStripMenuItem.Name = "connectToolStripMenuItem";
-            connectToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            connectToolStripMenuItem.Text = "Connect Desktop Model";
+            connectToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            connectToolStripMenuItem.Text = "Connect Model";
             connectToolStripMenuItem.Click += connectDesktopModelToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            exitToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
@@ -95,6 +96,7 @@
             DisplayLineageWebView.Size = new System.Drawing.Size(933, 473);
             DisplayLineageWebView.Source = new System.Uri(" https://www.microsoft.com", System.UriKind.Absolute);
             DisplayLineageWebView.TabIndex = 0;
+            DisplayLineageWebView.Visible = false;
             DisplayLineageWebView.ZoomFactor = 1D;
             // 
             // StatusBar
@@ -106,11 +108,22 @@
             StatusBar.TabIndex = 2;
             StatusBar.Text = "StatusBar";
             // 
+            // ConnectDatasetPlaceholderLabel
+            // 
+            ConnectDatasetPlaceholderLabel.AutoSize = true;
+            ConnectDatasetPlaceholderLabel.Font = new System.Drawing.Font("Open Sans", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            ConnectDatasetPlaceholderLabel.Location = new System.Drawing.Point(285, 243);
+            ConnectDatasetPlaceholderLabel.Name = "ConnectDatasetPlaceholderLabel";
+            ConnectDatasetPlaceholderLabel.Size = new System.Drawing.Size(394, 33);
+            ConnectDatasetPlaceholderLabel.TabIndex = 3;
+            ConnectDatasetPlaceholderLabel.Text = "Connect to a Dataset to get started";
+            // 
             // MainWindow
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(933, 519);
+            Controls.Add(ConnectDatasetPlaceholderLabel);
             Controls.Add(DisplayLineageWebView);
             Controls.Add(StatusBar);
             Controls.Add(menuStrip1);
@@ -136,5 +149,6 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.StatusStrip StatusBar;
         private Microsoft.Web.WebView2.WinForms.WebView2 DisplayLineageWebView;
+        private System.Windows.Forms.Label ConnectDatasetPlaceholderLabel;
     }
 }

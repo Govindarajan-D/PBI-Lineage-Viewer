@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -22,7 +23,7 @@ namespace Utils_for_PBI.Models
     /// which is mapped to CalcDependency object in the MapRowToObject() function
     ///
     /// </summary>
-
+    [SupportedOSPlatform("windows")]
     //TO-DO: Inherit from IDisposable and add Dispose/Close method()
     public class AdomdConnection : IDisposable
     {
@@ -36,7 +37,9 @@ namespace Utils_for_PBI.Models
         {
             try
             {
-                adomdConnection = new AdomdClient.AdomdConnection("Datasource=" + datasetConnection.ConnectString);
+                //adomdConnection = new AdomdClient.AdomdConnection("Datasource=" + datasetConnection.ConnectString);
+                adomdConnection = new AdomdClient.AdomdConnection($"Provider=MSOLAP;Data Source=powerbi://api.powerbi.com/v1.0/myorg/SemanticLink%20Test;");
+                
             }
             catch (Exception ex)
             {
