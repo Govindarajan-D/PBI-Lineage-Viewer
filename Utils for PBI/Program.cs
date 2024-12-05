@@ -19,6 +19,7 @@ using System.Runtime.Versioning;
  * Literal values as resources
  * Add Testingr
  * Check TomAPI for getting metadata
+ * Test the program with different access levels and visuals. Take into account 3rd party visuals
  */
 
 /* TO-DO in HTML Page

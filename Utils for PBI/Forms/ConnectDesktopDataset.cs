@@ -70,7 +70,7 @@ namespace Utils_for_PBI.Forms
 
             this.Close();
 
-            NotifyAction?.Invoke("Connection Established");
+            NotifyAction?.Invoke("Connection Selected");
         }
 
         private void ConnectDatasetRefreshButton_Click(object sender, EventArgs e)

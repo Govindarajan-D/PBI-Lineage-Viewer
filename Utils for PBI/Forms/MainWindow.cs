@@ -47,6 +47,12 @@ namespace Utils_for_PBI.Forms
                     _adomdConnection = new AdomdConnection();
 
                     _tomAPIConnection.Connect(connection);
+
+                    if(connection.ConnectionType == ConnectionType.PowerBIService)
+                    {
+                        SelectModelForm selectModelForm = new SelectModelForm(_tomAPIConnection.databases);
+                        selectModelForm.ShowDialog();
+                    }
                     _adomdConnection.Connect(connection);
                     
                 }
