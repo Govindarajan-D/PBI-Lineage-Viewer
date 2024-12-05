@@ -48,6 +48,7 @@ namespace Utils_for_PBI.Forms
 
                     _tomAPIConnection.Connect(connection);
                     _adomdConnection.Connect(connection);
+                    
                 }
             }
 
@@ -69,6 +70,10 @@ namespace Utils_for_PBI.Forms
                     _dataServer.Start();
                 }
             }
+
+            ConnectDatasetPlaceholderLabel.Visible = false;
+            DisplayLineageWebView.Visible = true;
+
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

@@ -20,7 +20,8 @@ namespace Utils_for_PBI.Models
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(TomAPIConnection));
         public Tabular.Server server = new Tabular.Server();
-        public Tabular.Database database;
+        public List<String> databases = new List<String>();
+        public Tabular.Database currentDatabase;
         public Tabular.Model model;
         public bool isConnected = false;
         public bool endTOMSession = true;
@@ -45,8 +46,15 @@ namespace Utils_for_PBI.Models
                 Logger.Error(ex.Message);
                 MessageBox.Show($"Error: {ex.Message}", "Error establishing TOMAPI connection", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            database = server.Databases[0];
-            model = database.Model;
+
+            for(int i=0; i < server.Databases.Count; i++)
+            {
+                databases.Add(server.Databases[i].Name);
+            }
+
+            currentDatabase = server.Databases[0];
+            datasetConnection.DatabaseName = currentDatabase.Name;
+            model = currentDatabase.Model;
             isConnected = true;
         }
 
