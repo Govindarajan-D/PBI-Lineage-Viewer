@@ -1,6 +1,6 @@
 ﻿namespace Utils_for_PBI.Forms
 {
-    partial class ConnectDesktopDataset
+    partial class ConnectDataset
     {
         /// <summary>
         /// Required designer variable.
@@ -28,13 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConnectDesktopDataset));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConnectDataset));
             ConnectDatasetSplit = new System.Windows.Forms.SplitContainer();
             ConnectDatasetRefreshButton = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
             SelectorTableLayout = new System.Windows.Forms.TableLayoutPanel();
             DesktopModelLabel = new System.Windows.Forms.Label();
             DesktopModelComboBox = new System.Windows.Forms.ComboBox();
+            OnlineModelLabel = new System.Windows.Forms.Label();
+            OnlineModelComboBox = new System.Windows.Forms.ComboBox();
             ConnectDesktopDatasetCancelButton = new System.Windows.Forms.Button();
             ConnectDesktopDatasetOkButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)ConnectDatasetSplit).BeginInit();
@@ -62,8 +64,8 @@
             // 
             ConnectDatasetSplit.Panel2.Controls.Add(ConnectDesktopDatasetCancelButton);
             ConnectDatasetSplit.Panel2.Controls.Add(ConnectDesktopDatasetOkButton);
-            ConnectDatasetSplit.Size = new System.Drawing.Size(798, 238);
-            ConnectDatasetSplit.SplitterDistance = 175;
+            ConnectDatasetSplit.Size = new System.Drawing.Size(783, 318);
+            ConnectDatasetSplit.SplitterDistance = 233;
             ConnectDatasetSplit.SplitterWidth = 5;
             ConnectDatasetSplit.TabIndex = 0;
             // 
@@ -90,9 +92,8 @@
             label1.Location = new System.Drawing.Point(42, 22);
             label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(164, 17);
+            label1.Size = new System.Drawing.Size(0, 17);
             label1.TabIndex = 1;
-            label1.Text = "Connect to Desktop Model";
             // 
             // SelectorTableLayout
             // 
@@ -101,24 +102,27 @@
             SelectorTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75.35322F));
             SelectorTableLayout.Controls.Add(DesktopModelLabel, 0, 0);
             SelectorTableLayout.Controls.Add(DesktopModelComboBox, 1, 0);
-            SelectorTableLayout.Location = new System.Drawing.Point(14, 67);
+            SelectorTableLayout.Controls.Add(OnlineModelLabel, 0, 1);
+            SelectorTableLayout.Controls.Add(OnlineModelComboBox, 1, 1);
+            SelectorTableLayout.Location = new System.Drawing.Point(14, 59);
             SelectorTableLayout.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             SelectorTableLayout.Name = "SelectorTableLayout";
-            SelectorTableLayout.RowCount = 1;
+            SelectorTableLayout.RowCount = 2;
             SelectorTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            SelectorTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 77F));
             SelectorTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            SelectorTableLayout.Size = new System.Drawing.Size(743, 105);
+            SelectorTableLayout.Size = new System.Drawing.Size(743, 161);
             SelectorTableLayout.TabIndex = 0;
             // 
             // DesktopModelLabel
             // 
             DesktopModelLabel.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             DesktopModelLabel.AutoSize = true;
-            DesktopModelLabel.Font = new System.Drawing.Font("Open Sans", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            DesktopModelLabel.Location = new System.Drawing.Point(4, 45);
+            DesktopModelLabel.Font = new System.Drawing.Font("Open Sans", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            DesktopModelLabel.Location = new System.Drawing.Point(4, 33);
             DesktopModelLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             DesktopModelLabel.Name = "DesktopModelLabel";
-            DesktopModelLabel.Size = new System.Drawing.Size(175, 15);
+            DesktopModelLabel.Size = new System.Drawing.Size(175, 18);
             DesktopModelLabel.TabIndex = 0;
             DesktopModelLabel.Text = "Connect to Desktop Model:";
             DesktopModelLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -127,11 +131,34 @@
             // 
             DesktopModelComboBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             DesktopModelComboBox.FormattingEnabled = true;
-            DesktopModelComboBox.Location = new System.Drawing.Point(187, 41);
+            DesktopModelComboBox.Location = new System.Drawing.Point(187, 30);
             DesktopModelComboBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             DesktopModelComboBox.Name = "DesktopModelComboBox";
             DesktopModelComboBox.Size = new System.Drawing.Size(552, 23);
             DesktopModelComboBox.TabIndex = 2;
+            // 
+            // OnlineModelLabel
+            // 
+            OnlineModelLabel.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            OnlineModelLabel.AutoSize = true;
+            OnlineModelLabel.Font = new System.Drawing.Font("Open Sans", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            OnlineModelLabel.Location = new System.Drawing.Point(3, 113);
+            OnlineModelLabel.Name = "OnlineModelLabel";
+            OnlineModelLabel.Size = new System.Drawing.Size(177, 18);
+            OnlineModelLabel.TabIndex = 3;
+            OnlineModelLabel.Text = "Connect to Online Model:";
+            OnlineModelLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // OnlineModelComboBox
+            // 
+            OnlineModelComboBox.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            OnlineModelComboBox.FormattingEnabled = true;
+            OnlineModelComboBox.Items.AddRange(new object[] { "powerbi://api.powerbi.com/v1.0/myorg/" });
+            OnlineModelComboBox.Location = new System.Drawing.Point(186, 111);
+            OnlineModelComboBox.Name = "OnlineModelComboBox";
+            OnlineModelComboBox.Size = new System.Drawing.Size(554, 23);
+            OnlineModelComboBox.TabIndex = 4;
+            OnlineModelComboBox.SelectedIndexChanged += ConnectOnlineModelComboBox_SelectedIndexChanged;
             // 
             // ConnectDesktopDatasetCancelButton
             // 
@@ -167,16 +194,16 @@
             ConnectDesktopDatasetOkButton.UseVisualStyleBackColor = false;
             ConnectDesktopDatasetOkButton.Click += ConnectDatasetOkButton_Click;
             // 
-            // ConnectDesktopDataset
+            // ConnectDataset
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(798, 238);
+            ClientSize = new System.Drawing.Size(783, 318);
             Controls.Add(ConnectDatasetSplit);
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             MaximizeBox = false;
-            Name = "ConnectDesktopDataset";
-            Text = "Establish Connection to Desktop Model";
+            Name = "ConnectDataset";
+            Text = "Establish Connection to Model";
             ConnectDatasetSplit.Panel1.ResumeLayout(false);
             ConnectDatasetSplit.Panel1.PerformLayout();
             ConnectDatasetSplit.Panel2.ResumeLayout(false);
@@ -197,5 +224,7 @@
         private System.Windows.Forms.Button ConnectDesktopDatasetCancelButton;
         private System.Windows.Forms.Button ConnectDesktopDatasetOkButton;
         private System.Windows.Forms.Button ConnectDatasetRefreshButton;
+        private System.Windows.Forms.Label OnlineModelLabel;
+        private System.Windows.Forms.ComboBox OnlineModelComboBox;
     }
 }

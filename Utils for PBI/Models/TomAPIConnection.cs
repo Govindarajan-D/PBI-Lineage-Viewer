@@ -7,17 +7,24 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Tabular = Microsoft.AnalysisServices.Tabular;
 using PowerBIConnections.Connections;
+using log4net.Repository.Hierarchy;
+using log4net;
+using System.Runtime.Versioning;
 
 //TO-DO: Move it to a separate project if necessary for creating DLLs
 
 namespace Utils_for_PBI.Models
 {
+    [SupportedOSPlatform("windows")]
     public class TomAPIConnection : IDisposable
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(TomAPIConnection));
         public Tabular.Server server = new Tabular.Server();
-        public Tabular.Database database;
+        public List<String> databases = new List<String>();
+        public Tabular.Database currentDatabase;
         public Tabular.Model model;
         public bool isConnected = false;
+        public bool endTOMSession = true;
 
         static TomAPIConnection()
         {
@@ -30,30 +37,40 @@ namespace Utils_for_PBI.Models
             {
                 Disconnect(isConnected);
             }
-            server.Connect(datasetConnection.ConnectString);
-            database = server.Databases[0];
-            model = database.Model;
+            try
+            {
+                server.Connect(datasetConnection.ConnectString);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
+                MessageBox.Show($"Error: {ex.Message}", "Error establishing TOMAPI connection", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            for(int i=0; i < server.Databases.Count; i++)
+            {
+                databases.Add(server.Databases[i].Name);
+            }
+
+            currentDatabase = server.Databases[0];
+            datasetConnection.DatabaseName = currentDatabase.Name;
+            model = currentDatabase.Model;
             isConnected = true;
         }
 
-        public void Disconnect(bool endSession = true)
+        public void Disconnect(bool endSession)
         {
-            Dispose(endSession);
+            endTOMSession = endSession;
+            Dispose();
             
         }
 
         public void Dispose()
         {
-            Dispose(true); 
-        }
-
-        public void Dispose(bool endSession)
-        {
             isConnected = false;
-            server.Disconnect(endSession);
-            GC.SuppressFinalize(this); 
+            server.Disconnect(endTOMSession);
+            GC.SuppressFinalize(this);
         }
-        
     }
 
 }

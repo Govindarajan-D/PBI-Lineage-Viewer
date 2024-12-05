@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,10 +16,11 @@ using Utils_for_PBI.Server;
 
 namespace Utils_for_PBI.Forms
 {
+    [SupportedOSPlatform("windows")]
     public partial class MainWindow : Form
     {
         public List<GenerateLineagePage> lineagePages;
-        private UtilsPBIHTTPServer dataServer;
+        private UtilsPBIHTTPServer _dataServer;
         private AdomdConnection _adomdConnection;
         private TomAPIConnection _tomAPIConnection;
         public MainWindow()
@@ -33,12 +35,12 @@ namespace Utils_for_PBI.Forms
 
         private void connectDesktopModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ConnectDesktopDataset connectDatasetWindow = new ConnectDesktopDataset();
-            connectDatasetWindow.NotifyAction += EnableControls;
+            ConnectDataset connectDatasetWindow = new ConnectDataset();
+            connectDatasetWindow.NotifyAction += OnConnection;
 
             if (connectDatasetWindow.ShowDialog() == DialogResult.OK)
             {
-                var connection = connectDatasetWindow.returnConnection;
+                var connection = connectDatasetWindow.selectedConnection;
                 if (connection != null)
                 {
                     _tomAPIConnection = new TomAPIConnection();
@@ -46,17 +48,10 @@ namespace Utils_for_PBI.Forms
 
                     _tomAPIConnection.Connect(connection);
                     _adomdConnection.Connect(connection);
+                    
                 }
             }
-        }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
-        private void viewdependencies_Click(object sender, EventArgs e)
-        {
             GenerateLineagePage showDependencyGraph = new GenerateLineagePage();
             string filePath = showDependencyGraph.GenerateHTMLPage();
 
@@ -69,26 +64,42 @@ namespace Utils_for_PBI.Forms
                 dependencies.ParseIntoJSON();
 
                 //TO-DO: (High) Check if a server is already started and then start
-                dataServer = new UtilsPBIHTTPServer("http://localhost:8080/utilspbi/", dependencies);
-                dataServer.Start();
+                if (_dataServer == null)
+                {
+                    _dataServer = new UtilsPBIHTTPServer("http://localhost:8080/utilspbi/", dependencies);
+                    _dataServer.Start();
+                }
             }
+
+            ConnectDatasetPlaceholderLabel.Visible = false;
+            DisplayLineageWebView.Visible = true;
 
         }
 
-//TO-DO: Add enable and disable code while connecting and disconnecting respectively
-        private void OnConnection()
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+            Application.Exit();
+        }
+
+        //TO-DO: Add enable and disable code while connecting and disconnecting respectively
+        private void OnConnection(string message)
+        {
+            EnableControls();
         }
 
         private void OnDisconnection()
         {
-            dataServer.Stop();
+            _dataServer.Stop();
         }
 
-        private void EnableControls(string message)
+        private void EnableControls()
         {
-            OnConnection();
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

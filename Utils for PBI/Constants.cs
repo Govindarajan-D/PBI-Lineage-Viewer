@@ -5,6 +5,7 @@ namespace Utils_for_PBI
     {
         public static readonly string ProgramName = "UtilsPBI";
         public static readonly string log4netconfigfile = "log4net.config";
+        public static readonly string lineageGraphHTML = "Utils_for_PBI.LineageGraph.html";
 
         public static readonly string cytoscapeMinJS = "cytoscape.min.js";
         public static readonly string dagreJS = "dagre.js";

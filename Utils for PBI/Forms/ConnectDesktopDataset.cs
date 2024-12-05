@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -12,15 +13,18 @@ using Utils_for_PBI.Models;
 
 namespace Utils_for_PBI.Forms
 {
-    public partial class ConnectDesktopDataset : Form
+    [SupportedOSPlatform("windows")]
+    public partial class ConnectDataset : Form
     {
-        public DatasetConnection returnConnection;
+        public DatasetConnection selectedConnection;
         public delegate void NotifyHandler(string message);
         public event NotifyHandler NotifyAction;
 
-        public ConnectDesktopDataset()
+        public ConnectDataset()
         {
             InitializeComponent();
+            this.DesktopModelComboBox.DropDownClosed += DesktopModelComboBox_DropDownClosed;
+            this.OnlineModelComboBox.DropDownClosed += OnlineModelComboBox_DropDownClosed;
             LoadModelConnections();
         }
 
@@ -49,7 +53,21 @@ namespace Utils_for_PBI.Forms
         private void ConnectDatasetOkButton_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
-            returnConnection = this.DesktopModelComboBox.SelectedItem as DatasetConnection;
+
+            if (this.DesktopModelComboBox.SelectedItem as DatasetConnection != null)
+            {
+                selectedConnection = this.DesktopModelComboBox.SelectedItem as DatasetConnection;
+            }
+            else
+            {
+
+                selectedConnection = new DatasetConnection
+                {
+                    ConnectString = this.OnlineModelComboBox.Text,
+                    ConnectionType = ConnectionType.PowerBIService
+                };
+            }
+
             this.Close();
 
             NotifyAction?.Invoke("Connection Established");
@@ -58,6 +76,26 @@ namespace Utils_for_PBI.Forms
         private void ConnectDatasetRefreshButton_Click(object sender, EventArgs e)
         {
             LoadModelConnections();
+        }
+
+        private void DesktopModelComboBox_DropDownClosed(object sender, EventArgs e)
+        {
+            if (this.DesktopModelComboBox.SelectedItem != null || this.DesktopModelComboBox.SelectedIndex != -1)
+            {
+                this.OnlineModelComboBox.SelectedIndex = -1;
+            }
+        }
+        private void OnlineModelComboBox_DropDownClosed(object sender, EventArgs e)
+        {
+            if (this.OnlineModelComboBox.SelectedItem != null || this.OnlineModelComboBox.SelectedIndex != -1)
+            {
+                this.DesktopModelComboBox.SelectedIndex = -1;
+            }
+        }
+
+        private void ConnectOnlineModelComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
