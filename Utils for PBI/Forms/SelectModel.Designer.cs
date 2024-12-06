@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             DatabaseListBox = new System.Windows.Forms.ListBox();
-            button1 = new System.Windows.Forms.Button();
-            button2 = new System.Windows.Forms.Button();
+            SelectModelOkButton = new System.Windows.Forms.Button();
+            SelectModelCancelButton = new System.Windows.Forms.Button();
             SuspendLayout();
             // 
             // DatabaseListBox
@@ -42,31 +42,33 @@
             DatabaseListBox.Size = new System.Drawing.Size(350, 214);
             DatabaseListBox.TabIndex = 0;
             // 
-            // button1
+            // SelectModelOkButton
             // 
-            button1.Location = new System.Drawing.Point(414, 64);
-            button1.Name = "button1";
-            button1.Size = new System.Drawing.Size(102, 45);
-            button1.TabIndex = 1;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
+            SelectModelOkButton.Location = new System.Drawing.Point(414, 64);
+            SelectModelOkButton.Name = "SelectModelOkButton";
+            SelectModelOkButton.Size = new System.Drawing.Size(102, 45);
+            SelectModelOkButton.TabIndex = 1;
+            SelectModelOkButton.Text = "OK";
+            SelectModelOkButton.UseVisualStyleBackColor = true;
+            SelectModelOkButton.Click += SelectModelOkButton_Click;
             // 
-            // button2
+            // SelectModelCancelButton
             // 
-            button2.Location = new System.Drawing.Point(414, 144);
-            button2.Name = "button2";
-            button2.Size = new System.Drawing.Size(99, 42);
-            button2.TabIndex = 2;
-            button2.Text = "button2";
-            button2.UseVisualStyleBackColor = true;
+            SelectModelCancelButton.Location = new System.Drawing.Point(414, 144);
+            SelectModelCancelButton.Name = "SelectModelCancelButton";
+            SelectModelCancelButton.Size = new System.Drawing.Size(99, 42);
+            SelectModelCancelButton.TabIndex = 2;
+            SelectModelCancelButton.Text = "Cancel";
+            SelectModelCancelButton.UseVisualStyleBackColor = true;
+            SelectModelCancelButton.Click += SelectModelCancelButton_Click;
             // 
             // SelectModelForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(549, 265);
-            Controls.Add(button2);
-            Controls.Add(button1);
+            Controls.Add(SelectModelCancelButton);
+            Controls.Add(SelectModelOkButton);
             Controls.Add(DatabaseListBox);
             Name = "SelectModelForm";
             Text = "Select Model";
@@ -76,7 +78,7 @@
         #endregion
 
         private System.Windows.Forms.ListBox DatabaseListBox;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button SelectModelOkButton;
+        private System.Windows.Forms.Button SelectModelCancelButton;
     }
 }

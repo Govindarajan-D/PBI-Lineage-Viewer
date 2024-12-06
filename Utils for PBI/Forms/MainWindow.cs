@@ -51,9 +51,17 @@ namespace Utils_for_PBI.Forms
                     if(connection.ConnectionType == ConnectionType.PowerBIService)
                     {
                         SelectModelForm selectModelForm = new SelectModelForm(_tomAPIConnection.databases);
-                        selectModelForm.ShowDialog();
+                        if(selectModelForm.ShowDialog() == DialogResult.OK && selectModelForm.selectedDatabaseName != null)
+                        {
+                            connection.DatabaseName = selectModelForm.selectedDatabaseName;
+                            _adomdConnection.Connect(connection);
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Info: No Model Selected", "Select Model", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
                     }
-                    _adomdConnection.Connect(connection);
+                    
                     
                 }
             }
