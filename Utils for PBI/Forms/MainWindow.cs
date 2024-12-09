@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Runtime.Versioning;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using PowerBIConnections.Connections;
-using Utils_for_PBI.Forms;
 using Utils_for_PBI.Models;
 using Utils_for_PBI.Server;
 
@@ -33,6 +26,11 @@ namespace Utils_for_PBI.Forms
         {
         }
 
+        /* Once the user presses, connect, a new TOM API Connection and Adomd Connection are created.
+         * Since the connection string required for PBI Service and PBI Desktop differs, a check is performed and connection string 
+         * is formatted accordingly. The status bar is also set to show the connection information.
+         * Once the connection is established, the internal HTTP Server starts and serves the data for the lineage view
+         */
         private void connectDesktopModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ConnectDataset connectDatasetWindow = new ConnectDataset();
@@ -48,6 +46,10 @@ namespace Utils_for_PBI.Forms
 
                     _tomAPIConnection.Connect(connection);
 
+                    /* If the connection is of Power BI Service type, show a dialog box to the user
+                     * to get the Semantic model (database) to connect.
+                     */
+
                     if(connection.ConnectionType == ConnectionType.PowerBIService)
                     {
                         SelectModelForm selectModelForm = new SelectModelForm(_tomAPIConnection.databases);
@@ -59,12 +61,30 @@ namespace Utils_for_PBI.Forms
                         else
                         {
                             MessageBox.Show($"Info: No Model Selected", "Select Model", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            _tomAPIConnection.Disconnect();
+                            return;
                         }
                     }
-                    
+                    else
+                    {
+                        _adomdConnection.Connect(connection);
+                    }
+
+                    if(connection.ConnectionType == ConnectionType.PowerBIDesktop)
+                    {
+                        modelURLStatusLabel.Text = "Local connection: " + connection.ConnectString;
+                    }
+                    else
+                    {
+                        modelURLStatusLabel.Text = "XMLA Endpoint:" + connection.ConnectString + " Model:" + connection.DatabaseName;
+                    }
                     
                 }
             }
+
+            /* HTML page is generated from the resources and then it is displayed in the WebView2 component.
+             * The calc dependencies are retrieved and then served using the UtilsPBIHTTPServer server.
+             */
 
             GenerateLineagePage showDependencyGraph = new GenerateLineagePage();
             string filePath = showDependencyGraph.GenerateHTMLPage();
@@ -77,7 +97,6 @@ namespace Utils_for_PBI.Forms
                 var dependencies = _adomdConnection.RetrieveCalcDependency();
                 dependencies.ParseIntoJSON();
 
-                //TO-DO: (High) Check if a server is already started and then start
                 if (_dataServer == null)
                 {
                     _dataServer = new UtilsPBIHTTPServer("http://localhost:8080/utilspbi/", dependencies);
@@ -104,6 +123,8 @@ namespace Utils_for_PBI.Forms
         private void OnDisconnection()
         {
             _dataServer.Stop();
+            _adomdConnection.Disconnect();
+            _tomAPIConnection.Disconnect();
         }
 
         private void EnableControls()
@@ -111,9 +132,5 @@ namespace Utils_for_PBI.Forms
 
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

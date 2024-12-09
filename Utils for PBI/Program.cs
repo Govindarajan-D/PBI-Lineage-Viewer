@@ -20,6 +20,7 @@ using System.Runtime.Versioning;
  * Add Testingr
  * Check TomAPI for getting metadata
  * Test the program with different access levels and visuals. Take into account 3rd party visuals
+ * Add full-screen for web view
  */
 
 /* TO-DO in HTML Page

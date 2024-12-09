@@ -58,7 +58,7 @@ namespace Utils_for_PBI.Models
             isConnected = true;
         }
 
-        public void Disconnect(bool endSession)
+        public void Disconnect(bool endSession = true)
         {
             endTOMSession = endSession;
             Dispose();
