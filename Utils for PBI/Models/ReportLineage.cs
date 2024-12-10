@@ -20,7 +20,7 @@ namespace Utils_for_PBI.Models
 
             string jsonFileData = File.ReadAllText(Path.Combine(extractionFilePath, "Report/Layout.txt"), Encoding.Unicode);
 
-            using(JsonDocument jsonDocument = JsonDocument.Parse(jsonFileData))
+            using (JsonDocument jsonDocument = JsonDocument.Parse(jsonFileData))
             {
                 // Get the root node of the JSON file and get till the nested property of 'config' and then retrieve singleVisual
                 // The singleVisual contains the projections, PrototypeQuery which contains the measures being used
@@ -28,7 +28,12 @@ namespace Utils_for_PBI.Models
                 var jsonConfig = JsonDocument.Parse(jsonRoot);
 
                 var deserializedObject = JsonSerializer.Deserialize<SingleVisual>(jsonConfig.RootElement.GetProperty("singleVisual"));
-                Console.WriteLine(deserializedObject.ToString());
+
+                Dictionary<string, object> data = new Dictionary<string, object>();
+                var visualType = deserializedObject.visualType;
+                string[] queryRefs = deserializedObject.projections.Values.Select(c => c.queryRef).ToArray();
+                data.Add(visualType, queryRefs);
+
             }
 
         }
