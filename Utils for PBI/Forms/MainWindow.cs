@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Runtime.Versioning;
 using System.Windows.Forms;
+using log4net;
+using log4net.Repository.Hierarchy;
 using PowerBIConnections.Connections;
 using Utils_for_PBI.Models;
 using Utils_for_PBI.Server;
@@ -12,6 +14,7 @@ namespace Utils_for_PBI.Forms
     [SupportedOSPlatform("windows")]
     public partial class MainWindow : Form
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(MainWindow));
         public List<GenerateLineagePage> lineagePages;
         private UtilsPBIHTTPServer _dataServer;
         private AdomdConnection _adomdConnection;
@@ -70,15 +73,19 @@ namespace Utils_for_PBI.Forms
                         _adomdConnection.Connect(connection);
                     }
 
-                    if(connection.ConnectionType == ConnectionType.PowerBIDesktop)
+                    //Check the type of connection and status bar is set accordingly
+                    string connectionString;
+                    if (connection.ConnectionType == ConnectionType.PowerBIDesktop)
                     {
-                        modelURLStatusLabel.Text = "Local connection: " + connection.ConnectString;
+                        connectionString = "Local connection: " + connection.ConnectString;
                     }
                     else
                     {
-                        modelURLStatusLabel.Text = "XMLA Endpoint:" + connection.ConnectString + " Model:" + connection.DatabaseName;
+                        connectionString = "XMLA Endpoint:" + connection.ConnectString + " Model:" + connection.DatabaseName;
                     }
-                    
+
+                    modelURLStatusLabel.Text = connectionString;
+                    Logger.Info(connectionString);
                 }
             }
 
