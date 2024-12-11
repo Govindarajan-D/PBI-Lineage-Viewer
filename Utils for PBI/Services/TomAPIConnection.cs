@@ -13,7 +13,7 @@ using System.Runtime.Versioning;
 
 //TO-DO: Move it to a separate project if necessary for creating DLLs
 
-namespace Utils_for_PBI.Models
+namespace Utils_for_PBI.Services
 {
     [SupportedOSPlatform("windows")]
     public class TomAPIConnection : IDisposable

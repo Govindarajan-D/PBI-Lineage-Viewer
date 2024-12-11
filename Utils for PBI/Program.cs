@@ -8,7 +8,7 @@ using System.Diagnostics.Metrics;
 using log4net;
 using log4net.Config;
 using System.Runtime.Versioning;
-using Utils_for_PBI.Models;
+using Utils_for_PBI.Services;
 
 /* TO-DO:
  * Build script in github for automated building of exe

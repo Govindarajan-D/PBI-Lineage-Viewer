@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using log4net;
 using log4net.Repository.Hierarchy;
 using PowerBIConnections.Connections;
-using Utils_for_PBI.Models;
+using Utils_for_PBI.Services;
 using Utils_for_PBI.Server;
 
 

@@ -15,7 +15,7 @@ using AdomdClient = Microsoft.AnalysisServices.AdomdClient;
 
 
 //TO-DO: Move it to a separate project if necessary for creating DLLs
-namespace Utils_for_PBI.Models
+namespace Utils_for_PBI.Services
 {
     /// <summary>
     /// The Adomd Connection class establishes a adomd connection which is used to retrive the DMV data

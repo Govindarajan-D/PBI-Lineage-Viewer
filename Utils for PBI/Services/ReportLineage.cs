@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Utils_for_PBI.Models
+namespace Utils_for_PBI.Services
 {
     public class ReportLineage
     {
@@ -24,21 +24,51 @@ namespace Utils_for_PBI.Models
             {
                 // Get the root node of the JSON file and get till the nested property of 'config' and then retrieve singleVisual
                 // The singleVisual contains the projections, PrototypeQuery which contains the measures being used
-                var jsonRoot = jsonDocument.RootElement.GetProperty("sections")[0].GetProperty("visualContainers")[0].GetProperty("config").GetString();
-                var jsonConfig = JsonDocument.Parse(jsonRoot);
-
-                var deserializedObject = JsonSerializer.Deserialize<SingleVisual>(jsonConfig.RootElement.GetProperty("singleVisual"));
-
+                JsonElement jsonSections = jsonDocument.RootElement.GetProperty("sections");
                 Dictionary<string, object> data = new Dictionary<string, object>();
-                var visualType = deserializedObject.visualType;
-                string[] queryRefs = deserializedObject.projections.Values.Select(c => c.queryRef).ToArray();
-                data.Add(visualType, queryRefs);
+
+                List<ReportObjectUsageData> reportObjects = new List<ReportObjectUsageData>();
+
+                foreach (JsonElement jsonSection in jsonSections.EnumerateArray())
+                {
+                    JsonElement jsonVisualContainers = jsonSection.GetProperty("visualContainers");
+                    string sectionPageName = jsonSection.GetProperty("displayName").GetString();
+
+                    string visualType = "";
+                    string[] queryRefs = [];
+
+                    foreach (JsonElement jsonContainer in jsonVisualContainers.EnumerateArray())
+                    {
+                        var jsonConfig = JsonDocument.Parse(jsonContainer.GetProperty("config").GetString());
+                        var deserializedObject = JsonSerializer.Deserialize<SingleVisual>(jsonConfig.RootElement.GetProperty("singleVisual"));
+
+                        visualType = deserializedObject.visualType;
+                        queryRefs = deserializedObject.projections.Values.Select(c => c.queryRef).ToArray();
+                        data.Add(visualType, queryRefs);
+                    }
+
+                    reportObjects.Add(new ReportObjectUsageData{
+                        pageName = sectionPageName,
+                        visualType = visualType, 
+                        queryRefs = queryRefs
+                    });
+
+                    Console.WriteLine(sectionPageName);
+                }
 
             }
 
         }
 
     }
+
+    public class ReportObjectUsageData
+    {
+        public string pageName { get; set; }
+        public string visualType { get; set; }
+        public string[] queryRefs { get; set; }
+    }
+
     public class SingleVisual
     {
         public string visualType { get; set; }

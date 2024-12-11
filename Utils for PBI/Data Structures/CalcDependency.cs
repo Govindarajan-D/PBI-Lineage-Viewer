@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Json = System.Text.Json;
 using System.Threading.Tasks;
-using Utils_for_PBI.Models;
+using Utils_for_PBI.Services;
 
 namespace Utils_for_PBI.Data_Structures
 {
