@@ -7,7 +7,7 @@ using Json = System.Text.Json;
 using System.Threading.Tasks;
 using Utils_for_PBI.Services;
 
-namespace Utils_for_PBI.Data_Structures
+namespace Utils_for_PBI.Models
 {
     /// <summary>
     /// CalcDependencyDataRow represents the object fields for storing the data from the Semantic Model's DMV

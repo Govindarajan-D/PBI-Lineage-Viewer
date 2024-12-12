@@ -9,7 +9,7 @@ using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Utils_for_PBI.Data_Structures;
+using Utils_for_PBI.Models;
 using Utils_for_PBI.Forms;
 using AdomdClient = Microsoft.AnalysisServices.AdomdClient;
 

@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Utils_for_PBI.Models;
 
 namespace Utils_for_PBI.Services
 {
@@ -42,7 +44,16 @@ namespace Utils_for_PBI.Services
                         var jsonConfig = JsonDocument.Parse(jsonContainer.GetProperty("config").GetString());
                         var deserializedObject = JsonSerializer.Deserialize<SingleVisual>(jsonConfig.RootElement.GetProperty("singleVisual"));
 
+                        var value = FindPropertyRecursive(jsonConfig.RootElement, "Property");
+
                         visualType = deserializedObject.visualType;
+                        var prototypeQuery = deserializedObject.prototypeQuery.From.Select(x => new { x.Name, x.Entity });
+                        var objectsUsed = deserializedObject.prototypeQuery.@Select
+                            .Select(x => new {
+                                NativeReferenceName = x.NativeReferenceName, 
+                                Entity = x.Measure?.Expression?.SourceRef?.Source
+                                        ?? x.Column?.Expression?.SourceRef?.Source
+                            });
                         queryRefs = deserializedObject.projections.Values.Select(c => c.queryRef).ToArray();
                         data.Add(visualType, queryRefs);
                     }
@@ -60,78 +71,39 @@ namespace Utils_for_PBI.Services
 
         }
 
+        public string FindPropertyRecursive(JsonElement jsonElement, string propertyName)
+        {
+            if(jsonElement.ValueKind == JsonValueKind.Object)
+            {
+                foreach(var property in jsonElement.EnumerateObject())
+                {
+                    if(property.Name == propertyName)
+                    {
+                        return property.Value.ToString();
+                    }
+                    else
+                    {
+                        var value = FindPropertyRecursive(property.Value, propertyName);
+                        if (value != null)
+                        {
+                            return value.ToString();
+                        }
+                    }
+                }
+            }
+            else if (jsonElement.ValueKind == JsonValueKind.Array)
+            {
+                foreach(var item in jsonElement.EnumerateArray())
+                {
+                    var value = FindPropertyRecursive(item, propertyName);
+                    if (value != null)
+                    {
+                        return value.ToString();
+                    }
+                }
+            }
+
+            return null;
+        }
     }
-
-    public class ReportObjectUsageData
-    {
-        public string pageName { get; set; }
-        public string visualType { get; set; }
-        public string[] queryRefs { get; set; }
-    }
-
-    public class SingleVisual
-    {
-        public string visualType { get; set; }
-        public Projections projections { get; set; }
-        public PrototypeQuery prototypeQuery { get; set; }
-        public bool drillFilterOtherVisuals { get; set; }
-        public Dictionary<string, object> objects { get; set; }
-        public Dictionary<string, object> vcObjects { get; set; }
-    }
-
-    public class Projections
-    {
-        public List<Value> Values { get; set; }
-    }
-
-    public class Value
-    {
-        public string queryRef { get; set; }
-    }
-
-    public class PrototypeQuery
-    {
-        public int Version { get; set; }
-        public List<From> From { get; set; }
-        public List<Select> Select { get; set; }
-    }
-
-    public class From
-    {
-        public string Name { get; set; }
-        public string Entity { get; set; }
-        public int Type { get; set; }
-    }
-
-    public class Select
-    {
-        public Measure Measure { get; set; }
-        public Column Column { get; set; }
-        public string Name { get; set; }
-        public string NativeReferenceName { get; set; }
-    }
-
-    public class Measure
-    {
-        public Expression Expression { get; set; }
-        public string Property { get; set; }
-    }
-
-    public class Column
-    {
-        public Expression Expression { get; set; }
-        public string Property { get; set; }
-    }
-
-    public class Expression
-    {
-        public SourceRef SourceRef { get; set; }
-    }
-
-    public class SourceRef
-    {
-        public string Source { get; set; }
-    }
-
-
 }

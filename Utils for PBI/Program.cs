@@ -24,6 +24,7 @@ using Utils_for_PBI.Services;
  * Add full-screen for web view
  * Add a starting screen instead of 'Connect to dataset' - Add radio buttons for asking the type of report they have
  * Export reports and read visual information from them
+ * Support PBIR format
  */
 
 /* TO-DO in HTML Page
