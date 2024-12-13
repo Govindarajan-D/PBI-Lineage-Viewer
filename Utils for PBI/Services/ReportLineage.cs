@@ -44,7 +44,10 @@ namespace Utils_for_PBI.Services
                         var jsonConfig = JsonDocument.Parse(jsonContainer.GetProperty("config").GetString());
                         var deserializedObject = JsonSerializer.Deserialize<SingleVisual>(jsonConfig.RootElement.GetProperty("singleVisual"));
 
-                        var value = FindPropertyRecursive(jsonConfig.RootElement, "Property");
+                        ReportObjectUsageData tryout = new ReportObjectUsageData();
+                        VisualObject visualObject = new VisualObject();
+
+                        var value = FindPropertyRecursive("singleVisual",jsonConfig.RootElement.GetProperty("singleVisual"), "Property", visualObject);
 
                         visualType = deserializedObject.visualType;
                         var prototypeQuery = deserializedObject.prototypeQuery.From.Select(x => new { x.Name, x.Entity });
@@ -58,11 +61,11 @@ namespace Utils_for_PBI.Services
                         data.Add(visualType, queryRefs);
                     }
 
-                    reportObjects.Add(new ReportObjectUsageData{
+                    /*reportObjects.Add(new ReportObjectUsageData{
                         pageName = sectionPageName,
                         visualType = visualType, 
                         queryRefs = queryRefs
-                    });
+                    });*/
 
                     Console.WriteLine(sectionPageName);
                 }
@@ -71,33 +74,48 @@ namespace Utils_for_PBI.Services
 
         }
 
-        public string FindPropertyRecursive(JsonElement jsonElement, string propertyName)
+        public string FindPropertyRecursive(string rootPropertyName, JsonElement jsonElement, string searchPropertyName, VisualObject visualObject)
         {
+            bool propertyFound = false;
             if(jsonElement.ValueKind == JsonValueKind.Object)
             {
                 foreach(var property in jsonElement.EnumerateObject())
                 {
-                    if(property.Name == propertyName)
+                    if(property.Name == searchPropertyName)
                     {
-                        return property.Value.ToString();
+                        propertyFound = true;
+                        break;
                     }
                     else
                     {
-                        var value = FindPropertyRecursive(property.Value, propertyName);
+                        var value = FindPropertyRecursive(property.Name, property.Value, searchPropertyName, visualObject);
                         if (value != null)
                         {
                             return value.ToString();
+
                         }
                     }
                 }
+
+                if (propertyFound)
+                {
+                    visualObject.source = jsonElement.GetProperty("Expression").GetProperty("SourceRef").GetProperty("Source").GetString();
+                    visualObject.name = jsonElement.GetProperty("Property").GetString();
+                    visualObject.type = rootPropertyName;
+
+                    return "Found";
+
+                }
+                
             }
             else if (jsonElement.ValueKind == JsonValueKind.Array)
             {
                 foreach(var item in jsonElement.EnumerateArray())
                 {
-                    var value = FindPropertyRecursive(item, propertyName);
+                    var value = FindPropertyRecursive(rootPropertyName, item, searchPropertyName, visualObject);
                     if (value != null)
                     {
+
                         return value.ToString();
                     }
                 }
@@ -106,4 +124,5 @@ namespace Utils_for_PBI.Services
             return null;
         }
     }
+
 }

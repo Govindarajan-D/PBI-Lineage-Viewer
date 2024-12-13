@@ -10,6 +10,12 @@ namespace Utils_for_PBI.Models
     {
         public string pageName { get; set; }
         public string visualType { get; set; }
-        public string[] queryRefs { get; set; }
+        public List<VisualObject> visualObjects { get; set; }
+    }
+    public class VisualObject
+    {
+        public string name { get; set; }
+        public string source { get; set; }
+        public string type { get; set; }
     }
 }
