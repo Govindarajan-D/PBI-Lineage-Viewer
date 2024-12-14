@@ -6,9 +6,20 @@ using System.Threading.Tasks;
 
 namespace Utils_for_PBI.Models
 {
-    public class ReportObjectUsageData
+    // sections[Page]-> visualContainers[visuals]-> visual[measures/columns]
+
+    public class Section
+    {
+        public List<PageObject> pageObjects;
+    }
+
+    public class PageObject
     {
         public string pageName { get; set; }
+        public List<VisualContainerObject> visualContainers { get; set; }
+    }
+    public class VisualContainerObject
+    {
         public string visualType { get; set; }
         public List<VisualObject> visualObjects { get; set; }
     }
