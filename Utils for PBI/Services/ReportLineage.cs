@@ -44,15 +44,30 @@ namespace Utils_for_PBI.Services
                     foreach (JsonElement jsonContainer in jsonVisualContainers.EnumerateArray())
                     {
                         var jsonConfig = JsonDocument.Parse(jsonContainer.GetProperty("config").GetString());
-                        var deserializedObject = JsonSerializer.Deserialize<SingleVisual>(jsonConfig.RootElement.GetProperty("singleVisual"));
+                        JsonElement singleVisual = jsonConfig.RootElement.GetProperty("singleVisual");
+
+                        var sources = new Dictionary<string, string>();
+
+                        var entities = singleVisual.GetProperty("prototypeQuery").GetProperty("From");
+                        foreach(var entity in entities.EnumerateArray())
+                        {
+                            var source = entity.GetProperty("Name").GetString();
+                            var entityName = entity.GetProperty("Entity").GetString();
+
+                            sources.Add(source, entityName);
+                        }
+
+                        //var deserializedObject = JsonSerializer.Deserialize<SingleVisual>(jsonConfig.RootElement.GetProperty("singleVisual"));
+
 
                         VisualContainerObject currentReportPage = new VisualContainerObject();
                         List<VisualObject> visualObjects = new List<VisualObject>();
 
-                        var value = FindPropertyRecursive("singleVisual",jsonConfig.RootElement.GetProperty("singleVisual"), "Property", visualObjects);
+                        var value = FindPropertyRecursive("singleVisual", singleVisual, "Property", visualObjects);
 
-                        currentReportPage.visualType = deserializedObject.visualType;
+                        currentReportPage.visualType = singleVisual.GetProperty("visualType").GetString();
                         currentReportPage.visualObjects = visualObjects;
+                        currentReportPage.sources = sources;
 
                         visualContainers.Add(currentReportPage);
 
@@ -137,6 +152,7 @@ namespace Utils_for_PBI.Services
 
             return null;
         }
+
     }
 
 }
