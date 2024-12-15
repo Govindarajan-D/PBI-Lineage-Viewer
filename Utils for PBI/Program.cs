@@ -8,6 +8,7 @@ using System.Diagnostics.Metrics;
 using log4net;
 using log4net.Config;
 using System.Runtime.Versioning;
+using Utils_for_PBI.Services;
 
 /* TO-DO:
  * Build script in github for automated building of exe
@@ -19,6 +20,11 @@ using System.Runtime.Versioning;
  * Literal values as resources
  * Add Testingr
  * Check TomAPI for getting metadata
+ * Test the program with different access levels and visuals. Take into account 3rd party visuals
+ * Add full-screen for web view
+ * Add a starting screen instead of 'Connect to dataset' - Add radio buttons for asking the type of report they have
+ * Export reports and read visual information from them
+ * Support PBIR format
  */
 
 /* TO-DO in HTML Page
@@ -57,6 +63,8 @@ namespace Utils_for_PBI.Forms
             
             Task.Run(() => DownloadJSLibs());
 
+            ReportLineage reportLineage = new ReportLineage();
+
             Logger.Info("Launching Application");
             Application.Run(new MainWindow());
         }
@@ -69,7 +77,7 @@ namespace Utils_for_PBI.Forms
         /// </summary>
         static async Task DownloadJSLibs()
         {
-            string appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "UtilsPBI", "js");
+            string appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Constants.ProgramName, "js");
 
             Dictionary<String, String> filesDict = new Dictionary<string, string>();
             filesDict.Add(Constants.cytoscapeMinJS, Constants.cytoscapeMinJSURL);

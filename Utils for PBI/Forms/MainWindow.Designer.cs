@@ -36,9 +36,11 @@
             aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             DisplayLineageWebView = new Microsoft.Web.WebView2.WinForms.WebView2();
             StatusBar = new System.Windows.Forms.StatusStrip();
+            modelURLStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             ConnectDatasetPlaceholderLabel = new System.Windows.Forms.Label();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)DisplayLineageWebView).BeginInit();
+            StatusBar.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
@@ -101,12 +103,18 @@
             // 
             // StatusBar
             // 
+            StatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { modelURLStatusLabel });
             StatusBar.Location = new System.Drawing.Point(0, 497);
             StatusBar.Name = "StatusBar";
             StatusBar.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
             StatusBar.Size = new System.Drawing.Size(933, 22);
             StatusBar.TabIndex = 2;
             StatusBar.Text = "StatusBar";
+            // 
+            // modelURLStatusLabel
+            // 
+            modelURLStatusLabel.Name = "modelURLStatusLabel";
+            modelURLStatusLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // ConnectDatasetPlaceholderLabel
             // 
@@ -135,6 +143,8 @@
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)DisplayLineageWebView).EndInit();
+            StatusBar.ResumeLayout(false);
+            StatusBar.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -150,5 +160,6 @@
         private System.Windows.Forms.StatusStrip StatusBar;
         private Microsoft.Web.WebView2.WinForms.WebView2 DisplayLineageWebView;
         private System.Windows.Forms.Label ConnectDatasetPlaceholderLabel;
+        private System.Windows.Forms.ToolStripStatusLabel modelURLStatusLabel;
     }
 }

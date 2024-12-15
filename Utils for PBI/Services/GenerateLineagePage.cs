@@ -6,7 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Utils_for_PBI.Models
+namespace Utils_for_PBI.Services
 {
     public class GenerateLineagePage
     {

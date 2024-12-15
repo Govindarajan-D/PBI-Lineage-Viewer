@@ -9,13 +9,13 @@ using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Utils_for_PBI.Data_Structures;
+using Utils_for_PBI.Models;
 using Utils_for_PBI.Forms;
 using AdomdClient = Microsoft.AnalysisServices.AdomdClient;
 
 
 //TO-DO: Move it to a separate project if necessary for creating DLLs
-namespace Utils_for_PBI.Models
+namespace Utils_for_PBI.Services
 {
     /// <summary>
     /// The Adomd Connection class establishes a adomd connection which is used to retrive the DMV data

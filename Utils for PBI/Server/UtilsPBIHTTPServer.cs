@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Utils_for_PBI.Data_Structures;
+using Utils_for_PBI.Models;
 
 namespace Utils_for_PBI.Server
 {

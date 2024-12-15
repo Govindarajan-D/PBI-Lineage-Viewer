@@ -130,6 +130,7 @@
             // DesktopModelComboBox
             // 
             DesktopModelComboBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            DesktopModelComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             DesktopModelComboBox.FormattingEnabled = true;
             DesktopModelComboBox.Location = new System.Drawing.Point(187, 30);
             DesktopModelComboBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);

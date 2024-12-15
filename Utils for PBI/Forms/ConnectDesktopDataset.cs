@@ -9,7 +9,7 @@ using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Utils_for_PBI.Models;
+using Utils_for_PBI.Services;
 
 namespace Utils_for_PBI.Forms
 {
@@ -23,8 +23,11 @@ namespace Utils_for_PBI.Forms
         public ConnectDataset()
         {
             InitializeComponent();
-            this.DesktopModelComboBox.DropDownClosed += DesktopModelComboBox_DropDownClosed;
-            this.OnlineModelComboBox.DropDownClosed += OnlineModelComboBox_DropDownClosed;
+            this.DesktopModelComboBox.DropDownClosed += DesktopModelComboBox_Changed;
+            this.OnlineModelComboBox.DropDownClosed += OnlineModelComboBox_Changed;
+            this.DesktopModelComboBox.SelectedIndexChanged += DesktopModelComboBox_Changed;
+            this.OnlineModelComboBox.SelectedIndexChanged += OnlineModelComboBox_Changed;
+            this.OnlineModelComboBox.TextChanged += OnlineModelComboBox_Changed;
             LoadModelConnections();
         }
 
@@ -70,7 +73,7 @@ namespace Utils_for_PBI.Forms
 
             this.Close();
 
-            NotifyAction?.Invoke("Connection Established");
+            NotifyAction?.Invoke("Connection Selected");
         }
 
         private void ConnectDatasetRefreshButton_Click(object sender, EventArgs e)
@@ -78,16 +81,16 @@ namespace Utils_for_PBI.Forms
             LoadModelConnections();
         }
 
-        private void DesktopModelComboBox_DropDownClosed(object sender, EventArgs e)
+        private void DesktopModelComboBox_Changed(object sender, EventArgs e)
         {
             if (this.DesktopModelComboBox.SelectedItem != null || this.DesktopModelComboBox.SelectedIndex != -1)
             {
                 this.OnlineModelComboBox.SelectedIndex = -1;
             }
         }
-        private void OnlineModelComboBox_DropDownClosed(object sender, EventArgs e)
+        private void OnlineModelComboBox_Changed(object sender, EventArgs e)
         {
-            if (this.OnlineModelComboBox.SelectedItem != null || this.OnlineModelComboBox.SelectedIndex != -1)
+            if (this.OnlineModelComboBox.SelectedItem != null || this.OnlineModelComboBox.SelectedIndex != -1 || this.OnlineModelComboBox.Text != "")
             {
                 this.DesktopModelComboBox.SelectedIndex = -1;
             }
