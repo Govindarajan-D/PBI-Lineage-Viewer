@@ -25,6 +25,7 @@ using Utils_for_PBI.Services;
  * Add a starting screen instead of 'Connect to dataset' - Add radio buttons for asking the type of report they have
  * Export reports and read visual information from them
  * Support PBIR format
+ * Attribute Flaticons
  */
 
 /* TO-DO in HTML Page
@@ -63,7 +64,7 @@ namespace Utils_for_PBI.Forms
             
             Task.Run(() => DownloadJSLibs());
 
-            ReportLineage reportLineage = new ReportLineage();
+            //ReportLineage reportLineage = new ReportLineage();
 
             Logger.Info("Launching Application");
             Application.Run(new MainWindow());
