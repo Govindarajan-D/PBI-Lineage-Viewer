@@ -26,12 +26,14 @@ using Utils_for_PBI.Services;
  * Export reports and read visual information from them
  * Support PBIR format
  * Attribute Flaticons
+ * Config file for more flexibility
  */
 
 /* TO-DO in HTML Page
  * Use mapData for width control
  * Use selectors and filters
  * Try preset for Cytoscape
+ * Use Alpine.js
  */
 
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config")]

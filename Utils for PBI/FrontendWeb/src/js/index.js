@@ -1,4 +1,6 @@
-﻿function fetchData() {
+﻿import '../css/style.css'
+
+function fetchData() {
     const nodesURL = "http://localhost:8080/utilspbi/api/nodesdata";
     const edgesURL = "http://localhost:8080/utilspbi/api/edgesdata";
 
@@ -114,7 +116,7 @@ function initCytoscape(nodes, edges) {
         var node = e.target; // Get the tapped node
         var OutgoingNodes = node.successors(); // Get edges connected to the node
         var IncomingNodes = node.predecessors(); // Get nodes connected by those edges
-        console.log(OutgoingNodes);
+
         cy.elements().addClass('faded'); // Dim all elements
         OutgoingNodes.removeClass('faded'); // Highlight the node and its connected nodes
         IncomingNodes.removeClass('faded');

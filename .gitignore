@@ -368,3 +368,4 @@ FodyWeavers.xsd
 /HTMLtobin/LineageGraph.bin
 /HTMLtobin/LineageGraph.html
 /HTMLtobin/Program.cs
+/Utils for PBI/FrontendWeb/dist/*
