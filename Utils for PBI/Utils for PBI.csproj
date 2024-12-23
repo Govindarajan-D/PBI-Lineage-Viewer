@@ -11,10 +11,16 @@
     <StartupObject>Utils_for_PBI.Forms.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Frontend-Web\**" />
+    <EmbeddedResource Remove="Frontend-Web\**" />
+    <None Remove="Frontend-Web\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="FrontendWeb\dist\index.html" />
     <None Remove="LineageGraph.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="LineageGraph.html" />
+    <EmbeddedResource Include="FrontendWeb\dist\index.html" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PowerBIConnections\PowerBIConnections.csproj" />

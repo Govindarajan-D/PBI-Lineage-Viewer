@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cytoscape Graph</title><script src="js\cytoscape.min.js"></script><script src="js\dagre.js"></script><script src="js\cytoscape-dagre.js"></script><style>body {
+            font: 14px helvetica neue, helvetica, arial, sans-serif;
+            overflow: hidden;
+        }
+
+        #container {
+            display: grid;
+            grid-template-rows: minmax(100px, 10%) 90%;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #controls-container {
+        }
+
+        #cy-container {
+        }</style></head><body><div id="container"><div id="controls-container"><button id="filterNodeButton">Filter node</button></div><div id="cy-container"></div></div><script src="js/index.js"></script><script defer="defer">Promise.all([fetch("http://localhost:8080/utilspbi/api/nodesdata").then((e=>e.json())),fetch("http://localhost:8080/utilspbi/api/edgesdata").then((e=>e.json()))]).then((([e,o])=>{e.forEach((e=>{e.data&&e.data.name&&(e.data.nameLength=e.data.name.length)})),function(e,o){cytoscape.use(cytoscapeDagre);var t=cytoscape({container:document.querySelector("#cy-container"),layout:{name:"dagre",rankDir:"LR",rankSep:400,edgeSep:30,nodeSep:50},style:[{selector:"node",style:{"background-image":"https://cdn-icons-png.flaticon.com/512/727/727399.png","background-fit":"contain","background-position-x":"10%","background-position-y":"50%","background-size":"1px",shape:"data(faveShape)",width:"mapData(nameLength, 1, 40, 150, 1100)",height:"70",content:"data(name)","text-valign":"center","text-outline-width":2,"text-outline-color":"data(faveColor)","background-color":"data(faveColor)",color:"#fff","font-size":"40px"}},{selector:"edge",style:{"curve-style":"unbundled-bezier",opacity:.666,width:"mapData(strength, 70, 100, 2, 6)","target-arrow-shape":"triangle","line-color":"data(faveColor)","source-arrow-color":"data(faveColor)","target-arrow-color":"data(faveColor)","arrow-scale":1.5}},{selector:":selected",style:{"curve-style":"bezier",opacity:1,width:"mapData(strength, 70, 100, 2, 6)","target-arrow-shape":"triangle","source-arrow-shape":"circle","line-color":"black","source-arrow-color":"data(faveColor)","target-arrow-color":"data(faveColor)"}},{selector:"edge.questionable",style:{"line-style":"dotted","target-arrow-shape":"diamond"}},{selector:".faded",style:{opacity:.25}}],elements:{nodes:e,edges:o}});t.on("tap","node",(function(e){var o=e.target,a=o.successors(),r=o.predecessors();console.log(a),t.elements().addClass("faded"),a.removeClass("faded"),r.removeClass("faded"),o.removeClass("faded")})),t.on("tap",(function(e){e.target===t&&t.elements().removeClass("faded")}));const a=t.nodes().filter((e=>0===e.incomers("edge").length));console.log(a),a.forEach(((e,o)=>{e.position({x:200})})),document.getElementById("filterNodeButton").onclick=function(){!function(e){var o=e.nodes('[id="RowContextSumx"]');console.log(o);var t=o.predecessors(),a=o.successors(),r=t.union(a);e.elements().not(r).hide()}(t)}}(e,o)}));</script></body></html>
