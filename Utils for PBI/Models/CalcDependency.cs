@@ -48,6 +48,9 @@ namespace Utils_for_PBI.Models
         /// Converts the List of Rows (CalcDependencyData) into a particular JSON string which is acceptable by the JS script for lineage
         /// LINQ is used to process the data into a json object for nodes and links which will be used in the frontend for lineage
         /// </summary>
+        
+        //TO-DO: Add a relationship for Column to Table (For e.g. Amount and Year should have base as predecessor
+        //TO-DO: A measure when it uses a column from a table, has the table as a dependency as well. This should be handled in the code. 
         public void ParseIntoJSON()
         {
             List<String> objectTypeNotInFilter = new List<String> { "HIERARCHY", "ATTRIBUTE_HIERARCHY", "ACTIVE_RELATIONSHIP", "RELATIONSHIP" };

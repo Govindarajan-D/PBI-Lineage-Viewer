@@ -1,5 +1,7 @@
 ﻿import '../css/style.css'
 
+const LineageStartingPositionX = 100;
+
 function fetchData() {
     const nodesURL = "http://localhost:8080/utilspbi/api/nodesdata";
     const edgesURL = "http://localhost:8080/utilspbi/api/edgesdata";
@@ -134,7 +136,7 @@ function initCytoscape(nodes, edges) {
 
     rootNodes.forEach((node, index) => {
         node.position({
-            x: 200
+            x: LineageStartingPositionX //Change the position to something 
         })
     });
 
