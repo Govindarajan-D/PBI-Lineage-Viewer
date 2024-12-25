@@ -13,6 +13,12 @@ using System.Runtime.Versioning;
 
 namespace PowerBIConnections.Connections
 {
+    /// <summary>
+    /// The Adomd Connection class establishes a adomd connection which is used to retrive the DMV data
+    /// The DMV Data is stored in object of CalcDependency type. The reader enumerates records 
+    /// which is mapped to CalcDependency object in the MapRowToObject() function
+    ///
+    /// </summary>
     [SupportedOSPlatform("windows")]
     public static class ActiveConnections
     {
@@ -40,6 +46,10 @@ namespace PowerBIConnections.Connections
             return sessions;
         }
     }
+
+    /// <summary>
+    /// Class implements function that gets the Parent Process ID of a particular SSAS system
+    /// </summary>
     [SupportedOSPlatform("windows")]
     public static class ProcessExtensions
     {
@@ -62,6 +72,11 @@ namespace PowerBIConnections.Connections
             }
         }
     }
+
+    /// <summary>
+    /// Table to store the TCP information (for getting port number)
+    /// List of TcpRow Class Objects
+    /// </summary>
 
     public class TcpTable : IEnumerable<TcpRow>
     {
@@ -89,6 +104,9 @@ namespace PowerBIConnections.Connections
         }
 
     }
+    /// <summary>
+    /// Stores the endpoint information of a TCP connection
+    /// </summary>
 
     public class TcpRow
     {

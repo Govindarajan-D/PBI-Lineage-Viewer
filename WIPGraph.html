@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cytoscape Graph</title>
-    <script src="https://unpkg.com/cytoscape@3.30.0/dist/cytoscape.min.js"></script>
-    <script src="https://unpkg.com/dagre@0.8.5/dist/dagre.js"></script>
-    <script src="https://unpkg.com/cytoscape-dagre@2.5.0/cytoscape-dagre.js"></script>
+    <script src="js\cytoscape.min.js"></script>
+    <script src="js\dagre.js"></script>
+    <script src="js\cytoscape-dagre.js"></script>
     <style>
-        body { 
-        font: 14px helvetica neue, helvetica, arial, sans-serif;
+        body {
+            font: 14px helvetica neue, helvetica, arial, sans-serif;
         }
 
         #cy {
-        height: 100%;
-        width: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
         }
     </style>
 </head>
@@ -26,110 +26,127 @@
     <script>
 
 
-        document.addEventListener('DOMContentLoaded', function() { // on dom ready
-        
-        function fetchData(){
-            const nodesURL = "http://localhost:8080/utilspbi/api/nodesdata";
-            const edgesURL = "http://localhost:8080/utilspbi/api/edgesdata";
+        document.addEventListener('DOMContentLoaded', function () { // on dom ready
 
-            Promise.all([
-                fetch(nodesURL).then(response => response.json()),
-                fetch(edgesURL).then(response => response.json())
-            ])
-            .then(([nodes, edges]) => {
-                showLineage(nodes, edges)
-            })
+            function fetchData() {
+                const nodesURL = "http://localhost:8080/utilspbi/api/nodesdata";
+                const edgesURL = "http://localhost:8080/utilspbi/api/edgesdata";
 
-        }
-        function showLineage(nodes, edges){
-        var cy = cytoscape({
-            container: document.querySelector('#cy'),
+                Promise.all([
+                    fetch(nodesURL).then(response => response.json()),
+                    fetch(edgesURL).then(response => response.json())
+                ])
+                    .then(([nodes, edges]) => {
+                        nodes.forEach(element => {
+                            if (element.data && element.data.name) {
+                                element.data.nameLength = element.data.name.length;
+                                console.log(element.data.nameLength);
+                            }
+                        });
+                        showLineage(nodes, edges)
+                    })
 
-            layout: {
-                name: 'dagre',
-                rankDir: 'LR',
-                minZoom: 1
-            },
-
-            style: [
-            {
-              selector: 'node',
-              style: {
-                    'shape': 'data(faveShape)',
-                    'width': 'mapData(weight, 40, 80, 20, 60)',
-                    'content': 'data(name)',
-                    'text-valign': 'center',
-                    'text-outline-width': 2,
-                    'text-outline-color': 'data(faveColor)',
-                    'background-color': 'data(faveColor)',
-                    'color': '#fff'
-              }
-            },
-            {
-              selector: 'edge',
-              style: {
-                'curve-style': 'bezier',
-                'opacity': 0.666,
-                'width': 'mapData(strength, 70, 100, 2, 6)',
-                'target-arrow-shape': 'triangle',
-                'source-arrow-shape': 'circle',
-                'line-color': 'data(faveColor)',
-                'source-arrow-color': 'data(faveColor)',
-                'target-arrow-color': 'data(faveColor)'
-              }
-            },
-            {
-              selector: ':selected',
-              style: {
-                'curve-style': 'bezier',
-                'opacity': 1,
-                'width': 'mapData(strength, 70, 100, 2, 6)',
-                'target-arrow-shape': 'triangle',
-                'source-arrow-shape': 'circle',
-                'line-color': 'black',
-                'source-arrow-color': 'data(faveColor)',
-                'target-arrow-color': 'data(faveColor)'
-              }
-            },
-            {
-                selector: 'edge.questionable',
-                style:{
-                    'line-style': 'dotted',
-                    'target-arrow-shape': 'diamond'
-                }
-            },
-            {
-                selector: '.faded',
-                style: {
-                    'opacity': 0.25
-                }
             }
-          ],
-            elements: {
-                nodes: nodes,
-                edges: edges
-            }
-        });
+            function showLineage(nodes, edges) {
 
-        cy.on('tap', 'node', function (e) {
-            var node = e.target; // Get the tapped node
-            var OutgoingNodes = node.successors(); // Get edges connected to the node
-            var IncomingNodes = node.predecessors(); // Get nodes connected by those edges
-            console.log(OutgoingNodes);
-            cy.elements().addClass('faded'); // Dim all elements
-            OutgoingNodes.removeClass('faded'); // Highlight the node and its connected nodes
-            IncomingNodes.removeClass('faded');
-            node.removeClass('faded');
-        });
+                cytoscape.use(cytoscapeDagre);
+                var cy = cytoscape({
+                    container: document.querySelector('#cy'),
 
-        cy.on('tap', function(e) {
-            if (e.target === cy) {
-                cy.elements().removeClass('faded');
+                    layout: {
+                        name: 'dagre',
+                        rankDir: 'LR',
+                        rankSep: 400,
+                        edgeSep: 30,
+                        nodeSep: 50
+                    },
+
+                    style: [
+                        {
+                            selector: 'node',
+                            style: {
+                                'background-image': 'https://cdn-icons-png.flaticon.com/512/727/727399.png',
+                                'background-fit': 'contain', // Ensure the icon fits within the node
+                                'background-position-x': '10%', // Move the icon to the left
+                                'background-position-y': '50%', // Center it vertically
+                                'background-size': '1px', // Set icon size
+                                'shape': 'data(faveShape)',
+                                'width': 'mapData(nameLength, 1, 40, 150, 1100)',
+                                'height': '70',
+                                'content': 'data(name)',
+                                'text-valign': 'center',
+                                'text-outline-width': 2,
+                                'text-outline-color': 'data(faveColor)',
+                                'background-color': 'data(faveColor)',
+                                'color': '#fff',
+                                'font-size': '40px'
+                            }
+                        },
+                        {
+                            selector: 'edge',
+                            style: {
+                                'curve-style': 'unbundled-bezier',
+                                'opacity': 0.666,
+                                'width': 'mapData(strength, 70, 100, 2, 6)',
+                                'target-arrow-shape': 'triangle',
+                                'line-color': 'data(faveColor)',
+                                'source-arrow-color': 'data(faveColor)',
+                                'target-arrow-color': 'data(faveColor)',
+                                'arrow-scale': 1.5
+                            }
+                        },
+                        {
+                            selector: ':selected',
+                            style: {
+                                'curve-style': 'bezier',
+                                'opacity': 1,
+                                'width': 'mapData(strength, 70, 100, 2, 6)',
+                                'target-arrow-shape': 'triangle',
+                                'source-arrow-shape': 'circle',
+                                'line-color': 'black',
+                                'source-arrow-color': 'data(faveColor)',
+                                'target-arrow-color': 'data(faveColor)'
+                            }
+                        },
+                        {
+                            selector: 'edge.questionable',
+                            style: {
+                                'line-style': 'dotted',
+                                'target-arrow-shape': 'diamond'
+                            }
+                        },
+                        {
+                            selector: '.faded',
+                            style: {
+                                'opacity': 0.25
+                            }
+                        }
+                    ],
+                    elements: {
+                        nodes: nodes,
+                        edges: edges
+                    }
+                });
+
+                cy.on('tap', 'node', function (e) {
+                    var node = e.target; // Get the tapped node
+                    var OutgoingNodes = node.successors(); // Get edges connected to the node
+                    var IncomingNodes = node.predecessors(); // Get nodes connected by those edges
+                    console.log(OutgoingNodes);
+                    cy.elements().addClass('faded'); // Dim all elements
+                    OutgoingNodes.removeClass('faded'); // Highlight the node and its connected nodes
+                    IncomingNodes.removeClass('faded');
+                    node.removeClass('faded');
+                });
+
+                cy.on('tap', function (e) {
+                    if (e.target === cy) {
+                        cy.elements().removeClass('faded');
+                    }
+                });
             }
-        });
-        }
-        //showLineage(1,2);
-        fetchData();
+            //showLineage(1,2);
+            fetchData();
         }); // on dom ready
     </script>
 </body>

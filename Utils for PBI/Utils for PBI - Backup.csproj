@@ -46,7 +46,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="cd FrontendWeb &amp;&amp; npx webpack" />
-  </Target>
 </Project>

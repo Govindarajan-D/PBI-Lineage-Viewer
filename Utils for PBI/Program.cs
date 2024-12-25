@@ -25,12 +25,15 @@ using Utils_for_PBI.Services;
  * Add a starting screen instead of 'Connect to dataset' - Add radio buttons for asking the type of report they have
  * Export reports and read visual information from them
  * Support PBIR format
+ * Attribute Flaticons
+ * Config file for more flexibility
  */
 
 /* TO-DO in HTML Page
  * Use mapData for width control
  * Use selectors and filters
  * Try preset for Cytoscape
+ * Use Alpine.js
  */
 
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config")]
@@ -63,7 +66,7 @@ namespace Utils_for_PBI.Forms
             
             Task.Run(() => DownloadJSLibs());
 
-            ReportLineage reportLineage = new ReportLineage();
+            //ReportLineage reportLineage = new ReportLineage();
 
             Logger.Info("Launching Application");
             Application.Run(new MainWindow());

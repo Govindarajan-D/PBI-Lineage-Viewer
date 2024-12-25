@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Utils_for_PBI.Services
 {
+    /// <summary>
+    /// GenerateLineagePage copies the Lineage HTML file from the program resource to the AppData folder 
+    /// </summary>
     public class GenerateLineagePage
     {
         public string HTMLFileLocation;
@@ -26,7 +29,7 @@ namespace Utils_for_PBI.Services
 
             string appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "UtilsPBI");
             Directory.CreateDirectory(appDataPath);
-            HTMLFileLocation = Path.Combine(appDataPath, "Lineage.html");
+            HTMLFileLocation = Path.Combine(appDataPath, "index.html");
 
             // Write the HTML content to the file
             File.WriteAllText(HTMLFileLocation, HTMLContent);

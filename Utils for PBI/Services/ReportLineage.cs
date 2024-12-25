@@ -10,6 +10,11 @@ using Utils_for_PBI.Models;
 
 namespace Utils_for_PBI.Services
 {
+    /// <summary>
+    /// ReportLineage class reads the pbix file and unzips it into the AppData folder where it reads the layout file
+    /// The Layout file stores the metadata information about the visuals, the objects (measures, columns) used. It uses a 
+    /// recursive function to identify the objects as it can be stored in any level of hierarchy
+    /// </summary>
     public class ReportLineage
     {
         public ReportLineage()
@@ -100,6 +105,10 @@ namespace Utils_for_PBI.Services
 
         }
 
+        /// <summary>
+        /// FindPropertyRecursive function is used to find the necessary property by recursively searching for it. Recursive function 
+        /// is necessary as the property can appear at any level of nested json.
+        /// </summary>
         public string FindPropertyRecursive(string rootPropertyName, JsonElement jsonElement, string searchPropertyName, List<VisualObject> visualObjects)
         {
             bool propertyFound = false;
@@ -122,7 +131,7 @@ namespace Utils_for_PBI.Services
                         }
                     }
                 }
-
+                // If property is found, return the source of this particular column/measure
                 if (propertyFound)
                 {
                     visualObjects.Add(new VisualObject
