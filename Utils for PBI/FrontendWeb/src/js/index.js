@@ -136,7 +136,7 @@ function initCytoscape(nodes, edges) {
 
     rootNodes.forEach((node, index) => {
         node.position({
-            x: LineageStartingPositionX //Change the position to something 
+            x: LineageStartingPositionX
         })
     });
 

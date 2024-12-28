@@ -89,19 +89,16 @@ namespace Utils_for_PBI.Services
             return calcDepedencyData;
         }
 
-        public CalcDependencyDataRow MapRowToObject(IDataRecord dataRecord)
+        public CalcDependencyDataRow MapRowToObject(IDataRecord dataRecord) => new CalcDependencyDataRow
         {
-            return new CalcDependencyDataRow
-            {
-                OBJECT_TYPE = Convert.ToString(dataRecord["OBJECT_TYPE"]),
-                SOURCE_TABLE = Convert.ToString(dataRecord["SOURCE_TABLE"]),
-                OBJECT = Convert.ToString(dataRecord["OBJECT"]),
-                EXPRESSION = Convert.ToString(dataRecord["EXPRESSION"]),
-                REFERENCED_OBJECT_TYPE = Convert.ToString(dataRecord["REFERENCED_OBJECT_TYPE"]),
-                REFERENCED_TABLE = Convert.ToString(dataRecord["REFERENCED_TABLE"]),
-                REFERENCED_OBJECT = Convert.ToString(dataRecord["REFERENCED_OBJECT"])
-            };
-        }
+            OBJECT_TYPE = Convert.ToString(dataRecord["OBJECT_TYPE"]),
+            SOURCE_TABLE = Convert.ToString(dataRecord["SOURCE_TABLE"]),
+            OBJECT = Convert.ToString(dataRecord["OBJECT"]),
+            EXPRESSION = Convert.ToString(dataRecord["EXPRESSION"]),
+            REFERENCED_OBJECT_TYPE = Convert.ToString(dataRecord["REFERENCED_OBJECT_TYPE"]),
+            REFERENCED_TABLE = Convert.ToString(dataRecord["REFERENCED_TABLE"]),
+            REFERENCED_OBJECT = Convert.ToString(dataRecord["REFERENCED_OBJECT"])
+        };
         //TO-DO: Simplify the below code
         public void Disconnect(bool endSession = true)
         {

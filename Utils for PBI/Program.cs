@@ -27,10 +27,12 @@ using Utils_for_PBI.Services;
  * Support PBIR format
  * Attribute Flaticons
  * Config file for more flexibility
+ * Add filters (visual, page, all page) into the lineage
  */
 
 /* TO-DO in HTML Page
  * Use mapData for width control
+ * Add option to move from LR/RL
  * Use selectors and filters
  * Try preset for Cytoscape
  * Use Alpine.js
@@ -82,10 +84,12 @@ namespace Utils_for_PBI.Forms
         {
             string appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Constants.ProgramName, "js");
 
-            Dictionary<String, String> filesDict = new Dictionary<string, string>();
-            filesDict.Add(Constants.cytoscapeMinJS, Constants.cytoscapeMinJSURL);
-            filesDict.Add(Constants.dagreJS, Constants.dagreJSURL);
-            filesDict.Add(Constants.cytoscapeDagreJS, Constants.cytoscapeDagreJSURL);
+            Dictionary<String, String> filesDict = new Dictionary<string, string>
+            {
+                { Constants.cytoscapeMinJS, Constants.cytoscapeMinJSURL },
+                { Constants.dagreJS, Constants.dagreJSURL },
+                { Constants.cytoscapeDagreJS, Constants.cytoscapeDagreJSURL }
+            };
 
             if (!Directory.Exists(appDataPath))
             {

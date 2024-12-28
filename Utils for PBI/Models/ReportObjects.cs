@@ -20,8 +20,13 @@ namespace Utils_for_PBI.Models
     /// </summary>
     public class PageObject
     {
-        // Page name from the report
-        public string pageName { get; set; }
+        //Name of the Page 
+        public string name;
+        // Display name from the report
+        public string pageDisplayName { get; set; }
+
+        //Ordinal - Page number (starts with 0)
+        public string ordinal;
         
         // Visual containers are part of the page and they hold the information for each visual
         public List<VisualContainerObject> visualContainers { get; set; }
