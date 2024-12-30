@@ -5,6 +5,8 @@
 
     export let apiUrl = '';
     export let dropdownName = '';
+    export let idKey;
+    export let nameKey;
     export let enableFiltering = false;
 
     let options = [];
@@ -27,7 +29,7 @@
             const response = await fetch(apiUrl);
             if(!response.ok) throw new Error(`Error: ${response.status}`);
             const data = await response.json();
-            options = data.map((option) => ({id: option.id, name: option.name}));
+            options = data.map((option) => ({id: option[idKey], name: option[nameKey]}));
             filteredOptions = options;
         } catch (err){
             error = err.message;
@@ -40,9 +42,7 @@
             filteredOptions = options.filter(option => 
                     option.name?.toString().toLowerCase().includes(dropdownSearchQuery.toLowerCase())
             );
-
     }
-
 
     function handleSelect(option){
         dispatch('select', option);

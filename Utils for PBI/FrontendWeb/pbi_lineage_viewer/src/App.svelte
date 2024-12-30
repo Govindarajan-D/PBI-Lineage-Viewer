@@ -12,6 +12,16 @@
             <APIDropdown
                 dropdownName = 'ObjectType'
                 apiUrl="https://jsonplaceholder.typicode.com/users"
+                idKey = "id"
+                nameKey = "name"
+                enableFiltering = true
+                on:select={handleSelection}
+            />
+            <APIDropdown
+                dropdownName = 'Objects'
+                apiUrl="https://jsonplaceholder.typicode.com/users"
+                idKey = "id"
+                nameKey = "username"
                 enableFiltering = true
                 on:select={handleSelection}
             />

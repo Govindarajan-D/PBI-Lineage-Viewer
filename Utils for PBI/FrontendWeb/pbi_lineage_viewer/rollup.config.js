@@ -5,6 +5,7 @@ import terser from '@rollup/plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
 import css from 'rollup-plugin-css-only';
+import url from '@rollup/plugin-url';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -59,6 +60,11 @@ export default {
 			exportConditions: ['svelte']
 		}),
 		commonjs(),
+		url({
+            include: ['**/*.png', '**/*.jpg', '**/*.gif', '**/*.svg'], // Include image formats
+            limit: 1000000,
+            publicPath: '/', // Adjust this based on your output directory
+        }),
 
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated

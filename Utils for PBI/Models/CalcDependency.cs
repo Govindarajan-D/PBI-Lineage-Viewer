@@ -79,8 +79,9 @@ namespace Utils_for_PBI.Models
                                             {
                                                 "CALC_COLUMN" => "#26b1ff",
                                                 "MEASURE" => "#26b1cc",
-                                                _ => "#2613ff"
+                                                _ => "#1376ff"
                                             },
+                                            objectType = r.OBJECT_TYPE.ToUpper(),
                                             faveShape = "rectangle"
                                         }
                                     });

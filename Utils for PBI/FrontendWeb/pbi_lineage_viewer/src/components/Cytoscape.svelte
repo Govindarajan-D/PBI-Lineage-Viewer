@@ -2,6 +2,14 @@
 import {onMount} from 'svelte';
 import cytoscape from 'cytoscape';
 import cytoscapeDagre from 'cytoscape-dagre';
+import {initCyContext} from '../CytoscapeContext';
+import cxtmenu from 'cytoscape-cxtmenu';
+
+
+//Icons
+import tableIcon from '../assets/table.png';
+import measureIcon from '../assets/measure.png';
+import calccolumnIcon from '../assets/calccolumn.png';
 
 const LineageStartingPositionX = 100;
 
@@ -44,6 +52,8 @@ function filterNode(cy, filterText) {
 function initCytoscape(nodes, edges) {
 
     cytoscape.use(cytoscapeDagre);
+    cytoscape.use(cxtmenu);
+
     var cy = cytoscape({
         container: document.querySelector('#cy-container'),
 
@@ -59,13 +69,24 @@ function initCytoscape(nodes, edges) {
             {
                 selector: 'node',
                 style: {
-                    'background-image': 'https://cdn-icons-png.flaticon.com/512/727/727399.png',
+                    'background-image': function(ele){
+                        const type = ele.data('objectType');
+                        if(type === "CALC_COLUMN"){
+                            return `url(${calccolumnIcon})`;
+                        }
+                        else if (type === "MEASURE"){
+                           return `url(${measureIcon})`;
+                        }
+                        else {
+                            return `url(${tableIcon})`;
+                        }
+                    },
                     'background-fit': 'contain', // Ensure the icon fits within the node
                     'background-position-x': '10%', // Move the icon to the left
                     'background-position-y': '50%', // Center it vertically
                     'background-size': '1px', // Set icon size
                     'shape': 'data(faveShape)',
-                    'width': 'mapData(nameLength, 1, 40, 150, 1100)',
+                    'width': 'mapData(nameLength, 1, 40, 200, 1200)',
                     'height': '70',
                     'content': 'data(name)',
                     'text-valign': 'center',
@@ -121,6 +142,8 @@ function initCytoscape(nodes, edges) {
             edges: edges
         }
     });
+
+    initCyContext(cy);
 
     cy.on('tap', 'node', function (e) {
         var node = e.target; // Get the tapped node

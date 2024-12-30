@@ -1,50 +1,49 @@
 ﻿const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
-const HTMLInlineScriptPlugin = require('html-inline-script-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlInlineCSSWebpackPlugin = require('html-inline-css-webpack-plugin').default;
+const HtmlInlineScriptWebpackPlugin = require('html-inline-script-webpack-plugin');
 
 module.exports = {
+    context: path.resolve(__dirname, './pbi_lineage_viewer/public/'),
     entry: {
-        main: './src/js/index.js',
+        main: './bundle.js', // Entry JavaScript file
     },
     output: {
-        filename: '[name].js',
-        path: path.resolve(__dirname, 'dist'),
-        clean: true,
-    },
-    devServer: {
-        static: {
-            directory: path.join(__dirname, 'dist'),
-
-        },
-        port: 3000,
-        open: true,
-        hot: true,
-        compress: false,
+        filename: '[name].js', // Output JS bundle
+        path: path.resolve(__dirname, 'dist'), // Output directory
+        clean: true, // Clean output directory before build
     },
     module: {
         rules: [
             {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader']
-
+                test: /\.css$/, // Match CSS files
+                use: [
+                    'style-loader', // Extract CSS into separate files
+                    'css-loader', // Resolve CSS imports
+                ],
             },
         ],
     },
     plugins: [
         new HTMLWebpackPlugin({
-            template: './src/index.html',
-            inject: 'body',
-            chunks: ['main'],
+            template: './index.html', // Path to your index.html
+            inject: 'body', // Inject scripts into the body
+
+            minify: {
+                collapseWhitespace: true, // Minify HTML
+                removeComments: true, // Remove comments
+            },
         }),
-        new HTMLInlineScriptPlugin(),
-        new CopyWebpackPlugin({
-            patterns: [
-                { from: 'src/js/cytoscape.min.js', to: 'js/cytoscape.min.js' },
-                { from: 'src/js/cytoscape-dagre.js', to: 'js/cytoscape-dagre.js' },
-                { from: 'src/js/dagre.js', to: 'js/dagre.js' },
-            ],
-        }),
+        new HtmlInlineCSSWebpackPlugin(), // Inline CSS into <style> tags
+        new HtmlInlineScriptWebpackPlugin(), // Inline JavaScript into <script> tags
     ],
+    optimization: {
+        minimize: true,
+        minimizer: [
+            new (require('terser-webpack-plugin'))({
+                extractComments: false, // Remove comments
+            }),
+        ],
+    },
     mode: 'production',
-}
+};

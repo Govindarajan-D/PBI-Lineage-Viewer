@@ -49,4 +49,7 @@
   <ItemGroup>
     <Folder Include="FrontendWeb\svelte\" />
   </ItemGroup>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="cd FrontendWeb\pbi_lineage_viewer &amp;&amp; npm run build &amp;&amp; cd .. &amp;&amp; npx webpack" />
+  </Target>
 </Project>
