@@ -9,7 +9,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>Utils_for_PBI.Forms.Program</StartupObject>
-    <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Frontend-Web\**" />
@@ -51,6 +50,6 @@
     <Folder Include="FrontendWeb\svelte\" />
   </ItemGroup>
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="cd FrontendWeb/pbi_lineage_viewer &amp;&amp; npm run build &amp;&amp; cd FrontendWeb &amp;&amp; npx combohtml -i pbi_lineage_viewer\public\index.html -o dist\index.html" />
+    <Exec Command="cd FrontendWeb/pbi_lineage_viewer &amp;&amp; npm run build &amp;&amp; cd .. &amp;&amp; echo &quot;%25cd%25&quot; &amp;&amp; combohtml -i pbi_lineage_viewer\public\index.html -o dist\index.htmlW" />
   </Target>
 </Project>

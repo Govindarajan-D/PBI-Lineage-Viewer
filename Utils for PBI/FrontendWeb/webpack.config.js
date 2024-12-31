@@ -1,12 +1,14 @@
 ﻿const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const HtmlInlineCSSWebpackPlugin = require('html-inline-css-webpack-plugin').default;
-const HtmlInlineScriptWebpackPlugin = require('html-inline-script-webpack-plugin');
+const InlineChunkHtmlPlugin = require('inline-chunk-html-plugin');
+
 
 module.exports = {
+    stats: 'detailed',
     context: path.resolve(__dirname, './pbi_lineage_viewer/public/'),
     entry: {
-        main: './bundle.js', // Entry JavaScript file
+        main: './build/bundle.js', // Entry JavaScript file
     },
     output: {
         filename: '[name].js', // Output JS bundle
@@ -27,15 +29,16 @@ module.exports = {
     plugins: [
         new HTMLWebpackPlugin({
             template: './index.html', // Path to your index.html
-            inject: 'body', // Inject scripts into the body
+            inject: true, // Inject scripts into the body
 
             minify: {
                 collapseWhitespace: true, // Minify HTML
                 removeComments: true, // Remove comments
             },
+            inlineSource: '.(js|css)$',
         }),
+        new InlineChunkHtmlPlugin(HTMLWebpackPlugin, [/.*/]), // Only loads JS, no CSS -- https://openbase.io/js/react-dev-utils
         new HtmlInlineCSSWebpackPlugin(), // Inline CSS into <style> tags
-        new HtmlInlineScriptWebpackPlugin(), // Inline JavaScript into <script> tags
     ],
     optimization: {
         minimize: true,
