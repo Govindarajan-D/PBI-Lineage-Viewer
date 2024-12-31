@@ -13,6 +13,7 @@ import tableIcon from '../assets/table.png';
 import measureIcon from '../assets/measure.png';
 import calccolumnIcon from '../assets/calccolumn.png';
 
+let cytoLineage;
 const LineageStartingPositionX = 100;
 
 class CytoscapeLineage{
@@ -42,9 +43,8 @@ class CytoscapeLineage{
     }
 
     filterNode = (filterText) => {
+        this.clearFilter();
         var filteredNode = this.cy.nodes(`[id="${filterText}"]`);
-
-        console.log(filteredNode);
 
         var incomingNodesForFilteredNode = filteredNode.predecessors();
         var outgoingNodesForFilteredNode = filteredNode.successors();
@@ -95,7 +95,7 @@ class CytoscapeLineage{
                     'background-position-y': '50%', // Center it vertically
                     'background-size': '1px', // Set icon size
                     'shape': 'data(faveShape)',
-                    'width': 'mapData(nameLength, 1, 40, 200, 1200)',
+                    'width': 'mapData(nameLength, 1, 40, 250, 1300)',
                     'height': '70',
                     'content': 'data(name)',
                     'text-valign': 'center',
@@ -166,7 +166,7 @@ class CytoscapeLineage{
     });
 
     this.cy.on('tap', function (e) {
-        if (e.target === cy) {
+        if (e.target === this.cy) {
             this.cy.elements().removeClass('faded');
         }
     });
@@ -253,12 +253,16 @@ class CytoscapeLineage{
 }
 
 onMount(() => {
-        const cytoLineage = new CytoscapeLineage();
+        cytoLineage = new CytoscapeLineage();
         cytoLineage.initLineage().then(() => {
             cytoLineage.initCytoscape();
             cytoLineage.initCyContext();
         });  
     });
+
+export function filterCytoscapeNode(filterText){
+    cytoLineage.filterNode(filterText);
+}
 
 </script>
 <div id="cy-container">

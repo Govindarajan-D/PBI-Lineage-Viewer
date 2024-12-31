@@ -11,6 +11,7 @@ using System.Runtime.Versioning;
 using Utils_for_PBI.Services;
 
 /* TO-DO:
+ * Add CALC_TABLE as a type
  * Build script in github for automated building of exe
  * Add Installer for the program
  * Make classes more aligned with best practices (IDisposable)
@@ -33,9 +34,8 @@ using Utils_for_PBI.Services;
 /* TO-DO in HTML Page
  * Use mapData for width control
  * Add option to move from LR/RL
- * Use selectors and filters
  * Try preset for Cytoscape
- * Use Alpine.js
+ * Use a proper color palette - Yellow or Green to align with PBI
  */
 
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config")]

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             menuStrip1 = new System.Windows.Forms.MenuStrip();
             fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -135,10 +136,11 @@
             Controls.Add(DisplayLineageWebView);
             Controls.Add(StatusBar);
             Controls.Add(menuStrip1);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Name = "MainWindow";
-            Text = "Utils for PBI";
+            Text = "PBI Lineage Viewer";
             Load += MainWindow_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();

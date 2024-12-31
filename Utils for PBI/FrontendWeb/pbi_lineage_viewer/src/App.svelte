@@ -3,31 +3,43 @@
     import Cytoscape from './components/Cytoscape.svelte';
     import APIDropdown from './components/APIDropdown.svelte';
 
-    function handleSelection(event) {
-        console.log('Selected Option:', event.detail);
+    let objectTypeComponent;
+    let objectsComponent;
+    let cytoscapeComponent;
+    function onObjectTypeSelected(event){
+        if(objectsComponent){
+          objectsComponent.filterObjects("objectTypeID", event.detail.id);
+        }
+    }
+    function onObjectSelected(event) {
+        if(cytoscapeComponent){
+          cytoscapeComponent.filterCytoscapeNode(event.detail.id);
+        }
     }
 </script>
 <div class="container-fluid full-height d-flex flex-column">
     <div class="top-bar d-flex align-items-center justify-content-start">
             <APIDropdown
                 dropdownName = 'ObjectType'
-                apiUrl="https://jsonplaceholder.typicode.com/users"
-                idKey = "id"
-                nameKey = "name"
-                enableFiltering = true
-                on:select={handleSelection}
+                apiUrl = "http://localhost:8080/utilspbi/api/objecttypeinfo"
+                idKey = "objectTypeID"
+                nameKey = "objectTypeName"
+                enableFiltering = {false}
+                bind:this = {objectTypeComponent}
+                on:select = {onObjectTypeSelected}
             />
             <APIDropdown
                 dropdownName = 'Objects'
-                apiUrl="https://jsonplaceholder.typicode.com/users"
+                apiUrl = "http://localhost:8080/utilspbi/api/nodesinfo"
                 idKey = "id"
-                nameKey = "username"
-                enableFiltering = true
-                on:select={handleSelection}
+                nameKey = "name"
+                enableFiltering = {true}
+                bind:this = {objectsComponent}
+                on:select = {onObjectSelected}
             />
     </div>
     <div class="cytoscape-container">
-        <Cytoscape>
+        <Cytoscape bind:this = {cytoscapeComponent}>
         </Cytoscape>
     </div>
 </div>

@@ -11,11 +11,13 @@
 
     let options = [];
     let filteredOptions = [];
-    let placeholder = 'Select';
+    let selectedValue = 'Select';
     let dropdownSearchQuery = '';
     let dropdownOpen = false;
     let isLoading = false;
     let error = null;
+
+    let apiData;
 
     const dispatch = createEventDispatcher();
 
@@ -28,8 +30,8 @@
         try {
             const response = await fetch(apiUrl);
             if(!response.ok) throw new Error(`Error: ${response.status}`);
-            const data = await response.json();
-            options = data.map((option) => ({id: option[idKey], name: option[nameKey]}));
+            apiData = await response.json();
+            options = apiData.map((option) => ({id: option[idKey], name: option[nameKey]}));
             filteredOptions = options;
         } catch (err){
             error = err.message;
@@ -44,16 +46,22 @@
             );
     }
 
+    export function filterObjects(filterColumn, filterValue){
+        filteredOptions = apiData.filter((option) => option[filterColumn] == filterValue)
+                                 .map((option) => ({id: option[idKey], name: option[nameKey]}));
+    }
+
     function handleSelect(option){
+        selectedValue = option.name;
         dispatch('select', option);
     }
 
 </script>
 
-<div class="container-mt-5">
+<div class="container-mt-5 me-2 w-15">
     <Dropdown isOpen={dropdownOpen} toggle={() => (dropdownOpen = !dropdownOpen)}>
         <DropdownToggle caret>
-            {placeholder}
+            {selectedValue}
         </DropdownToggle>
         <DropdownMenu>
             {#if enableFiltering}
