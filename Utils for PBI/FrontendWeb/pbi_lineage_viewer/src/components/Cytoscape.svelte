@@ -12,20 +12,23 @@ import cxtmenu from 'cytoscape-cxtmenu';
 import tableIcon from '../assets/table.png';
 import measureIcon from '../assets/measure.png';
 import calccolumnIcon from '../assets/calccolumn.png';
+import columnIcon from '../assets/column.png';
 
 let cytoLineage;
 const LineageStartingPositionX = 100;
+const baseURL = "http://localhost:8080/utilspbi/api/";
 
 class CytoscapeLineage{
     constructor(){
         this.cy = null;
+        this.filterNode;
         this.nodes = null;
         this.edges = null;
     }
 
     initLineage = async() => {
-        const nodesURL = "http://localhost:8080/utilspbi/api/nodesdata";
-        const edgesURL = "http://localhost:8080/utilspbi/api/edgesdata";
+        const nodesURL = baseURL + "nodesdata";
+        const edgesURL = baseURL + "edgesdata";
 
         return Promise.all([
             fetch(nodesURL).then(response => response.json()),
@@ -44,19 +47,43 @@ class CytoscapeLineage{
 
     filterNode = (filterText) => {
         this.clearFilter();
-        var filteredNode = this.cy.nodes(`[id="${filterText}"]`);
+        this.filteredNode = this.cy.nodes(`[id="${filterText}"]`);
+        this.filteredNode.addClass("filtered");
 
-        var incomingNodesForFilteredNode = filteredNode.predecessors();
-        var outgoingNodesForFilteredNode = filteredNode.successors();
+        var incomingNodesForFilteredNode = this.filteredNode.predecessors();
+        var outgoingNodesForFilteredNode = this.filteredNode.successors();
 
-        var combinedNodes = incomingNodesForFilteredNode.union(outgoingNodesForFilteredNode).union(filteredNode);
+        var combinedNodes = incomingNodesForFilteredNode.union(outgoingNodesForFilteredNode).union(this.filteredNode);
 
         this.cy.elements().not(combinedNodes).hide();
+        this.refreshLayout(combinedNodes);
+    }
+
+    refreshLayout = (nodes) => {
+        this.cy.layout(
+            {
+                name: 'dagre',
+                ranker: 'tight-tree',
+                rankDir: 'LR',
+                rankSep: 100,
+                edgeSep: 15,
+                nodeSep: 15,
+                animate: true, 
+                animationDuration: 500,
+                fit:true
+            }).run();
+
+        this.cy.fit();
     }
 
     clearFilter = () => {
+        if(this.filteredNode){
+            this.filteredNode.removeClass("filtered");
+        }
         this.cy.nodes().show();
         this.cy.edges().show();
+
+        this.refreshLayout();
     }
 
     initCytoscape = () => {
@@ -68,11 +95,14 @@ class CytoscapeLineage{
 
         layout: {
             name: 'dagre',
+            ranker: 'tight-tree',
             rankDir: 'LR',
-            rankSep: 400,
-            edgeSep: 30,
-            nodeSep: 50
+            rankSep: 50,
+            edgeSep: 20,
+            nodeSep: 20,
+            spacingFactor: 1
         },
+        wheelSensitivity: 0.1,
 
         style: [
             {
@@ -84,10 +114,13 @@ class CytoscapeLineage{
                             return `url(${calccolumnIcon})`;
                         }
                         else if (type === "MEASURE"){
-                        return `url(${measureIcon})`;
+                            return `url(${measureIcon})`;
                         }
-                        else {
+                        else if (type === "TABLE") {
                             return `url(${tableIcon})`;
+                        }
+                        else if (type === "COLUMN"){
+                            return `url(${columnIcon})`
                         }
                     },
                     'background-fit': 'contain', // Ensure the icon fits within the node
@@ -102,7 +135,7 @@ class CytoscapeLineage{
                     'text-outline-width': 2,
                     'text-outline-color': 'data(faveColor)',
                     'background-color': 'data(faveColor)',
-                    'color': '#fff',
+                    'color': '#1c2833',
                     'font-size': '40px'
                 }
             },
@@ -113,10 +146,10 @@ class CytoscapeLineage{
                     'opacity': 0.666,
                     'width': 'mapData(strength, 70, 100, 2, 6)',
                     'target-arrow-shape': 'triangle',
-                    'line-color': 'data(faveColor)',
-                    'source-arrow-color': 'data(faveColor)',
-                    'target-arrow-color': 'data(faveColor)',
-                    'arrow-scale': 1.5
+                    'line-color': '#8bf4ff',
+                    'source-arrow-color': '#8bf4ff',
+                    'target-arrow-color': '#8bf4ff',
+                    'arrow-scale': 2.3
                 }
             },
             {
@@ -144,6 +177,18 @@ class CytoscapeLineage{
                 style: {
                     'opacity': 0.25
                 }
+            },
+            {
+                selector: '.filtered',
+                style: {
+                    'border-width': '10px',
+                    'border-color': 'yellow',
+                    'shadow-blur': 20,
+                    'shadow-color': 'yellow',
+                    'shadow-opacity': 0.6,
+                    'shadow-offset-x': 0,
+                    'shadow-offset-y': 0
+                }
             }
         ],
         elements: {
@@ -152,9 +197,7 @@ class CytoscapeLineage{
         }
     });
 
-    //this.initCyContext();
-
-    this.cy.on('tap', 'node', function (e) {
+    this.cy.on('tap', 'node', (e) => {
         var node = e.target; // Get the tapped node
         var OutgoingNodes = node.successors(); // Get edges connected to the node
         var IncomingNodes = node.predecessors(); // Get nodes connected by those edges
@@ -165,14 +208,13 @@ class CytoscapeLineage{
         node.removeClass('faded');
     });
 
-    this.cy.on('tap', function (e) {
+    this.cy.on('tap', (e) => {
         if (e.target === this.cy) {
             this.cy.elements().removeClass('faded');
         }
     });
 
     const rootNodes = this.cy.nodes().filter((node) => node.incomers('edge').length === 0);
-    console.log(rootNodes);
 
     rootNodes.forEach((node, index) => {
         node.position({
@@ -180,16 +222,11 @@ class CytoscapeLineage{
         })
     });
 
-    console.log("Cytoscape Finished");
     return this.cy;
-    // document.getElementById("filterNodeButton").onclick = function () {
-    //     filterNode(cy, "RowContextSumx");
-    // };
 
     }
 
     initCyContext = () => {
-        console.log("CyContext Init");
         cytoscape.use(cxtmenu);
         library.add(faFilter, faFilterCircleXmark);
 
@@ -262,6 +299,10 @@ onMount(() => {
 
 export function filterCytoscapeNode(filterText){
     cytoLineage.filterNode(filterText);
+}
+
+export function clearFilter(){
+    cytoLineage.clearFilter();
 }
 
 </script>

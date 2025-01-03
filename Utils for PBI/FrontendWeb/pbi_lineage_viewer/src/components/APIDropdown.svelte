@@ -11,7 +11,7 @@
 
     let options = [];
     let filteredOptions = [];
-    let selectedValue = 'Select';
+    let selectedValue = 'All';
     let dropdownSearchQuery = '';
     let dropdownOpen = false;
     let isLoading = false;
@@ -20,7 +20,7 @@
     let apiData;
 
     const dispatch = createEventDispatcher();
-
+9
     onMount(async () => {
         if (!apiUrl){
             error = 'API URL is required';
@@ -55,6 +55,11 @@
         selectedValue = option.name;
         dispatch('select', option);
     }
+    
+    export function clearFilter(){
+        filteredOptions = apiData.map((option) => ({id: option[idKey], name: option[nameKey]}));
+        selectedValue = 'Select';
+    }
 
 </script>
 
@@ -64,6 +69,10 @@
             {selectedValue}
         </DropdownToggle>
         <DropdownMenu>
+            <DropdownItem on:click={() => handleSelect({id:"CLEAR", name: "Clear"})}>
+                Clear Filter
+            </DropdownItem>
+            <DropdownItem divider />
             {#if enableFiltering}
              <div class="p-2">
                 <input

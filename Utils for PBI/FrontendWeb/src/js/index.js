@@ -1,6 +1,4 @@
-﻿import '../css/style.css'
-
-const LineageStartingPositionX = 100;
+﻿const LineageStartingPositionX = 100;
 
 function fetchData() {
     const nodesURL = "http://localhost:8080/utilspbi/api/nodesdata";

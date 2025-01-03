@@ -55,7 +55,7 @@ namespace Utils_for_PBI.Models
         {
             List<String> objectTypeNotInFilter = new List<String> { "HIERARCHY", "ATTRIBUTE_HIERARCHY", "ACTIVE_RELATIONSHIP", "RELATIONSHIP" };
             var cleansedDependencyData = calcDepedencyData.Where(c => !c.SOURCE_TABLE.Contains("DateTable"))
-                                                          .Where(e => !e.OBJECT_TYPE.Contains("ACTIVE_RELATIONSHIP") && !e.OBJECT_TYPE.Contains("RELATIONSHIP"));
+                                                          .Where(e => !e.OBJECT_TYPE.Contains("ACTIVE_RELATIONSHIP") && !e.OBJECT_TYPE.Contains("RELATIONSHIP") && !e.REFERENCED_OBJECT_TYPE.Contains("ACTIVE_RELATIONSHIP") && !e.REFERENCED_OBJECT_TYPE.Contains("RELATIONSHIP"));
             var objectNodes = cleansedDependencyData.Select(c => new
                                                 {
                                                     c.OBJECT,
@@ -78,8 +78,10 @@ namespace Utils_for_PBI.Models
                                             name = r.OBJECT,
                                             faveColor = r.OBJECT_TYPE.ToUpper() switch
                                             {
-                                                "CALC_COLUMN" => "#26b1ff",
-                                                "MEASURE" => "#26b1cc",
+                                                "CALC_COLUMN" => "#a2d9ce",
+                                                "MEASURE" => "#f9e79f",
+                                                "TABLE" => "#aed6f1",
+                                                "COLUMN" => "#d7bde2",
                                                 _ => "#1376ff"
                                             },
                                             objectType = r.OBJECT_TYPE.ToUpper(),

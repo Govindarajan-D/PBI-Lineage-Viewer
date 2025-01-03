@@ -6,15 +6,29 @@
     let objectTypeComponent;
     let objectsComponent;
     let cytoscapeComponent;
+    
     function onObjectTypeSelected(event){
+      if(event.detail.id != "CLEAR"){
         if(objectsComponent){
           objectsComponent.filterObjects("objectTypeID", event.detail.id);
         }
+      }
+      else{
+        objectTypeComponent.clearFilter();
+        objectsComponent.clearFilter();
+        cytoscapeComponent.clearFilter();
+      }
     }
     function onObjectSelected(event) {
+      if(event.detail.id != "CLEAR"){
         if(cytoscapeComponent){
           cytoscapeComponent.filterCytoscapeNode(event.detail.id);
         }
+      }
+      else{
+        objectsComponent.clearFilter();
+        cytoscapeComponent.clearFilter();
+      }
     }
 </script>
 <div class="container-fluid full-height d-flex flex-column">
@@ -51,6 +65,7 @@
   .cytoscape-container {
     height: 85%;
     overflow: hidden;
+    background-color: #212A37;
   }
 
   .full-height {
