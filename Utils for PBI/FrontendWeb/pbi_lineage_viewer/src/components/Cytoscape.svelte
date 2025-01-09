@@ -18,10 +18,11 @@ let cytoLineage;
 const LineageStartingPositionX = 100;
 const baseURL = "http://localhost:8080/utilspbi/api/";
 
+
 class CytoscapeLineage{
     constructor(){
         this.cy = null;
-        this.filterNode;
+        this.filterSelectedNode = null;
         this.nodes = null;
         this.edges = null;
     }
@@ -45,7 +46,7 @@ class CytoscapeLineage{
             });
     }
 
-    filterNode = (filterText) => {
+    filterOnSelectedNode = (filterText) => {
         this.clearFilter();
         this.filteredNode = this.cy.nodes(`[id="${filterText}"]`);
         this.filteredNode.addClass("filtered");
@@ -59,13 +60,14 @@ class CytoscapeLineage{
         this.refreshLayout(combinedNodes);
     }
 
+
     refreshLayout = (nodes) => {
         this.cy.layout(
             {
                 name: 'dagre',
                 ranker: 'tight-tree',
                 rankDir: 'LR',
-                rankSep: 100,
+                rankSep: 5,
                 edgeSep: 15,
                 nodeSep: 15,
                 animate: true, 
@@ -143,9 +145,21 @@ class CytoscapeLineage{
                 selector: 'edge',
                 style: {
                     'curve-style': 'unbundled-bezier',
+
+                    'target-arrow-shape': 'triangle-backcurve',
+                    'target-arrow-color': '#006f8a',
+                    'arrow-scale': 1.5,
+
+                    'target-distance-from-node': '10px',
+                    'source-distance-from-node': '5px',
+
+                    'line-color': '#006f8a',
+                    'width': 3,
+
+                    'source-endpoint': '50% 0%',
+                    'target-endpoint': '270deg',
                     'opacity': 0.666,
                     'width': 'mapData(strength, 70, 100, 2, 6)',
-                    'target-arrow-shape': 'triangle',
                     'line-color': '#8bf4ff',
                     'source-arrow-color': '#8bf4ff',
                     'target-arrow-color': '#8bf4ff',
@@ -155,7 +169,7 @@ class CytoscapeLineage{
             {
                 selector: ':selected',
                 style: {
-                    'curve-style': 'bezier',
+                    'curve-style': 'unbundled-bezier',
                     'opacity': 1,
                     'width': 'mapData(strength, 70, 100, 2, 6)',
                     'target-arrow-shape': 'triangle',
@@ -248,10 +262,10 @@ class CytoscapeLineage{
                 commands: [ 
                 { // example command
                     fillColor: 'rgba(78, 73, 73, 0.75)', // optional: custom background color for item
-                    content: filterIcon, // html/text content to be displayed in the menu
+                    content: filterIcon, // html/tex content to be displayed in the menu
                     contentStyle: {}, // css key:value pairs to set the command's css in js if you want
                     select: (ele) => { // a function to execute when the command is selected
-                        this.filterNode( ele.id() ); // `ele` holds the reference to the active element
+                        this.filterOnSelectedNode( ele.id() ); // `ele` holds the reference to the active element
                     },
                     // hover: function(ele){ // a function to execute when the command is hovered
                     // console.log( ele.id() ) // `ele` holds the reference to the active element
@@ -298,7 +312,7 @@ onMount(() => {
     });
 
 export function filterCytoscapeNode(filterText){
-    cytoLineage.filterNode(filterText);
+    cytoLineage.filterOnSelectedNode(filterText);
 }
 
 export function clearFilter(){

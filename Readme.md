@@ -1,10 +1,8 @@
-# Utils for PBI
+# PBI Lineage Viewer
 
-Utils for PBI is a lineage graphing tool that makes it easy to understand the lineage in terms of tables and measures. 
+PBI Lineage Viewer is a lineage graphing tool that makes it easy to understand the lineage in terms of tables and measures. 
 
-## Installation
 
-Use the installer to install the software on your Windows system. 
 
 Prerequisite:
 .NET 8 or Above
