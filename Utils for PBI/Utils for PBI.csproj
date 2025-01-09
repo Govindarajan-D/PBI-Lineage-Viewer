@@ -11,6 +11,9 @@
     <StartupObject>Utils_for_PBI.Forms.Program</StartupObject>
     <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Frontend-Web\**" />
     <EmbeddedResource Remove="Frontend-Web\**" />
