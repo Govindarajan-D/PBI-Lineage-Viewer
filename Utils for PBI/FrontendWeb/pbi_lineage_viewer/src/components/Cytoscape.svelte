@@ -18,7 +18,7 @@ let cytoLineage;
 const LineageStartingPositionX = 100;
 const baseURL = "http://localhost:8080/utilspbi/api/";
 
-
+// Class contains the Lineage cy object and all the functions associated with it
 class CytoscapeLineage{
     constructor(){
         this.cy = null;
@@ -26,6 +26,8 @@ class CytoscapeLineage{
         this.nodes = null;
         this.edges = null;
     }
+
+    // Hit the API Endpoint to get nodes, edges and any other relevant data
 
     initLineage = async() => {
         const nodesURL = baseURL + "nodesdata";
@@ -46,6 +48,10 @@ class CytoscapeLineage{
             });
     }
 
+    /* If a node is filtered, the corresponding predecessors and the sucessors of the node is obtained 
+     and all other nodes not in that list are hidden. The node on which the filter was applied is highlighted
+     by applying the 'filtered' class
+    */
     filterOnSelectedNode = (filterText) => {
         this.clearFilter();
         this.filteredNode = this.cy.nodes(`[id="${filterText}"]`);
@@ -60,7 +66,7 @@ class CytoscapeLineage{
         this.refreshLayout(combinedNodes);
     }
 
-
+    // Layout is refresh by resetting the cytoscape layout params
     refreshLayout = (nodes) => {
         this.cy.layout(
             {
@@ -78,6 +84,8 @@ class CytoscapeLineage{
         this.cy.fit();
     }
 
+    // Clear the filter on the lineage by showing all the nodes
+    // The layout is also refreshed to accomodate the change in the number of nodes
     clearFilter = () => {
         if(this.filteredNode){
             this.filteredNode.removeClass("filtered");
@@ -88,128 +96,133 @@ class CytoscapeLineage{
         this.refreshLayout();
     }
 
+    // Initialize the cytoscape object by passing the appropriate parameters
+    // This is the most important place for formatting the nodes and edges (look and feel like color, background icon, arrow shape)
+
     initCytoscape = () => {
 
-    cytoscape.use(cytoscapeDagre);
+        cytoscape.use(cytoscapeDagre);
 
-    this.cy = cytoscape({
-        container: document.querySelector('#cy-container'),
+        this.cy = cytoscape({
+            container: document.querySelector('#cy-container'),
 
-        layout: {
-            name: 'dagre',
-            ranker: 'tight-tree',
-            rankDir: 'LR',
-            rankSep: 50,
-            edgeSep: 20,
-            nodeSep: 20,
-            spacingFactor: 1
-        },
-        wheelSensitivity: 0.1,
-
-        style: [
-            {
-                selector: 'node',
-                style: {
-                    'background-image': function(ele){
-                        const type = ele.data('objectType');
-                        if(type === "CALC_COLUMN"){
-                            return `url(${calccolumnIcon})`;
-                        }
-                        else if (type === "MEASURE"){
-                            return `url(${measureIcon})`;
-                        }
-                        else if (type === "TABLE") {
-                            return `url(${tableIcon})`;
-                        }
-                        else if (type === "COLUMN"){
-                            return `url(${columnIcon})`
-                        }
-                    },
-                    'background-fit': 'contain', // Ensure the icon fits within the node
-                    'background-position-x': '10%', // Move the icon to the left
-                    'background-position-y': '50%', // Center it vertically
-                    'background-size': '1px', // Set icon size
-                    'shape': 'data(faveShape)',
-                    'width': 'mapData(nameLength, 1, 40, 250, 1300)',
-                    'height': '70',
-                    'content': 'data(name)',
-                    'text-valign': 'center',
-                    'text-outline-width': 2,
-                    'text-outline-color': 'data(faveColor)',
-                    'background-color': 'data(faveColor)',
-                    'color': '#1c2833',
-                    'font-size': '40px'
-                }
+            layout: {
+                name: 'dagre',
+                ranker: 'tight-tree',
+                rankDir: 'LR',
+                rankSep: 50,
+                edgeSep: 20,
+                nodeSep: 20,
+                spacingFactor: 1
             },
-            {
-                selector: 'edge',
-                style: {
-                    'curve-style': 'unbundled-bezier',
+            wheelSensitivity: 0.1,
 
-                    'target-arrow-shape': 'triangle-backcurve',
-                    'target-arrow-color': '#006f8a',
-                    'arrow-scale': 1.5,
+            style: [
+                {
+                    selector: 'node',
+                    style: {
+                        'background-image': function(ele){
+                            const type = ele.data('objectType');
+                            if(type === "CALC_COLUMN"){
+                                return `url(${calccolumnIcon})`;
+                            }
+                            else if (type === "MEASURE"){
+                                return `url(${measureIcon})`;
+                            }
+                            else if (type === "TABLE") {
+                                return `url(${tableIcon})`;
+                            }
+                            else if (type === "COLUMN"){
+                                return `url(${columnIcon})`
+                            }
+                        },
+                        'background-fit': 'contain', // Ensure the icon fits within the node
+                        'background-position-x': '10%', // Move the icon to the left
+                        'background-position-y': '50%', // Center it vertically
+                        'background-size': '1px', // Set icon size
+                        'shape': 'data(faveShape)',
+                        'width': 'mapData(nameLength, 1, 40, 250, 1300)',
+                        'height': '70',
+                        'content': 'data(name)',
+                        'text-valign': 'center',
+                        'text-outline-width': 2,
+                        'text-outline-color': 'data(faveColor)',
+                        'background-color': 'data(faveColor)',
+                        'color': '#1c2833',
+                        'font-size': '40px'
+                    }
+                },
+                {
+                    selector: 'edge',
+                    style: {
+                        'curve-style': 'unbundled-bezier',
 
-                    'target-distance-from-node': '10px',
-                    'source-distance-from-node': '5px',
+                        'target-arrow-shape': 'triangle-backcurve',
+                        'target-arrow-color': '#006f8a',
+                        'arrow-scale': 1.5,
 
-                    'line-color': '#006f8a',
-                    'width': 3,
+                        'target-distance-from-node': '10px',
+                        'source-distance-from-node': '5px',
 
-                    'source-endpoint': '50% 0%',
-                    'target-endpoint': '270deg',
-                    'opacity': 0.666,
-                    'width': 'mapData(strength, 70, 100, 2, 6)',
-                    'line-color': '#8bf4ff',
-                    'source-arrow-color': '#8bf4ff',
-                    'target-arrow-color': '#8bf4ff',
-                    'arrow-scale': 2.3
+                        'line-color': '#006f8a',
+                        'width': 3,
+
+                        'source-endpoint': '50% 0%',
+                        'target-endpoint': '270deg',
+                        'opacity': 0.666,
+                        'width': 'mapData(strength, 70, 100, 2, 6)',
+                        'line-color': '#8bf4ff',
+                        'source-arrow-color': '#8bf4ff',
+                        'target-arrow-color': '#8bf4ff',
+                        'arrow-scale': 2.3
+                    }
+                },
+                {
+                    selector: ':selected',
+                    style: {
+                        'curve-style': 'unbundled-bezier',
+                        'opacity': 1,
+                        'width': 'mapData(strength, 70, 100, 2, 6)',
+                        'target-arrow-shape': 'triangle',
+                        'source-arrow-shape': 'circle',
+                        'line-color': 'black',
+                        'source-arrow-color': 'data(faveColor)',
+                        'target-arrow-color': 'data(faveColor)'
+                    }
+                },
+                {
+                    selector: 'edge.questionable',
+                    style: {
+                        'line-style': 'dotted',
+                        'target-arrow-shape': 'diamond'
+                    }
+                },
+                {
+                    selector: '.faded',
+                    style: {
+                        'opacity': 0.25
+                    }
+                },
+                {
+                    selector: '.filtered',
+                    style: {
+                        'border-width': '10px',
+                        'border-color': 'yellow',
+                        'shadow-blur': 20,
+                        'shadow-color': 'yellow',
+                        'shadow-opacity': 0.6,
+                        'shadow-offset-x': 0,
+                        'shadow-offset-y': 0
+                    }
                 }
-            },
-            {
-                selector: ':selected',
-                style: {
-                    'curve-style': 'unbundled-bezier',
-                    'opacity': 1,
-                    'width': 'mapData(strength, 70, 100, 2, 6)',
-                    'target-arrow-shape': 'triangle',
-                    'source-arrow-shape': 'circle',
-                    'line-color': 'black',
-                    'source-arrow-color': 'data(faveColor)',
-                    'target-arrow-color': 'data(faveColor)'
-                }
-            },
-            {
-                selector: 'edge.questionable',
-                style: {
-                    'line-style': 'dotted',
-                    'target-arrow-shape': 'diamond'
-                }
-            },
-            {
-                selector: '.faded',
-                style: {
-                    'opacity': 0.25
-                }
-            },
-            {
-                selector: '.filtered',
-                style: {
-                    'border-width': '10px',
-                    'border-color': 'yellow',
-                    'shadow-blur': 20,
-                    'shadow-color': 'yellow',
-                    'shadow-opacity': 0.6,
-                    'shadow-offset-x': 0,
-                    'shadow-offset-y': 0
-                }
+            ],
+            elements: {
+                nodes: this.nodes,
+                edges: this.edges
             }
-        ],
-        elements: {
-            nodes: this.nodes,
-            edges: this.edges
-        }
     });
+
+    // If a node is selected the predecessors and successors are highlighted by fading the irrelevant nodes
 
     this.cy.on('tap', 'node', (e) => {
         var node = e.target; // Get the tapped node
@@ -302,6 +315,9 @@ class CytoscapeLineage{
             this.menu = this.cy.cxtmenu( defaults );
     }
 }
+
+// On initialization of the component, hit the API Endpoint to get data and then once it is complete
+// initialize the Cytoscape object and then the context menu
 
 onMount(() => {
         cytoLineage = new CytoscapeLineage();
