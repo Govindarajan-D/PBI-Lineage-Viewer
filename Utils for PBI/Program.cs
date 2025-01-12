@@ -11,6 +11,7 @@ using System.Runtime.Versioning;
 using Utils_for_PBI.Services;
 
 /* TO-DO:
+ * Add CALC_TABLE as a type
  * Build script in github for automated building of exe
  * Add Installer for the program
  * Make classes more aligned with best practices (IDisposable)
@@ -27,13 +28,14 @@ using Utils_for_PBI.Services;
  * Support PBIR format
  * Attribute Flaticons
  * Config file for more flexibility
+ * Add filters (visual, page, all page) into the lineage
  */
 
 /* TO-DO in HTML Page
  * Use mapData for width control
- * Use selectors and filters
+ * Add option to move from LR/RL
  * Try preset for Cytoscape
- * Use Alpine.js
+ * Use a proper color palette - Yellow or Green to align with PBI
  */
 
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config")]
@@ -82,10 +84,12 @@ namespace Utils_for_PBI.Forms
         {
             string appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Constants.ProgramName, "js");
 
-            Dictionary<String, String> filesDict = new Dictionary<string, string>();
-            filesDict.Add(Constants.cytoscapeMinJS, Constants.cytoscapeMinJSURL);
-            filesDict.Add(Constants.dagreJS, Constants.dagreJSURL);
-            filesDict.Add(Constants.cytoscapeDagreJS, Constants.cytoscapeDagreJSURL);
+            Dictionary<String, String> filesDict = new Dictionary<string, string>
+            {
+                { Constants.cytoscapeMinJS, Constants.cytoscapeMinJSURL },
+                { Constants.dagreJS, Constants.dagreJSURL },
+                { Constants.cytoscapeDagreJS, Constants.cytoscapeDagreJSURL }
+            };
 
             if (!Directory.Exists(appDataPath))
             {

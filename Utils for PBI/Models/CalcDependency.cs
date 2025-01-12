@@ -42,7 +42,7 @@ namespace Utils_for_PBI.Models
     public class CalcDepedencyData
     {
         public List<CalcDependencyDataRow> calcDepedencyData = new List<CalcDependencyDataRow>();
-        public string dependencyNodesJSON, dependencyEdgesJSON;
+        public string dependencyNodesJSON, dependencyEdgesJSON, nodesInfoJSON, objectTypeInfoJSON;
 
         /// <summary>
         /// Converts the List of Rows (CalcDependencyData) into a particular JSON string which is acceptable by the JS script for lineage
@@ -55,7 +55,7 @@ namespace Utils_for_PBI.Models
         {
             List<String> objectTypeNotInFilter = new List<String> { "HIERARCHY", "ATTRIBUTE_HIERARCHY", "ACTIVE_RELATIONSHIP", "RELATIONSHIP" };
             var cleansedDependencyData = calcDepedencyData.Where(c => !c.SOURCE_TABLE.Contains("DateTable"))
-                                                          .Where(e => !e.OBJECT_TYPE.Contains("ACTIVE_RELATIONSHIP") && !e.OBJECT_TYPE.Contains("RELATIONSHIP"));
+                                                          .Where(e => !e.OBJECT_TYPE.Contains("ACTIVE_RELATIONSHIP") && !e.OBJECT_TYPE.Contains("RELATIONSHIP") && !e.REFERENCED_OBJECT_TYPE.Contains("ACTIVE_RELATIONSHIP") && !e.REFERENCED_OBJECT_TYPE.Contains("RELATIONSHIP"));
             var objectNodes = cleansedDependencyData.Select(c => new
                                                 {
                                                     c.OBJECT,
@@ -67,6 +67,7 @@ namespace Utils_for_PBI.Models
                                                         OBJECT = c.REFERENCED_OBJECT,
                                                         OBJECT_TYPE = c.REFERENCED_OBJECT_TYPE
                                                     }).Distinct();
+
             var allNodes = objectNodes.Union(refObjectNodes).Distinct();
 
             var nodesJSON = allNodes.Select(r => new
@@ -77,15 +78,19 @@ namespace Utils_for_PBI.Models
                                             name = r.OBJECT,
                                             faveColor = r.OBJECT_TYPE.ToUpper() switch
                                             {
-                                                "CALC_COLUMN" => "#26b1ff",
-                                                "MEASURE" => "#26b1cc",
-                                                _ => "#2613ff"
+                                                "CALC_COLUMN" => "#a2d9ce",
+                                                "MEASURE" => "#f9e79f",
+                                                "TABLE" => "#aed6f1",
+                                                "COLUMN" => "#d7bde2",
+                                                _ => "#1376ff"
                                             },
+                                            objectType = r.OBJECT_TYPE.ToUpper(),
                                             faveShape = "rectangle"
                                         }
                                     });
 
-            var edgesJSON = cleansedDependencyData.Select(c => new
+            var edgesJSON = cleansedDependencyData.Where(c => c.REFERENCED_OBJECT_TYPE.ToUpper() != "TABLE" || (c.OBJECT_TYPE.ToUpper() == "CALC_TABLE" && c.REFERENCED_OBJECT_TYPE.ToUpper() == "TABLE"))
+                                                  .Select(c => new
                                                     {
                                                         data = new
                                                         {
@@ -97,6 +102,44 @@ namespace Utils_for_PBI.Models
 
                                                     });
 
+            var refTableEdges = cleansedDependencyData.Where(c => c.REFERENCED_OBJECT_TYPE.ToUpper() != "TABLE" || (c.OBJECT_TYPE.ToUpper() == "CALC_TABLE" && c.REFERENCED_OBJECT_TYPE.ToUpper() == "TABLE")) 
+                                                      .Select(c => new
+                                                        {
+                                                            data = new
+                                                            {
+                                                                source = c.REFERENCED_TABLE,
+                                                                target = c.REFERENCED_OBJECT,
+                                                                faveColor = "#5c658d",
+                                                                strength = 60
+                                                            }
+                                                        });
+            edgesJSON = edgesJSON.Union(refTableEdges).Distinct();
+
+            var nodesInfo = allNodes.Select(c => new
+                                            {
+                                               id = c.OBJECT,
+                                               name = c.OBJECT,
+                                                objectTypeID = c.OBJECT_TYPE.ToUpper()
+                                            });
+
+            var objectTypeInfo = allNodes.Select(c => new
+                                            {
+                                               objectTypeID = c.OBJECT_TYPE.ToUpper()
+                                            }).Distinct().Select(r => new
+                                            {
+                                                r.objectTypeID,
+                                                objectTypeName = r.objectTypeID switch
+                                                {
+                                                    "CALC_COLUMN" => "Calculated Column",
+                                                    "MEASURE" => "Measure",
+                                                    "TABLE" => "Table",
+                                                    "COLUMN" => "Column",
+                                                    _ => "Others"
+                                                }
+                                            });
+
+            objectTypeInfoJSON = Json.JsonSerializer.Serialize(objectTypeInfo, new Json.JsonSerializerOptions { WriteIndented = true });
+            nodesInfoJSON = Json.JsonSerializer.Serialize(nodesInfo, new Json.JsonSerializerOptions { WriteIndented = true });
             dependencyNodesJSON = Json.JsonSerializer.Serialize(nodesJSON, new Json.JsonSerializerOptions { WriteIndented = true});
             dependencyEdgesJSON = Json.JsonSerializer.Serialize(edgesJSON, new Json.JsonSerializerOptions { WriteIndented = true });
         }

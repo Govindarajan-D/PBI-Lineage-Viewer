@@ -26,6 +26,7 @@ namespace Utils_for_PBI.Services
             System.IO.Compression.ZipFile.ExtractToDirectory(zipFilePath, extractionFilePath);
 
             string jsonFileData = File.ReadAllText(Path.Combine(extractionFilePath, "Report/Layout"), Encoding.Unicode);
+            Section reportSection = new Section();
 
             using (JsonDocument jsonDocument = JsonDocument.Parse(jsonFileData))
             {
@@ -41,10 +42,9 @@ namespace Utils_for_PBI.Services
                     JsonElement jsonVisualContainers = jsonSection.GetProperty("visualContainers");
                     PageObject pageObject = new PageObject();
                     List<VisualContainerObject> visualContainers = new List<VisualContainerObject>();
-                    pageObject.pageName = jsonSection.GetProperty("displayName").GetString();
-
-                    //string visualType = "";
-                    //string[] queryRefs = [];
+                    pageObject.name = jsonSection.GetProperty("name").GetString();
+                    pageObject.pageDisplayName = jsonSection.GetProperty("displayName").GetString();
+                    pageObject.ordinal = jsonSection.GetProperty("ordinal").GetString();
 
                     foreach (JsonElement jsonContainer in jsonVisualContainers.EnumerateArray())
                     {
@@ -76,29 +76,10 @@ namespace Utils_for_PBI.Services
 
                         visualContainers.Add(currentReportPage);
 
-
-
-                        //var prototypeQuery = deserializedObject.prototypeQuery.From.Select(x => new { x.Name, x.Entity });
-                        //var objectsUsed = deserializedObject.prototypeQuery.@Select
-                        //    .Select(x => new
-                        //    {
-                        //        NativeReferenceName = x.NativeReferenceName,
-                        //        Entity = x.Measure?.Expression?.SourceRef?.Source
-                        //                ?? x.Column?.Expression?.SourceRef?.Source
-                        //    });
-                        //queryRefs = deserializedObject.projections.Values.Select(c => c.queryRef).ToArray();
-                        //data.Add(visualType, queryRefs);
-
-                        //reportObjects.Add(currentReportPage);
                     }
 
-                    /*reportObjects.Add(new VisualContainerObjects{
-                        pageName = sectionPageName,
-                        visualType = visualType, 
-                        queryRefs = queryRefs
-                    });*/
-
                     pageObject.visualContainers = visualContainers;
+                    reportSection.pageObjects.Add(pageObject);
                 }
 
             }

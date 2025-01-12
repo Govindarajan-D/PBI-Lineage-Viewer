@@ -83,6 +83,12 @@ namespace Utils_for_PBI.Server
                 case "/utilspbi/api/edgesdata":
                     await ServeContent(response, calcDepedencyData.dependencyEdgesJSON);
                     break;
+                case "/utilspbi/api/nodesinfo":
+                    await ServeContent(response, calcDepedencyData.nodesInfoJSON);
+                    break;
+                case "/utilspbi/api/objecttypeinfo":
+                    await ServeContent(response, calcDepedencyData.objectTypeInfoJSON);
+                    break;
                 default:
                     response.StatusCode = 404;
                     await ServeContent(response, "<h1>Not Found Page</h1>");

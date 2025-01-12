@@ -1,50 +1,43 @@
 ﻿const path = require('path');
-const HTMLWebpackPlugin = require('html-webpack-plugin');
-const HTMLInlineScriptPlugin = require('html-inline-script-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlBundlerPlugin = require('html-bundler-webpack-plugin');
 
 module.exports = {
-    entry: {
-        main: './src/js/index.js',
-    },
+    context: path.resolve(__dirname, './pbi_lineage_viewer/public/'),
     output: {
-        filename: '[name].js',
-        path: path.resolve(__dirname, 'dist'),
-        clean: true,
-    },
-    devServer: {
-        static: {
-            directory: path.join(__dirname, 'dist'),
-
-        },
-        port: 3000,
-        open: true,
-        hot: true,
-        compress: false,
+        path: path.resolve(__dirname, 'dist'), // Output directory
+        clean: true, // Clean output directory before build
     },
     module: {
         rules: [
             {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader']
-
+                test: /\.css$/, // Match CSS files
+                use: [
+                    'css-loader', // Resolve CSS imports
+                ],
             },
         ],
     },
     plugins: [
-        new HTMLWebpackPlugin({
-            template: './src/index.html',
-            inject: 'body',
-            chunks: ['main'],
-        }),
-        new HTMLInlineScriptPlugin(),
-        new CopyWebpackPlugin({
-            patterns: [
-                { from: 'src/js/cytoscape.min.js', to: 'js/cytoscape.min.js' },
-                { from: 'src/js/cytoscape-dagre.js', to: 'js/cytoscape-dagre.js' },
-                { from: 'src/js/dagre.js', to: 'js/dagre.js' },
-            ],
+        new HtmlBundlerPlugin({
+          entry: {
+            index: './index.html', // Path to your index.html
+          },
+          js: {
+            // output filename of compiled JavaScript, used if inline is false
+            filename: '[name].[contenthash:8].js',
+            inline: true, // Inline JavaScript into <script> tags
+          },
+          css: {
+            // output filename of extracted CSS, used if inline is false
+            filename: '[name].[contenthash:8].css',
+            inline: true, // Inline CSS into <style> tags
+          },
+          minify: true, // Enable minify HTML
+          minifyOptions: {
+            collapseWhitespace: true, // Minify HTML
+            removeComments: true, // Remove comments
+          },
         }),
     ],
     mode: 'production',
-}
+};
