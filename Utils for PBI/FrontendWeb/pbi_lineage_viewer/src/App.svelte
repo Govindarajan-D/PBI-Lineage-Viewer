@@ -6,6 +6,12 @@
     let objectTypeComponent;
     let objectsComponent;
     let cytoscapeComponent;
+
+    // Multiple Object filter interaction functions. 
+    // Based on the selected value the other dropdown and cytoscape object is filtered/cleared
+
+    // ObjectType - Measure, Table, Calc. Column, Column
+    // Object - Actual names of the objects (for e.g Sales YTD, Sum of Quantity)
     
     function onObjectTypeSelected(event){
       if(event.detail.id != "CLEAR"){
@@ -19,6 +25,7 @@
         cytoscapeComponent.clearFilter();
       }
     }
+    
     function onObjectSelected(event) {
       if(event.detail.id != "CLEAR"){
         if(cytoscapeComponent){

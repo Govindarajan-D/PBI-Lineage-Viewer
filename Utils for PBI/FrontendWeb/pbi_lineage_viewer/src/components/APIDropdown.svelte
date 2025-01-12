@@ -20,7 +20,9 @@
     let apiData;
 
     const dispatch = createEventDispatcher();
-9
+    
+    // On initialization - Hit the API Endpoint and load the dropdown with key-value pairs
+    // The Key and Value is determined by the params passed in the Parent HTML tag <APIDropdown>
     onMount(async () => {
         if (!apiUrl){
             error = 'API URL is required';
@@ -40,12 +42,14 @@
         }
     });
 
+    // React to the search query typed in the Search box
     $:{
             filteredOptions = options.filter(option => 
                     option.name?.toString().toLowerCase().includes(dropdownSearchQuery.toLowerCase())
             );
     }
 
+    // Apply filter based on the selected value (from an external source like another dropdown)
     export function filterObjects(filterColumn, filterValue){
         filteredOptions = apiData.filter((option) => option[filterColumn] == filterValue)
                                  .map((option) => ({id: option[idKey], name: option[nameKey]}));
