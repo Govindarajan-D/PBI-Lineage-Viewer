@@ -53,9 +53,13 @@ namespace Utils_for_PBI.Models
         //TO-DO: A measure when it uses a column from a table, has the table as a dependency as well. This should be handled in the code. 
         public void ParseIntoJSON()
         {
-            List<String> objectTypeNotInFilter = new List<String> { "HIERARCHY", "ATTRIBUTE_HIERARCHY", "ACTIVE_RELATIONSHIP", "RELATIONSHIP" };
+            List<String> objectTypeNotInFilter = new List<String> { "HIERARCHY", "ATTRIBUTE_HIERARCHY", "ACTIVE_RELATIONSHIP", "RELATIONSHIP", "PARTITION", "M_EXPRESSION"};
             var cleansedDependencyData = calcDepedencyData.Where(c => !c.SOURCE_TABLE.Contains("DateTable"))
+                                                          .Where(c => !objectTypeNotInFilter.Contains(c.OBJECT_TYPE) && !objectTypeNotInFilter.Contains(c.REFERENCED_OBJECT_TYPE))
                                                           .Where(e => !e.OBJECT_TYPE.Contains("ACTIVE_RELATIONSHIP") && !e.OBJECT_TYPE.Contains("RELATIONSHIP") && !e.REFERENCED_OBJECT_TYPE.Contains("ACTIVE_RELATIONSHIP") && !e.REFERENCED_OBJECT_TYPE.Contains("RELATIONSHIP"));
+            
+            // Object Nodes and Ref Object Nodes are Objects (MEASURE, CALC COLUMN, COLUMN)
+
             var objectNodes = cleansedDependencyData.Select(c => new
                                                 {
                                                     c.OBJECT,
@@ -68,8 +72,25 @@ namespace Utils_for_PBI.Models
                                                         OBJECT_TYPE = c.REFERENCED_OBJECT_TYPE
                                                     }).Distinct();
 
-            var allNodes = objectNodes.Union(refObjectNodes).Distinct();
+            // Tables are the source and referenced tables. This information will not be available in the object & refobj nodes
+            var tables =  cleansedDependencyData.Select(c => new
+            {
+                OBJECT = c.SOURCE_TABLE,
+                OBJECT_TYPE = "TABLE"
+            }).Distinct();
 
+            var refTables = cleansedDependencyData.Select(c => new
+            {
+                OBJECT = c.REFERENCED_TABLE,
+                OBJECT_TYPE = "TABLE"
+            }).Distinct();
+
+            // All objects and tables are combined to get the nodes
+            var allTables = tables.Union(refTables).Distinct();
+
+            var allNodes = objectNodes.Union(refObjectNodes).Union(allTables).Distinct();
+
+            // Nodes are then expanded with more information
             var nodesJSON = allNodes.Select(r => new
                                     {
                                         data = new
@@ -89,6 +110,8 @@ namespace Utils_for_PBI.Models
                                         }
                                     });
 
+            // Edges are created between the nodes. 
+            
             var edgesJSON = cleansedDependencyData.Where(c => c.REFERENCED_OBJECT_TYPE.ToUpper() != "TABLE" || (c.OBJECT_TYPE.ToUpper() == "CALC_TABLE" && c.REFERENCED_OBJECT_TYPE.ToUpper() == "TABLE"))
                                                   .Select(c => new
                                                     {
@@ -101,6 +124,17 @@ namespace Utils_for_PBI.Models
                                                         }
 
                                                     });
+            var tableEdges = cleansedDependencyData.Where(c => c.REFERENCED_OBJECT_TYPE.ToUpper() != "TABLE" || (c.OBJECT_TYPE.ToUpper() == "CALC_TABLE" && c.REFERENCED_OBJECT_TYPE.ToUpper() == "TABLE"))
+                                                      .Select(c => new
+                                                      {
+                                                          data = new
+                                                          {
+                                                              source = c.SOURCE_TABLE,
+                                                              target = c.OBJECT,
+                                                              faveColor = "#5c658d",
+                                                              strength = 60
+                                                          }
+                                                      });
 
             var refTableEdges = cleansedDependencyData.Where(c => c.REFERENCED_OBJECT_TYPE.ToUpper() != "TABLE" || (c.OBJECT_TYPE.ToUpper() == "CALC_TABLE" && c.REFERENCED_OBJECT_TYPE.ToUpper() == "TABLE")) 
                                                       .Select(c => new
@@ -113,7 +147,8 @@ namespace Utils_for_PBI.Models
                                                                 strength = 60
                                                             }
                                                         });
-            edgesJSON = edgesJSON.Union(refTableEdges).Distinct();
+
+            edgesJSON = edgesJSON.Union(tableEdges).Union(refTableEdges).Distinct();
 
             var nodesInfo = allNodes.Select(c => new
                                             {

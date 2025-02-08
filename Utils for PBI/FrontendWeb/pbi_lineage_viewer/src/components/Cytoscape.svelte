@@ -7,7 +7,6 @@ import cytoscape from 'cytoscape';
 import cytoscapeDagre from 'cytoscape-dagre';
 import cxtmenu from 'cytoscape-cxtmenu';
 
-
 //Icons
 import tableIcon from '../assets/table.png';
 import measureIcon from '../assets/measure.png';
@@ -73,15 +72,17 @@ class CytoscapeLineage{
                 name: 'dagre',
                 ranker: 'tight-tree',
                 rankDir: 'LR',
-                rankSep: 5,
-                edgeSep: 15,
-                nodeSep: 15,
-                animate: true, 
+                animate: false, 
                 animationDuration: 500,
-                fit:true
+                fit: true,
             }).run();
-
-        this.cy.fit();
+        if(nodes == null){
+            this.cy.fit();
+        }
+        else{
+            this.cy.fit(nodes);
+        }
+        
     }
 
     // Clear the filter on the lineage by showing all the nodes
@@ -110,10 +111,6 @@ class CytoscapeLineage{
                 name: 'dagre',
                 ranker: 'tight-tree',
                 rankDir: 'LR',
-                rankSep: 50,
-                edgeSep: 20,
-                nodeSep: 20,
-                spacingFactor: 1
             },
             wheelSensitivity: 0.1,
 
