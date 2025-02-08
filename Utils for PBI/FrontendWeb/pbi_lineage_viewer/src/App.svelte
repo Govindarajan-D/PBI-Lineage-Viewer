@@ -18,6 +18,7 @@
         ObjectType - Measure, Table, Calc. Column, Column
         Object - Actual names of the objects (for e.g Sales YTD, Sum of Quantity)
     */
+   
     function onObjectTypeSelected(event){
       if(event.detail.id == "SIG_DD_CLEAR"){
         objectTypeComponent.clearFilter();
@@ -77,12 +78,12 @@
 <style>
   .top-bar {
     height: 15%;
-    background-color: #f8f9fa; /* Light gray background */
+    background-color: #1d2836; /* Light gray background */
   }
   .cytoscape-container {
     height: 85%;
     overflow: hidden;
-    background-color: #212A37;
+    background-color: #1d2836;
   }
 
   .full-height {

@@ -4,7 +4,7 @@
     import {createEventDispatcher} from 'svelte';
 
     export let apiUrl = '';
-    export let dropdownName = '';
+    export const dropdownName = '';
     export let idKey;
     export let nameKey;
     export let enableFiltering = false;
