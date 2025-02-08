@@ -7,6 +7,7 @@ import cytoscape from 'cytoscape';
 import cytoscapeDagre from 'cytoscape-dagre';
 import cxtmenu from 'cytoscape-cxtmenu';
 
+import {createEventDispatcher} from 'svelte';
 
 //Icons
 import tableIcon from '../assets/table.png';
@@ -17,6 +18,8 @@ import columnIcon from '../assets/column.png';
 let cytoLineage;
 const LineageStartingPositionX = 100;
 const baseURL = "http://localhost:8080/utilspbi/api/";
+
+const dispatch = createEventDispatcher();
 
 // Class contains the Lineage cy object and all the functions associated with it
 class CytoscapeLineage{
@@ -53,7 +56,7 @@ class CytoscapeLineage{
      by applying the 'filtered' class
     */
     filterOnSelectedNode = (filterText) => {
-        this.clearFilter();
+        this.clearFilter("CY_FILTER_CLEAR");
         this.filteredNode = this.cy.nodes(`[id="${filterText}"]`);
         this.filteredNode.addClass("filtered");
 
@@ -73,20 +76,21 @@ class CytoscapeLineage{
                 name: 'dagre',
                 ranker: 'tight-tree',
                 rankDir: 'LR',
-                rankSep: 5,
-                edgeSep: 15,
-                nodeSep: 15,
-                animate: true, 
+                animate: false, 
                 animationDuration: 500,
-                fit:true
+                fit: true,
             }).run();
-
-        this.cy.fit();
+        if(nodes == null){
+            this.cy.fit();
+        }
+        else{
+            this.cy.fit(nodes);
+        }
     }
 
     // Clear the filter on the lineage by showing all the nodes
     // The layout is also refreshed to accomodate the change in the number of nodes
-    clearFilter = () => {
+    clearFilter = (origin) => {
         if(this.filteredNode){
             this.filteredNode.removeClass("filtered");
         }
@@ -94,6 +98,9 @@ class CytoscapeLineage{
         this.cy.edges().show();
 
         this.refreshLayout();
+        if(origin == "CX_CLEAR"){
+            dispatch("clear_dropdown", {id:"SIG_CY_CLEAR_DROPDOWN", name: "Clear from Cytoscape"});
+        }
     }
 
     // Initialize the cytoscape object by passing the appropriate parameters
@@ -110,10 +117,6 @@ class CytoscapeLineage{
                 name: 'dagre',
                 ranker: 'tight-tree',
                 rankDir: 'LR',
-                rankSep: 50,
-                edgeSep: 20,
-                nodeSep: 20,
-                spacingFactor: 1
             },
             wheelSensitivity: 0.1,
 
@@ -252,6 +255,8 @@ class CytoscapeLineage{
     return this.cy;
 
     }
+    
+    // Initialize Circular Context Menu for Cytoscape
 
     initCyContext = () => {
         cytoscape.use(cxtmenu);
@@ -290,7 +295,7 @@ class CytoscapeLineage{
                     content: filterClearContent, // html/text content to be displayed in the menu
                     contentStyle: {}, // css key:value pairs to set the command's css in js if you want
                     select: (ele) => {
-                        this.clearFilter();
+                        this.clearFilter("CX_CLEAR");
                     },
                     enabled: true // whether the command is selectable
                 }
@@ -332,7 +337,7 @@ export function filterCytoscapeNode(filterText){
 }
 
 export function clearFilter(){
-    cytoLineage.clearFilter();
+    cytoLineage.clearFilter("DD_CLEAR");
 }
 
 </script>

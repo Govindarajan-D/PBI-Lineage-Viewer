@@ -7,36 +7,47 @@
     let objectsComponent;
     let cytoscapeComponent;
 
-    // Multiple Object filter interaction functions. 
-    // Based on the selected value the other dropdown and cytoscape object is filtered/cleared
+    /* 
+       Multiple Object filter interaction functions. Based on the selected value the other dropdown and cytoscape object is filtered/cleared 
+       Signals are passed from child components for interaction. 
+          SIG_DD_CLEAR - Clear signal comes from the dropdown component 
+          SIG_CY_CLEAR_DROPDOWN - Clear signal comes from the Cytoscape component
+       This is done to avoid circular function calls
 
-    // ObjectType - Measure, Table, Calc. Column, Column
-    // Object - Actual names of the objects (for e.g Sales YTD, Sum of Quantity)
-    
+       Based on the meta data, two dropdowns are available:
+        ObjectType - Measure, Table, Calc. Column, Column
+        Object - Actual names of the objects (for e.g Sales YTD, Sum of Quantity)
+    */
+   
     function onObjectTypeSelected(event){
-      if(event.detail.id != "CLEAR"){
-        if(objectsComponent){
-          objectsComponent.filterObjects("objectTypeID", event.detail.id);
-        }
-      }
-      else{
+      if(event.detail.id == "SIG_DD_CLEAR"){
         objectTypeComponent.clearFilter();
         objectsComponent.clearFilter();
         cytoscapeComponent.clearFilter();
       }
+      else if(event.detail.id == "SIG_CY_CLEAR_DROPDOWN"){
+        objectTypeComponent.clearFilter();
+        objectsComponent.clearFilter();
+      }
+      else{
+        if(objectsComponent){
+          objectsComponent.filterObjects("objectTypeID", event.detail.id);
+        }
+      }
     }
     
     function onObjectSelected(event) {
-      if(event.detail.id != "CLEAR"){
+      if(event.detail.id == "SIG_DD_CLEAR"){
+        objectsComponent.clearFilter();
+        cytoscapeComponent.clearFilter();
+      }
+      else{
         if(cytoscapeComponent){
           cytoscapeComponent.filterCytoscapeNode(event.detail.id);
         }
       }
-      else{
-        objectsComponent.clearFilter();
-        cytoscapeComponent.clearFilter();
-      }
     }
+
 </script>
 <div class="container-fluid full-height d-flex flex-column">
     <div class="top-bar d-flex align-items-center justify-content-start">
@@ -60,19 +71,19 @@
             />
     </div>
     <div class="cytoscape-container">
-        <Cytoscape bind:this = {cytoscapeComponent}>
+        <Cytoscape bind:this = {cytoscapeComponent} on:clear_dropdown={onObjectTypeSelected}>
         </Cytoscape>
     </div>
 </div>
 <style>
   .top-bar {
     height: 15%;
-    background-color: #f8f9fa; /* Light gray background */
+    background-color: #1d2836; /* Light gray background */
   }
   .cytoscape-container {
     height: 85%;
     overflow: hidden;
-    background-color: #212A37;
+    background-color: #1d2836;
   }
 
   .full-height {

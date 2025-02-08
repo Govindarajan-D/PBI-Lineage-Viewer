@@ -370,3 +370,6 @@ FodyWeavers.xsd
 /HTMLtobin/Program.cs
 /Utils for PBI/FrontendWeb/dist/*
 /PBI Lineage Viewer Installer/*
+/Utils for PBI/FrontendWeb/pbi_lineage_viewer/bundle.css
+/Utils for PBI/FrontendWeb/pbi_lineage_viewer/bundle.js
+/Utils for PBI/FrontendWeb/pbi_lineage_viewer/bundle.js.map

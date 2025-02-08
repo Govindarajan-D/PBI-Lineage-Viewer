@@ -4,7 +4,7 @@
     import {createEventDispatcher} from 'svelte';
 
     export let apiUrl = '';
-    export let dropdownName = '';
+    export const dropdownName = '';
     export let idKey;
     export let nameKey;
     export let enableFiltering = false;
@@ -33,7 +33,8 @@
             const response = await fetch(apiUrl);
             if(!response.ok) throw new Error(`Error: ${response.status}`);
             apiData = await response.json();
-            options = apiData.map((option) => ({id: option[idKey], name: option[nameKey]}));
+            options = apiData.map((option) => ({id: option[idKey], name: option[nameKey]}))
+                             .sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
             filteredOptions = options;
         } catch (err){
             error = err.message;
@@ -61,8 +62,8 @@
     }
     
     export function clearFilter(){
+        selectedValue = 'All';
         filteredOptions = apiData.map((option) => ({id: option[idKey], name: option[nameKey]}));
-        selectedValue = 'Select';
     }
 
 </script>
@@ -72,8 +73,8 @@
         <DropdownToggle caret>
             {selectedValue}
         </DropdownToggle>
-        <DropdownMenu>
-            <DropdownItem on:click={() => handleSelect({id:"CLEAR", name: "Clear"})}>
+        <DropdownMenu class="dropdown-scroll">
+            <DropdownItem on:click={() => handleSelect({id:"SIG_DD_CLEAR", name: "Clear"})}>
                 Clear Filter
             </DropdownItem>
             <DropdownItem divider />
@@ -99,3 +100,29 @@
     </DropdownMenu>
     </Dropdown>
 </div>
+<style>
+/* Global needs to be used as Svelte does not recognize classes applied on custom components (DropdownMenu). It will work in native HTML tags like div */
+:global(.dropdown-scroll){
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+}
+:global(.dropdown-scroll::-webkit-scrollbar) {
+    width: 8px; /* Width of the scrollbar */
+}
+
+:global(.dropdown-scroll::-webkit-scrollbar-thumb) {
+    background: #888; /* Scrollbar color */
+    border-radius: 4px; /* Rounded edges */
+}
+
+:global(.dropdown-scroll::-webkit-scrollbar-thumb:hover) {
+    background: #555; /* Darker on hover */
+}
+
+:global(.dropdown-scroll::-webkit-scrollbar-track) {
+    background: #f1f1f1; /* Background of scrollbar */
+    border-radius: 4px;
+}
+
+</style>
