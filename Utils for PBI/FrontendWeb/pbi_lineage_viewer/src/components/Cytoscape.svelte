@@ -86,7 +86,6 @@ class CytoscapeLineage{
         else{
             this.cy.fit(nodes);
         }
-        
     }
 
     // Clear the filter on the lineage by showing all the nodes
@@ -102,7 +101,6 @@ class CytoscapeLineage{
         if(origin == "CX_CLEAR"){
             dispatch("clear_dropdown", {id:"SIG_CY_CLEAR_DROPDOWN", name: "Clear from Cytoscape"});
         }
-        
     }
 
     // Initialize the cytoscape object by passing the appropriate parameters
@@ -257,6 +255,8 @@ class CytoscapeLineage{
     return this.cy;
 
     }
+    
+    // Initialize Circular Context Menu for Cytoscape
 
     initCyContext = () => {
         cytoscape.use(cxtmenu);
