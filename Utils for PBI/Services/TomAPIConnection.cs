@@ -1,15 +1,10 @@
-﻿using System;
+﻿using log4net;
+using PowerBIConnections.Connections;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Versioning;
 using System.Windows.Forms;
 using Tabular = Microsoft.AnalysisServices.Tabular;
-using PowerBIConnections.Connections;
-using log4net.Repository.Hierarchy;
-using log4net;
-using System.Runtime.Versioning;
 
 //TO-DO: Move it to a separate project if necessary for creating DLLs
 

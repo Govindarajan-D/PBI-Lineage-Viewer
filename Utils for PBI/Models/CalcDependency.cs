@@ -1,11 +1,7 @@
-﻿using Microsoft.AnalysisServices.Tabular;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Json = System.Text.Json;
-using System.Threading.Tasks;
-using Utils_for_PBI.Services;
 
 namespace Utils_for_PBI.Models
 {

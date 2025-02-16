@@ -1,20 +1,13 @@
 ﻿using log4net;
-using log4net.Config;
 using PowerBIConnections.Connections;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Runtime.Versioning;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Utils_for_PBI.Models;
-using Utils_for_PBI.Forms;
 using AdomdClient = Microsoft.AnalysisServices.AdomdClient;
 
 
-//TO-DO: Move it to a separate project if necessary for creating DLLs
 namespace Utils_for_PBI.Services
 {
     /// <summary>
@@ -99,7 +92,7 @@ namespace Utils_for_PBI.Services
             REFERENCED_TABLE = Convert.ToString(dataRecord["REFERENCED_TABLE"]),
             REFERENCED_OBJECT = Convert.ToString(dataRecord["REFERENCED_OBJECT"])
         };
-        //TO-DO: Simplify the below code
+
         public void Disconnect(bool endSession = true)
         {
             endAdomdSession = endSession;
