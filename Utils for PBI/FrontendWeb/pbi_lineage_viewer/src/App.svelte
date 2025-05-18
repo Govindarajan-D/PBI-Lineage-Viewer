@@ -76,6 +76,7 @@
     </div>
 </div>
 <style>
+  :global(body) { /* this will apply to <body> */ margin: 0; padding: 0; }
   .top-bar {
     height: 15%;
     background-color: #1d2836; /* Light gray background */

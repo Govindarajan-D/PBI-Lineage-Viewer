@@ -68,7 +68,7 @@
 
 </script>
 
-<div class="container-mt-5 me-2 w-15">
+<div class="container-mt-5 me-2 w-15 ms-2">
     <Dropdown isOpen={dropdownOpen} toggle={() => (dropdownOpen = !dropdownOpen)}>
         <DropdownToggle caret>
             {selectedValue}

@@ -39,7 +39,9 @@ namespace Utils_for_PBI.Forms
             ConnectDataset connectDatasetWindow = new ConnectDataset();
             connectDatasetWindow.NotifyAction += OnConnection;
 
-            if (connectDatasetWindow.ShowDialog() == DialogResult.OK)
+            var connectionWindow = connectDatasetWindow.ShowDialog();
+
+            if (connectionWindow == DialogResult.OK)
             {
                 var connection = connectDatasetWindow.selectedConnection;
                 if (connection != null)
@@ -88,12 +90,16 @@ namespace Utils_for_PBI.Forms
                     Logger.Info(connectionString);
                 }
             }
+            else if (connectionWindow == DialogResult.Cancel)
+            {
+                return;
+            }
 
-            /* HTML page is generated from the resources and then it is displayed in the WebView2 component.
-             * The calc dependencies are retrieved and then served using the UtilsPBIHTTPServer server.
-             */
+                /* HTML page is generated from the resources and then it is displayed in the WebView2 component.
+                 * The calc dependencies are retrieved and then served using the UtilsPBIHTTPServer server.
+                 */
 
-            GenerateLineagePage showDependencyGraph = new GenerateLineagePage();
+                GenerateLineagePage showDependencyGraph = new GenerateLineagePage();
             string filePath = showDependencyGraph.GenerateHTMLPage();
 
             string fileUri = new Uri(filePath).AbsoluteUri;
