@@ -43,6 +43,12 @@ namespace Utils_for_PBI.Forms
 
             if (connectionWindow == DialogResult.OK)
             {
+                // If a new connection, we stop the server. 
+                // TO-DO: Instead of stopping and starting again, need to change the data that is served 
+                if (_dataServer != null)
+                {
+                    _dataServer.Stop();
+                }
                 var connection = connectDatasetWindow.selectedConnection;
                 if (connection != null)
                 {

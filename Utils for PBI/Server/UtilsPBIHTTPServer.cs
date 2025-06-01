@@ -86,9 +86,15 @@ namespace Utils_for_PBI.Server
                 case "/utilspbi/api/objecttypeinfo":
                     await ServeContent(response, calcDepedencyData.objectTypeInfoJSON);
                     break;
+                case "/utilspbi/api/sveltenodes":
+                    await ServeContent(response, calcDepedencyData.svelte_flow_nodes_json);
+                    break;
+                case "/utilspbi/api/svelteedges":
+                    await ServeContent(response, calcDepedencyData.svelte_flow_edges_json);
+                    break;
                 default:
                     response.StatusCode = 404;
-                    await ServeContent(response, "<h1>Not Found Page</h1>");
+                    await ServeContent(response, "Invalid URL. No data");
                     break;
 
             }
