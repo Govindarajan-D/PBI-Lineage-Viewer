@@ -1,64 +1,68 @@
 <script lang="ts">
-  import dagre from '@dagrejs/dagre';
-  import {
-    SvelteFlow,
-    Background,
-    Position,
-    ConnectionLineType,
-    Panel,
-    type Node,
-    type Edge,
-  } from '@xyflow/svelte';
+import dagre from '@dagrejs/dagre';
+import {
+  SvelteFlow,
+  Background,
+  Position,
+  ConnectionLineType,
+  Panel,
+  type Node,
+  type Edge,
+  type NodeEventWithPointer,
+} from '@xyflow/svelte';
 
-  import '@xyflow/svelte/dist/style.css';
+import { writable } from 'svelte/store';
+import { onMount } from 'svelte';
+import CalcNode from './CalcNode.svelte';
+import ContextMenu from './ContextMenu.svelte';
+import '@xyflow/svelte/dist/style.css';
 
-  import CalcNode from './CalcNode.svelte';
-  import { onMount } from 'svelte';
 
-  const nodeTypes = {
-    selectorNode: CalcNode,
-  };
- 
-  let nodes = [];
-  let edges = []; 
-  const dagreGraph = new dagre.graphlib.Graph();
-  dagreGraph.setDefaultEdgeLabel(() => ({}));
+const nodeTypes = {
+  selectorNode: CalcNode,
+};
 
-  const nodeWidth = 172;
-  const nodeHeight = 36;
+const nodes = writable([]);
+const edges = writable([]);
+
+const dagreGraph = new dagre.graphlib.Graph();
+dagreGraph.setDefaultEdgeLabel(() => ({}));
+
+const nodeWidth = 172;
+const nodeHeight = 36;
 
 function getLayoutedElements(nodes: Node[], edges: Edge[], direction = 'TB') {
-    const isHorizontal = direction === 'LR';
-    dagreGraph.setGraph({ rankdir: direction });
+  const isHorizontal = direction === 'LR';
+  dagreGraph.setGraph({ rankdir: direction });
 
-    nodes.forEach((node) => {
-      dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
-    });
+  nodes.forEach((node) => {
+    dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
+  });
 
-    edges.forEach((edge) => {
-      dagreGraph.setEdge(edge.source, edge.target);
-    });
+  edges.forEach((edge) => {
+    dagreGraph.setEdge(edge.source, edge.target);
+  });
 
-    dagre.layout(dagreGraph);
+  dagre.layout(dagreGraph);
 
-    const layoutedNodes = nodes.map((node) => {
-      const nodeWithPosition = dagreGraph.node(node.id);
-      node.targetPosition = isHorizontal ? Position.Left : Position.Top;
-      node.sourcePosition = isHorizontal ? Position.Right : Position.Bottom;
+  const layoutedNodes = nodes.map((node) => {
+    const nodeWithPosition = dagreGraph.node(node.id);
+    node.targetPosition = isHorizontal ? Position.Left : Position.Top;
+    node.sourcePosition = isHorizontal ? Position.Right : Position.Bottom;
 
-      // We are shifting the dagre node position (anchor=center center) to the top left
-      // so it matches the React Flow node anchor point (top left).
-      return {
-        ...node,
-        position: {
-          x: nodeWithPosition.x - nodeWidth / 2,
-          y: nodeWithPosition.y - nodeHeight / 2,
-        },
-      };
-    });
+    // We are shifting the dagre node position (anchor=center center) to the top left
+    // so it matches the React Flow node anchor point (top left).
+    return {
+      ...node,
+      position: {
+        x: nodeWithPosition.x - nodeWidth / 2,
+        y: nodeWithPosition.y - nodeHeight / 2,
+      },
+    };
+  });
 
-    return { nodes: layoutedNodes, edges };
-  }
+  return { nodes: layoutedNodes, edges };
+}
 
 const position = { x: 0, y: 0 };
 const edgeType = 'smoothstep';
@@ -68,33 +72,31 @@ const baseURL = "http://localhost:8080/utilspbi/api/";
 var svelte_nodes, svelte_edges;
 
 async function fetchdata() {
-  const nodesURL = baseURL + "sveltenodes";
-  const edgesURL = baseURL + "svelteedges";
+const nodesURL = baseURL + "sveltenodes";
+const edgesURL = baseURL + "svelteedges";
 
-  return Promise.all([
-      fetch(nodesURL).then(response => response.json()),
-      fetch(edgesURL).then(response => response.json())
-  ])
-      .then(([nodes, edges]) => {
-          nodes.forEach(element => {
-              if (element.data && element.data.name) {
-                  element.data.nameLength = element.data.name.length;
-              }
-          });
-          svelte_nodes = nodes;
-          svelte_edges = edges;
-      });
+return Promise.all([
+    fetch(nodesURL).then(response => response.json()),
+    fetch(edgesURL).then(response => response.json())
+])
+    .then(([nodes, edges]) => {
+        nodes.forEach(element => {
+            if (element.data && element.data.name) {
+                element.data.nameLength = element.data.name.length;
+            }
+        });
+        svelte_nodes = nodes;
+        svelte_edges = edges;
+    });
 }
 
 onMount(() => {
-  fetchdata().then(() => {
-    //nodes = initialNodes;
-    //edges = initialEdges;
-    const layoutedElements = getLayoutedElements(svelte_nodes, svelte_edges, 'LR');
-    nodes = layoutedElements.nodes;
-    edges = layoutedElements.edges;
-    // console.log(nodes);
-  })
+fetchdata().then(() => {
+  const layoutedElements = getLayoutedElements(svelte_nodes, svelte_edges, 'LR');
+  console.log('Layouted Nodes:', layoutedElements);
+  nodes.set(layoutedElements.nodes);
+  edges.set(layoutedElements.edges);
+})
 });
 
 
@@ -102,16 +104,69 @@ onMount(() => {
 function onLayout(direction: string) {
   const layoutedElements = getLayoutedElements(svelte_nodes, svelte_edges, direction);
 
-  nodes = layoutedElements.nodes;
-  edges = layoutedElements.edges;
+  nodes.set(layoutedElements.nodes);
+  edges.set(layoutedElements.edges);
+}
+
+function filterNode(){
+  var filter_id = "goals";
+  var filtered_nodes = svelte_nodes.filter(node => node.id === filter_id);
+  var filtered_edges = svelte_edges.filter(edge => edge.source === filter_id || edge.target === filter_id);
+  console.log('Filtered Nodes:', filtered_nodes);
+  console.log('Filtered Edges:', filtered_edges);
+  //const layoutedElements = getLayoutedElements(svelte_nodes, svelte_edges, 'LR');
+
+  //nodes.set(layoutedElements.nodes);
+  //edges.set(layoutedElements.edges);
+}
+
+
+// Handling context menu
+let menu: {
+id: string;
+top?: number;
+left?: number;
+right?: number;
+bottom?: number;
+} | null = $state(null);
+let clientWidth: number = $state();
+let clientHeight: number = $state();
+
+
+const handleContextMenu: NodeEventWithPointer = ({ event, node }) => {
+  // Prevent native context menu from showing
+  event.preventDefault();
+
+  // Calculate position of the context menu. We want to make sure it
+  // doesn't get positioned off-screen.
+  menu = {
+    id: node.id,
+    top: event.clientY < clientHeight - 200 ? event.clientY : undefined,
+    left: event.clientX < clientWidth - 200 ? event.clientX : undefined,
+    right:
+      event.clientX >= clientWidth - 200
+        ? clientWidth - event.clientX
+        : undefined,
+    bottom:
+      event.clientY >= clientHeight - 200
+        ? clientHeight - event.clientY
+        : undefined,
+  };
+};
+
+// Close the context menu if it's open whenever the window is clicked.
+function handlePaneClick() {
+  menu = null;
 }
 </script>
-
+<div style="height:100vh;" bind:clientWidth bind:clientHeight>
 <SvelteFlow
-  bind:nodes
-  bind:edges
+  bind:nodes={$nodes}
+  bind:edges={$edges}
   {nodeTypes}
   fitView
+  onnodecontextmenu={handleContextMenu}
+  onpaneclick={handlePaneClick}
   connectionLineType={ConnectionLineType.SmoothStep}
   defaultEdgeOptions={{ type: 'bezier', animated: false }}
 
@@ -119,6 +174,18 @@ function onLayout(direction: string) {
   <Panel position="top-right">
     <button onclick={() => onLayout('TB')}>vertical layout</button>
     <button onclick={() => onLayout('LR')}>horizontal layout</button>
+    <button onclick={filterNode}>Filter Nodes</button>
   </Panel>
   <Background />
+    {#if menu}
+      <ContextMenu
+        onclick={handlePaneClick}
+        id={menu.id}
+        top={menu.top}
+        left={menu.left}
+        right={menu.right}
+        bottom={menu.bottom}
+      />
+    {/if}
 </SvelteFlow>
+</div>
