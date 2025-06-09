@@ -5,6 +5,11 @@ export function bfs(edges, startNode, direction = 'incomers' ){
     const visited = new Set();
     const hierNodes = new Set();
 
+    // We create edgeFilter function to filter according to the direction
+    const edgeFilter = direction === "incomers"
+        ? (edge, node) => edge.target === node
+        : (edge, node) => edge.source === node;
+
     while (queue.length > 0) {
         // shift does something similar to pop but on the first element
         // if we had used pop, it would have been dfs ;)
@@ -19,9 +24,8 @@ export function bfs(edges, startNode, direction = 'incomers' ){
 
         if (!visited.has(currentNode)){
             visited.add(currentNode);
-            const neighbors = edges.filter(edge => 
-                direction === "incomers"? edge.target === currentNode : edge.source === currentNode
-            );
+            const neighbors = edges.filter(edge => edgeFilter(edge, currentNode));
+
             for (const neighbor of neighbors){
                 const nextNode = direction === "incomers"? neighbor.source : neighbor.target;
                 if(!visited.has(nextNode)){

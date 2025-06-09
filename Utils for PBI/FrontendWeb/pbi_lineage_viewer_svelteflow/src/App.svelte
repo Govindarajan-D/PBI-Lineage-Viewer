@@ -16,6 +16,7 @@
   import CalcNode from "./CalcNode.svelte";
   import ContextMenu from "./ContextMenu.svelte";
   import "@xyflow/svelte/dist/style.css";
+  import { getAncestors, getDescendants } from "./utility";
 
   const nodeTypes = {
     selectorNode: CalcNode,
@@ -122,7 +123,8 @@
   }
 
   function filterNode() {
-    var filter_id = "goals";
+    var filter_id = "long_gap_between_titles";
+    console.log(getAncestors(svelte_edges, filter_id));
     var filtered_nodes = svelte_nodes.filter((node) => node.id === filter_id);
     var filtered_edges = svelte_edges.filter(
       (edge) => edge.source === filter_id || edge.target === filter_id,
