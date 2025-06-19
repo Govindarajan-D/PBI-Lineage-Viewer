@@ -1,5 +1,6 @@
 <script lang="ts">
   import { useEdges, useNodes, useSvelteFlow } from '@xyflow/svelte';
+  import { createEventDispatcher } from 'svelte';
  
   let {
     id,
@@ -8,6 +9,7 @@
     right,
     bottom,
     onclick,
+    filterNode,
   }: {
     id: string;
     top: number | undefined;
@@ -15,15 +17,12 @@
     right: number | undefined;
     bottom: number | undefined;
     onclick: () => void;
+    filterNode: (id: string) => void;
   } = $props();
  
   const { deleteElements } = useSvelteFlow();
  
   const nodes = useNodes();
- 
-  function filterNode() {
-    console.log(`Filtering node: ${id}`);
-  }
  
   function clearFilter() {
   }
@@ -37,7 +36,7 @@
   <p style="margin: 0.5em;">
     <small>node: {id}</small>
   </p>
-  <button onclick={filterNode}>Filter Node</button>
+  <button onclick={() => filterNode(id)}>Filter Node</button>
   <button onclick={clearFilter}>Clear Filter</button>
 </div>
  

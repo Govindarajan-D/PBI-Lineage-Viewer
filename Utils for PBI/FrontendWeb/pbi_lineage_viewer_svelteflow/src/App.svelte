@@ -24,17 +24,29 @@
 
   const nodes = writable([]);
   const edges = writable([]);
+  const nodeWidth = 172;
+  const nodeHeight = 36;
+
+  const baseURL = "http://localhost:8080/utilspbi/api/";
+  var svelte_nodes, svelte_edges;
 
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));
 
-  const nodeWidth = 172;
-  const nodeHeight = 36;
+  9// Handling context menu
+  let menu: {
+    id: string;
+    top?: number;
+    left?: number;
+    right?: number;
+    bottom?: number;
+  } | null = $state(null);
+  let clientWidth: number = $state();
+  let clientHeight: number = $state();
 
   // This function is used to layout the nodes and edges using the dagre library.
   // It sets the graph direction, adds nodes and edges to the graph, and then computes the layout.
   function getLayoutedElements(nodes: Node[], edges: Edge[], direction = "TB") {
-    
     //Define constants for the graph layout
     const rankSep = 250; // Space between ranks
     
@@ -70,13 +82,6 @@
     return { nodes: layoutedNodes, edges };
   }
 
-  const position = { x: 0, y: 0 };
-  const edgeType = "smoothstep";
-
-  const baseURL = "http://localhost:8080/utilspbi/api/";
-
-  var svelte_nodes, svelte_edges;
-
   // Fetches nodes and edges data from the API and processes it.
   // It is asynchronous and returns a promise that resolves when the data is fetched.
   async function fetchdata() {
@@ -105,7 +110,6 @@
         svelte_edges,
         "LR",
       );
-      console.log("Layouted Nodes:", layoutedElements);
       nodes.set(layoutedElements.nodes);
       edges.set(layoutedElements.edges);
     });
@@ -122,34 +126,25 @@
     edges.set(layoutedElements.edges);
   }
 
-  function filterNode() {
-    var filter_id = "long_gap_between_titles";
-    console.log(getAncestors(svelte_edges, filter_id));
-    var filtered_nodes = svelte_nodes.filter((node) => node.id === filter_id);
-    var filtered_edges = svelte_edges.filter(
-      (edge) => edge.source === filter_id || edge.target === filter_id,
-    );
+  function filterNode(filter_id) {
 
+    const unioned_nodes = Array.from(new Set([...getAncestors(svelte_edges, filter_id),...getDescendants(svelte_edges, filter_id), filter_id]));
+    const filtered_nodes = svelte_nodes.filter((node) => unioned_nodes.includes(node.id));
+    const filtered_edges = svelte_edges;
+    
     const layoutedElements = getLayoutedElements(
       filtered_nodes,
       filtered_edges,
       "LR",
     );
 
+    console.log("Layouted Nodes:", layoutedElements);
+    
     nodes.set(layoutedElements.nodes);
     edges.set(layoutedElements.edges);
   }
 
-  // Handling context menu
-  let menu: {
-    id: string;
-    top?: number;
-    left?: number;
-    right?: number;
-    bottom?: number;
-  } | null = $state(null);
-  let clientWidth: number = $state();
-  let clientHeight: number = $state();
+
 
   const handleContextMenu: NodeEventWithPointer = ({ event, node }) => {
     // Prevent native context menu from showing
@@ -200,6 +195,7 @@
     {#if menu}
       <ContextMenu
         onclick={handlePaneClick}
+        filterNode={(id) => filterNode(id)}
         id={menu.id}
         top={menu.top}
         left={menu.left}

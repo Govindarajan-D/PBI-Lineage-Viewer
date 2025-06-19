@@ -69,7 +69,8 @@ namespace Utils_for_PBI.Forms
             Task.Run(() => DownloadJSLibs());
 
             //ReportLineage reportLineage = new ReportLineage();
-
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
             Logger.Info("Launching Application");
             Application.Run(new MainWindow());
         }
