@@ -54,6 +54,6 @@
     <Folder Include="FrontendWeb\svelte\" />
   </ItemGroup>
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="cd FrontendWeb/pbi_lineage_viewer &amp;&amp; npm run build &amp;&amp; cd FrontendWeb &amp;&amp; npx combohtml -i pbi_lineage_viewer\public\index.html -o dist\index.html" />
+    <Exec Command="cd FrontendWeb/pbi_lineage_viewer_svelteflow &amp;&amp; npm run build &amp;&amp; cd FrontendWeb/pbi_lineage_viewer_svelteflow &amp;&amp; copy /y .\dist\index.html ..\dist\index.html" />
   </Target>
 </Project>

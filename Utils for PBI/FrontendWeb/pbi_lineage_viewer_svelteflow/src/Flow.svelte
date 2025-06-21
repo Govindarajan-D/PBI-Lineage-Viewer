@@ -143,7 +143,7 @@
       "LR",
     );
 
-    console.log("Layouted Nodes:", layoutedElements);
+    //console.log("Layouted Nodes:", layoutedElements);
     
     nodes.set(layoutedElements.nodes);
     edges.set(layoutedElements.edges);
