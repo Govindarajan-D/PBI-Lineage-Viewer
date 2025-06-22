@@ -108,6 +108,21 @@
     });
   }
 
+  function setNodesAndEdges(layoutedElements){
+    nodes.set(layoutedElements.nodes);
+    edges.set(layoutedElements.edges);
+
+    const fitViewOptions = {
+      padding: 0.5,
+      duration: 800, // Animate the transition over 800ms
+      maxZoom: 2
+    };
+
+    setTimeout(() => {
+      fitView(fitViewOptions);
+    }, 0);
+  }
+
   // The async function fetchdata is called when the component is mounted.
   onMount(() => {
     fetchdata().then(() => {
@@ -142,24 +157,43 @@
       filtered_edges,
       "LR",
     );
-
-    //console.log("Layouted Nodes:", layoutedElements);
     
-    nodes.set(layoutedElements.nodes);
-    edges.set(layoutedElements.edges);
-
-    const fitViewOptions = {
-      padding: 0.5,
-      duration: 800, // Animate the transition over 800ms
-      maxZoom: 2
-    };
-
-    setTimeout(() => {
-      fitView(fitViewOptions);
-    }, 0);
+    setNodesAndEdges(layoutedElements);
   }
 
+  function clearFilter(){
+    const layoutedElements = getLayoutedElements(
+      svelte_nodes,
+      svelte_edges,
+      "LR",
+    );
 
+    setNodesAndEdges(layoutedElements);
+  }
+
+  function handleNodeClick(event){
+    const clickedNode = event.node.id;
+    const unioned_nodes = Array.from(new Set([...getAncestors(svelte_edges, clickedNode),...getDescendants(svelte_edges, clickedNode), clickedNode]));
+    
+    const highlighted_nodes = svelte_nodes.map((node) => ({
+      ...node,
+      highlighted: unioned_nodes.includes(node.id),
+    }));
+
+    const highlighted_edges = svelte_edges.map((edge) => ({
+      ...edge,
+      style: unioned_nodes.includes(edge.source) || unioned_nodes.includes(edge.target)
+      ? { stroke: 'orange', strokeWidth: 3}
+      : {},
+    }));
+
+    const layoutedElements = getLayoutedElements(
+      highlighted_nodes,
+      highlighted_edges,
+      "LR",
+    );
+    setNodesAndEdges(layoutedElements);
+  }
 
   const handleContextMenu: NodeEventWithPointer = ({ event, node }) => {
     // Prevent native context menu from showing
@@ -195,6 +229,7 @@
     bind:edges={$edges}
     {nodeTypes}
     fitView
+    onnodeclick={handleNodeClick}
     onnodecontextmenu={handleContextMenu}
     onpaneclick={handlePaneClick}
     connectionLineType={ConnectionLineType.SmoothStep}
@@ -203,7 +238,6 @@
     <Panel position="top-right">
       <button onclick={() => onLayout("TB")}>vertical layout</button>
       <button onclick={() => onLayout("LR")}>horizontal layout</button>
-      <button onclick={filterNode}>Filter Nodes</button>
     </Panel>
 
     <Background />
@@ -212,6 +246,7 @@
       <ContextMenu
         onclick={handlePaneClick}
         filterNode={(id) => filterNode(id)}
+        clearFilter={() => clearFilter()}
         id={menu.id}
         top={menu.top}
         left={menu.left}
