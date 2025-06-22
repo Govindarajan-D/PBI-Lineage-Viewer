@@ -6,8 +6,7 @@ PBI Lineage Viewer is a lineage graphing tool that makes it easy to understand t
 Prerequisite:
 .NET 8 or Above
 
-![Lineage-1](Resources/Lineage-1.jpg)
-![Lineage-2](Resources/Lineage-2.jpg)
+![Lineage-1](Resources/Preview.jpg)
 
 ## Usage
 I am working on an installer for this.
