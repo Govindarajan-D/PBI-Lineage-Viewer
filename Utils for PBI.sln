@@ -27,8 +27,6 @@ Global
 		{0758C87F-DB55-470C-A1A2-525EB14C9669}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0758C87F-DB55-470C-A1A2-525EB14C9669}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0758C87F-DB55-470C-A1A2-525EB14C9669}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AA197158-7F27-45B0-9286-E6535648E1B5}.Debug|Any CPU.ActiveCfg = Debug
-		{AA197158-7F27-45B0-9286-E6535648E1B5}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
