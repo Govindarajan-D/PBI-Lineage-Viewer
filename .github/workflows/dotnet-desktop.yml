@@ -66,15 +66,18 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+        
     # Install Node.js
     - name: Setup Node.js
       uses: actions/setup-node@v3.9.1
       with:
         node-version: '22'
-        working-directory: './Utils for PBI/FrontendWe/pbi_lineage_viewer_svelteflow/'
+        working-directory: './Utils for PBI/FrontendWe/pbi_lineage_viewer_svelteflow'
         run: npm install
+        
     # Install vite plugin
     - name: Install vite plugin
+      working-directory: './Utils for PBI/FrontendWe/pbi_lineage_viewer_svelteflow'
       run: npm install -D vite
       
     # Install the .NET Core workload
