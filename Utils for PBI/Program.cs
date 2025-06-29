@@ -11,7 +11,7 @@ using System.Runtime.Versioning;
 using Utils_for_PBI.Services;
 
 /* TO-DO:
- * Add CALC_TABLE as a type
+ * Check for errors in lineage - Add Relationship (Active, Inactive)
  * Build script in github for automated building of exe
  * Add Installer for the program
  * Make classes more aligned with best practices (IDisposable)

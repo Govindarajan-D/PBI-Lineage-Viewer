@@ -14,13 +14,13 @@
 
   import { writable } from "svelte/store";
   import { onMount } from "svelte";
-  import CalcNode from "./CalcNode.svelte";
+  import DisplayNode from "./DisplayNode.svelte";
   import ContextMenu from "./ContextMenu.svelte";
   import "@xyflow/svelte/dist/style.css";
   import { getAncestors, getDescendants } from "./utility";
 
   const nodeTypes = {
-    selectorNode: CalcNode,
+    selectorNode: DisplayNode,
   };
 
   let flowRef;

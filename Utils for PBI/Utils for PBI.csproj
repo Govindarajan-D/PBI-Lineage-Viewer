@@ -14,6 +14,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Optimize>False</Optimize>
   </PropertyGroup>
+	<PropertyGroup>
+		<FrontendDir>$(ProjectDir)FrontendWeb\pbi_lineage_viewer_svelteflow</FrontendDir>
+
+		<FrontendDistDir>$(FrontendDir)\dist</FrontendDistDir>
+
+		<FinalDistDir>$(ProjectDir)FrontendWeb\dist</FinalDistDir>
+	</PropertyGroup>
   <ItemGroup>
     <Compile Remove="Frontend-Web\**" />
     <EmbeddedResource Remove="Frontend-Web\**" />
@@ -44,6 +51,7 @@
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="9.0.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.0" />
+    <PackageReference Include="Tools.InnoSetup" Version="6.4.3" />
   </ItemGroup>
   <ItemGroup>
     <None Update="log4net.config">
@@ -54,6 +62,7 @@
     <Folder Include="FrontendWeb\svelte\" />
   </ItemGroup>
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="cd FrontendWeb/pbi_lineage_viewer_svelteflow &amp;&amp; npm run build &amp;&amp; cd FrontendWeb/pbi_lineage_viewer_svelteflow &amp;&amp; copy /y .\dist\index.html ..\dist\index.html" />
+	  <MakeDir Directories="$(FinalDistDir)" Condition="!Exists('$(FinalDistDir)')" />
+	  <Exec Command="cd FrontendWeb/pbi_lineage_viewer_svelteflow &amp;&amp; npm run build &amp;&amp; cd FrontendWeb/pbi_lineage_viewer_svelteflow &amp;&amp; copy /y .\dist\index.html ..\dist\index.html" />
   </Target>
 </Project>
