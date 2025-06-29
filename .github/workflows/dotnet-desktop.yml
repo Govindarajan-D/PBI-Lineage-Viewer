@@ -77,7 +77,7 @@ jobs:
         
     # Install vite plugin
     - name: Install vite plugin
-      working-directory: './Utils for PBI/FrontendWe/pbi_lineage_viewer_svelteflow'
+      working-directory: './Utils for PBI/FrontendWeb/pbi_lineage_viewer_svelteflow'
       run: npm install -D vite
       
     # Install the .NET Core workload
