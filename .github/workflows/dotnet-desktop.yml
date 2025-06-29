@@ -73,7 +73,10 @@ jobs:
         node-version: '22'
         working-directory: './Utils for PBI/Utils for PBI\FrontendWeb\pbi_lineage_viewer_svelteflow/'
         run: npm install
-
+    # Install vite plugin
+    - name: Install vite plugin
+      run: npm install -D vite
+      
     # Install the .NET Core workload
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
