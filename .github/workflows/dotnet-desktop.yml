@@ -71,7 +71,7 @@ jobs:
       uses: actions/setup-node@v3.9.1
       with:
         node-version: '22'
-        working-directory: './Utils for PBI/Utils for PBI\FrontendWeb\pbi_lineage_viewer_svelteflow/'
+        working-directory: './Utils for PBI/FrontendWe/pbi_lineage_viewer_svelteflow/'
         run: npm install
     # Install vite plugin
     - name: Install vite plugin
