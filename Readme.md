@@ -6,8 +6,7 @@ PBI Lineage Viewer is a lineage graphing tool that makes it easy to understand t
 Prerequisite:
 .NET 8 or Above
 
-![Lineage-1](Resources/Lineage-1.jpg)
-![Lineage-2](Resources/Lineage-2.jpg)
+![Lineage-1](Resources/Preview.jpg)
 
 ## Usage
 I am working on an installer for this.
@@ -15,7 +14,7 @@ I am working on an installer for this.
 ## Architecture
 The application is using C# and Javascript libraries for showing the lineage graph. C# is used to get the metadata from Power BI Local server/Service
 and to run a webserver. This webserver is used to host the web application that shows the lineage graph. The web application is built using Svelte and uses
-Cytoscape library. 
+SvelteFlow library. 
 
 ![App Architecture](Resources/Architecture.jpg)
 
