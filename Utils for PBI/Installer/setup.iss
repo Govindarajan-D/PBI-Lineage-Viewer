@@ -5,7 +5,9 @@
 #define AppVersion "0.1"
 #define AppURL "https://github.com/Govindarajan-D/PBI-Lineage-Viewer"
 #define AppExeName "Utils for PBI.exe"
-#define PublishDir ".\"
+#ifndef PublishDir
+  #define PublishDir ".\"
+#endif
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
