@@ -102,7 +102,7 @@ jobs:
       uses: Minionguyjpro/Inno-Setup-Action@v1.2.6
       with:
         path: './Utils for PBI/Installer/setup.iss'
-        options: '/DPublishDir="${{ env.PUBLISH_PATH }}"'
+        options: '/DPublishDir="${{ github.workspace }}\Utils for PBI\${{ env.PUBLISH_PATH }}"'
     - name: List files
       run:  Get-ChildItem -Recurse ${{ env.PUBLISH_PATH }}
 
