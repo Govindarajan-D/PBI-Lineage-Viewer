@@ -81,7 +81,11 @@ jobs:
         node-version: '22'
         working-directory: ${{ env.SVELTEFLOW_DIR }}
         run: npm install
-        
+    - name: Set up environment variables
+      shell: pwsh
+      run: |
+          $publishPath = Join-Path -Path "${{ github.workspace }}\Utils for PBI" -ChildPath "${{ env.PUBLISH_PATH }}"
+          echo "ABS_PUBLISH_PATH=$publishPath" >> $env:GITHUB_ENV
     # Install vite plugin
     - name: Install vite plugin
       working-directory: ${{ env.SVELTEFLOW_DIR }}
