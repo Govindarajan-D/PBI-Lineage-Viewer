@@ -63,7 +63,6 @@ jobs:
       PUBLISH_PATH: 'bin\Release\net8.0-windows7.0\publish\win-x64\'
       INSTALLER_FILE_NAME: 'Setup-PBILineageViewer.exe'
       SVELTEFLOW_DIR: 'Utils for PBI\FrontendWeb\pbi_lineage_viewer_svelteflow'
-      ABS_PUBLISH_PATH: '${{ github.workspace}}\Utils for PBI\${{ env.PUBLISH_PATH }}'
       #Test_Project_Path: your-test-project-path                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
       #Wap_Project_Directory: your-wap-project-directory-name    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
       #Wap_Project_Path: your-wap-project-path                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
