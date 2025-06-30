@@ -40,6 +40,8 @@ name: .NET Core Desktop
 
 on:
   push:
+    tags: 
+      - 'v*'
     branches: [ "develop-cicd" ]
   pull_request:
     branches: [ "develop-cicd" ]
@@ -104,3 +106,6 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: "${{ env.PUBLISH_PATH }}/Output/${{ env.PUBLISH_FILE_NAME }}"
+        draft: true
+        tag_name: ${{ github.ref_name }}
+        
