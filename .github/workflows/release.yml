@@ -102,6 +102,8 @@ jobs:
       with:
         path: './Utils for PBI/Installer/setup.iss'
         options: '/DPublishDir="${{ env.PUBLISH_PATH }}"'
+    - name: List files
+      run:  Get-ChildItem -Recurse ${{ env.PUBLISH_PATH }}
 
     - name: Publish to Github Release
       uses: softprops/action-gh-release@v2
