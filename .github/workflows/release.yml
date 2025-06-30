@@ -56,7 +56,8 @@ jobs:
 
     runs-on: windows-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
-
+    permissions:
+      contents: write
     env:
       SOLUTION_NAME: 'Utils for PBI.sln'                         # Replace with your solution name, i.e. MyWpfApp.sln.
       PUBLISH_PATH: 'bin\Release\net8.0-windows7.0\publish\win-x64\'
