@@ -106,7 +106,7 @@ jobs:
       uses: Minionguyjpro/Inno-Setup-Action@v1.2.6
       with:
         path: './Utils for PBI/Installer/setup.iss'
-        options: '/DPublishDir="${{ env.ABS_PUBLISH_PATH }}"'
+        options: '/DPublishDir=''${{ env.ABS_PUBLISH_PATH }}'''
 
     - name: Publish to Github Release
       uses: softprops/action-gh-release@v2
