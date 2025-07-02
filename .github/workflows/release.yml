@@ -112,6 +112,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: './Utils for PBI/Installer/Output/${{ env.INSTALLER_FILE_NAME }}'
+        body_path: RELEASE-NOTES.md
         draft: true
         tag_name: ${{ github.ref_name }}
         
