@@ -1,5 +1,5 @@
 
-# PBI Lineage Viewer
+# PBI Lineage Viewer [![Build-Release-Workflow](https://github.com/Govindarajan-D/PBI-Lineage-Viewer/actions/workflows/release.yml/badge.svg?branch=develop-cicd)](https://github.com/Govindarajan-D/PBI-Lineage-Viewer/actions/workflows/release.yml)
 
 PBI Lineage Viewer is a lineage graphing tool that makes it easy to understand the lineage in terms of tables and measures. The application is still Work In Progress.
 
