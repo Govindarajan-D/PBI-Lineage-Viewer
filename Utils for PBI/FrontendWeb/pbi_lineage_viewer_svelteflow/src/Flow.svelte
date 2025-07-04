@@ -12,6 +12,8 @@
     type NodeEventWithPointer,
   } from "@xyflow/svelte";
 
+  import DownloadLineage from './DownloadLineage.svelte';
+
   import { writable } from "svelte/store";
   import { onMount } from "svelte";
   import DisplayNode from "./DisplayNode.svelte";
@@ -29,7 +31,7 @@
   const nodeWidth = 172;
   const nodeHeight = 36;
 
-  const {fitView} = useSvelteFlow();
+  const {fitView, setZoom, getViewport} = useSvelteFlow();
 
   const baseURL = "http://localhost:8080/utilspbi/api/";
   var svelte_nodes, svelte_edges;
@@ -47,7 +49,7 @@
 
   // This function is used to layout the nodes and edges using the dagre library.
   // It sets the graph direction, adds nodes and edges to the graph, and then computes the layout.
-  function getLayoutedElements(nodes: Node[], edges: Edge[], direction = "TB") {
+  const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = "TB") => {
     //Define constants for the graph layout
     const rankSep = 250; // Space between ranks - Horizontally
     const nodeSep = 50;
@@ -108,13 +110,13 @@
     });
   }
 
-  function setNodesAndEdges(layoutedElements){
+  const setNodesAndEdges = (layoutedElements) => {
     nodes.set(layoutedElements.nodes);
     edges.set(layoutedElements.edges);
 
     const fitViewOptions = {
       padding: 0.5,
-      duration: 800, // Animate the transition over 800ms
+      duration: 800,
       maxZoom: 2
     };
 
@@ -136,7 +138,7 @@
     });
   });
 
-  function onLayout(direction: string) {
+  const onLayout = (direction: string) => {
     const layoutedElements = getLayoutedElements(
       svelte_nodes,
       svelte_edges,
@@ -147,7 +149,7 @@
     edges.set(layoutedElements.edges);
   }
 
-  function filterNode(filter_id) {
+  const filterNode = (filter_id) => {
 
     const unioned_nodes = Array.from(new Set([...getAncestors(svelte_edges, filter_id),...getDescendants(svelte_edges, filter_id), filter_id]));
     const filtered_nodes = svelte_nodes.filter((node) => unioned_nodes.includes(node.id));
@@ -161,7 +163,7 @@
     setNodesAndEdges(layoutedElements);
   }
 
-  function clearFilter(){
+  const clearFilter = () => {
     const layoutedElements = getLayoutedElements(
       svelte_nodes,
       svelte_edges,
@@ -171,7 +173,7 @@
     setNodesAndEdges(layoutedElements);
   }
 
-  function handleNodeClick(event){
+  const handleNodeClick = (event) => {
     const clickedNode = event.node.id;
     const unioned_nodes = Array.from(new Set([...getAncestors(svelte_edges, clickedNode),...getDescendants(svelte_edges, clickedNode), clickedNode]));
     
@@ -216,8 +218,13 @@
     };
   };
 
+  const zoom = (InOrOut) => {
+    const currentZoom = getViewport().zoom || 1;
+    InOrOut == "In"? setZoom(currentZoom * 1.1) : setZoom(currentZoom / 1.1);
+  }
+
   // Close the context menu if it's open whenever the window is clicked.
-  function handlePaneClick() {
+  const handlePaneClick = () => {
     menu = null;
   }
 </script>
@@ -236,11 +243,12 @@
     defaultEdgeOptions={{ type: "bezier", animated: false }}
   >
     <Panel position="top-right">
-      <button onclick={() => onLayout("TB")}>vertical layout</button>
-      <button onclick={() => onLayout("LR")}>horizontal layout</button>
+      <button onclick={fitView}>Fit View</button>
+      <button onclick={() => zoom("In")}>Zoom In</button>
+      <button onclick={() => zoom("Out")}>Zoom Out</button>
     </Panel>
-
-    <Background />
+    <!--<DownloadLineage/>-->
+    <Background />+
     <!-- Context Menu (Right-Click menu) -->
     {#if menu}
       <ContextMenu
