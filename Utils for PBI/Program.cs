@@ -66,7 +66,7 @@ namespace Utils_for_PBI.Forms
             
             //DownloadJSLibs().GetAwaiter().GetResult();
             
-            Task.Run(() => DownloadJSLibs());
+            //Task.Run(() => DownloadJSLibs());
 
             //ReportLineage reportLineage = new ReportLineage();
             Application.EnableVisualStyles();

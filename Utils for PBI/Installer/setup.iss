@@ -43,7 +43,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "{#PublishDir}\*"; DestDir: "{#PublishDir}\Output\"; Flags: ignoreversion
+Source: "{#PublishDir}\*"; DestDir: "{app}"; Flags: ignoreversion
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
@@ -60,45 +60,30 @@ Filename: "{app}\{#AppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(
 function IsDotNetDesktopRuntimeInstalled(MinVersion: string): Boolean;
 var
   InstalledVersion: string;
-  InstalledMajor, RequiredMajor: Integer;
-  InstalledMinor, RequiredMinor: Integer;
-  InstalledPatch, RequiredPatch: Integer;
+  InstalledVersions: TArrayOfString;
+  PackedMinVersion: Int64;
+  PackedInstalledVersion: Int64;
+  Looper: Integer;
 begin
   Result := False;
-  // Determine the correct registry key based on the architecture
-  #if Defined(x64)
-    Log('Checking for 64-bit .NET Desktop Runtime.');
-    if RegQueryStringValue(HKEY_LOCAL_MACHINE_64, 'SOFTWARE\dotnet\Setup\InstalledVersions\x64\sharedhost\Version', '', InstalledVersion) then
-  #else
-    Log('Checking for 32-bit .NET Desktop Runtime.');
-    if RegQueryStringValue(HKEY_LOCAL_MACHINE_32, 'SOFTWARE\dotnet\Setup\InstalledVersions\x86\sharedfx\Microsoft.WindowsDesktop.App', '', InstalledVersion) then
-  #endif
+  if RegGetValueNames(HKEY_LOCAL_MACHINE, 'SOFTWARE\WOW6432Node\dotnet\Setup\InstalledVersions\x64\sharedfx\Microsoft.WindowsDesktop.App', InstalledVersions) then
   begin
-    Log(Format('Found .NET Desktop Runtime version: %s', [InstalledVersion]));
-    // Simple version comparison logic
-    try
-      RequiredMajor := StrToInt(Copy(MinVersion, 1, Pos('.', MinVersion) - 1));
-      Delete(MinVersion, 1, Pos('.', MinVersion));
-      RequiredMinor := StrToInt(Copy(MinVersion, 1, Pos('.', MinVersion) - 1));
-      Delete(MinVersion, 1, Pos('.', MinVersion));
-      RequiredPatch := StrToInt(MinVersion);
-
-      InstalledMajor := StrToInt(Copy(InstalledVersion, 1, Pos('.', InstalledVersion) - 1));
-      Delete(InstalledVersion, 1, Pos('.', InstalledVersion));
-      InstalledMinor := StrToInt(Copy(InstalledVersion, 1, Pos('.', InstalledVersion) - 1));
-      Delete(InstalledVersion, 1, Pos('.', InstalledVersion));
-      InstalledPatch := StrToInt(InstalledVersion);
-
-      if (InstalledMajor > RequiredMajor) or
-         ((InstalledMajor = RequiredMajor) and (InstalledMinor > RequiredMinor)) or
-         ((InstalledMajor = RequiredMajor) and (InstalledMinor = RequiredMinor) and (InstalledPatch >= RequiredPatch)) then
+      StrToVersion(MinVersion, PackedMinVersion);
+      for Looper := 0 to GetArrayLength(InstalledVersions) - 1 do
       begin
-        Result := True;
-      end;
-    except
-      Log('Error parsing .NET version numbers.');
-    end;
-  end else
+        
+        if StrToVersion(InstalledVersions[Looper], PackedInstalledVersion) then 
+        begin
+          if ComparePackedVersion(PackedInstalledVersion, PackedMinVersion) >= 0 then
+          begin
+            Log(Format('Found .NET version: %s', [InstalledVersions[Looper]]));
+            Result := True;
+            Exit;
+		  end;
+		end;
+	  end;
+  end
+  else
   begin
     Log('.NET Desktop Runtime registry key not found.');
   end;
