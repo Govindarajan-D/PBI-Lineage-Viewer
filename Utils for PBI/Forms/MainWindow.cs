@@ -101,11 +101,11 @@ namespace Utils_for_PBI.Forms
                 return;
             }
 
-                /* HTML page is generated from the resources and then it is displayed in the WebView2 component.
-                 * The calc dependencies are retrieved and then served using the UtilsPBIHTTPServer server.
-                 */
+           /* HTML page is generated from the resources and then it is displayed in the WebView2 component.
+            * The calc dependencies are retrieved and then served using the UtilsPBIHTTPServer server.
+            */
 
-                GenerateLineagePage showDependencyGraph = new GenerateLineagePage();
+            GenerateLineagePage showDependencyGraph = new GenerateLineagePage();
             string filePath = showDependencyGraph.GenerateHTMLPage();
 
             string fileUri = new Uri(filePath).AbsoluteUri;
@@ -114,6 +114,11 @@ namespace Utils_for_PBI.Forms
             if (_adomdConnection.isConnected)
             {
                 var dependencies = _adomdConnection.RetrieveCalcDependency();
+
+                if (dependencies == null)
+                {
+                    return;
+                }
                 dependencies.ParseIntoJSON();
 
                 if (_dataServer == null)

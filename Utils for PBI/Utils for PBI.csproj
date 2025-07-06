@@ -20,6 +20,8 @@
 		<FrontendDistDir>$(FrontendDir)\dist</FrontendDistDir>
 
 		<FinalDistDir>$(ProjectDir)FrontendWeb\dist</FinalDistDir>
+
+		<ApplicationIcon>LineageIcon.ico</ApplicationIcon>
 	</PropertyGroup>
   <ItemGroup>
     <Compile Remove="Frontend-Web\**" />
@@ -29,6 +31,9 @@
   <ItemGroup>
     <None Remove="FrontendWeb\dist\index.html" />
     <None Remove="LineageGraph.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="LineageIcon.ico" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FrontendWeb\dist\index.html" />

@@ -62,12 +62,34 @@ namespace Utils_for_PBI.Services
             }
             catch (Exception ex)
             {
+                if (ex.Message.Contains("Database is empty"))
+                {
+                    Logger.Warn("Database is empty, no data to retrieve.");
+                    MessageBox.Show("The database is empty, no data to retrieve.", "Empty Database", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return null;
+                }
+                else
+                {
+                    Logger.Error(ex.Message);
+                    MessageBox.Show($"Error: {ex.Message}", "Error establishing ADOMD connection", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return null;
+                }
+                
+            }
+
+            AdomdClient.AdomdCommand adomdCommand = new AdomdClient.AdomdCommand(dependencySQLQuery, adomdConnection);
+            AdomdClient.AdomdDataReader records;
+            try
+            {
+                records = adomdCommand.ExecuteReader();
+            }
+            catch (Exception ex)
+            {
                 Logger.Error(ex.Message);
-                MessageBox.Show($"Error: {ex.Message}", "Error establishing ADOMD connection", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error: {ex.Message}", "Error executing ADOMD command, Is the Model Empty?", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
-            AdomdClient.AdomdCommand adomdCommand = new AdomdClient.AdomdCommand(dependencySQLQuery, adomdConnection);
-            AdomdClient.AdomdDataReader records = adomdCommand.ExecuteReader();
+
 
             while (records.Read())
             {
