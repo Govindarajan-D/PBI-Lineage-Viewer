@@ -6,8 +6,10 @@ namespace Utils_for_PBI.Tests
 {
     public class CalcDependencyTest
     {
-        [Fact]
-        public void ValidateCalcDependencyDataJSONOutput()
+        private readonly JArray _nodes;
+        private readonly JArray _edges;
+
+        public CalcDependencyTest()
         {
             CalcDepedencyData calcDepedencyData = new CalcDepedencyData();
             calcDepedencyData.calcDepedencyData.Add(new CalcDependencyDataRow
@@ -23,11 +25,43 @@ namespace Utils_for_PBI.Tests
 
             calcDepedencyData.ParseIntoJSON();
 
-            JArray nodesArray = JArray.Parse(calcDepedencyData.svelte_flow_nodes_json);
-            JArray edgesArray = JArray.Parse(calcDepedencyData.svelte_flow_edges_json);
+            _nodes = JArray.Parse(calcDepedencyData.svelte_flow_nodes_json);
+            _edges = JArray.Parse(calcDepedencyData.svelte_flow_edges_json);
 
-            nodesArray.Count.Should().Be(3);
-            edgesArray.Count.Should().Be(3);
+        }
+
+        [Fact]
+        public void ValidateNodesCount()
+        {
+            _nodes.Count.Should().Be(3);
+        }
+
+
+        [Fact]
+        public void ValidateEdgesCount()
+        {
+            _edges.Count.Should().Be(3);
+        }
+
+        [Fact]
+        public void ValidateEdgeData()
+        {
+            var edge = _edges.Children<JObject>()
+                                .FirstOrDefault(e => e.Value<String>("source") == "Sales" &&
+                                                     e.Value<String>("target") == "Amount");
+
+            edge.Should().NotBeNullOrEmpty();
+        }
+
+        [Fact]
+        public void ValidateNodeData()
+        {
+            var node = _nodes.Children<JObject>()
+                    .FirstOrDefault(e => e.Value<String>("id") == "Amount");
+
+            node.Should().NotBeNullOrEmpty();
+            node.SelectToken("data.CalcName").Value<String>().Should().Be("Amount");
+            node.SelectToken("data.CalcType").Value<String>().Should().Be("Column");
 
         }
     }
