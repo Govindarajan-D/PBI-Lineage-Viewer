@@ -74,22 +74,16 @@ namespace Utils_for_PBI.Server
 
             switch (request.RawUrl)
             {
-                case "/utilspbi/api/nodesdata":
-                    await ServeContent(response, calcDepedencyData.dependencyNodesJSON);
-                    break;
-                case "/utilspbi/api/edgesdata":
-                    await ServeContent(response, calcDepedencyData.dependencyEdgesJSON);
-                    break;
                 case "/utilspbi/api/nodesinfo":
                     await ServeContent(response, calcDepedencyData.nodesInfoJSON);
                     break;
                 case "/utilspbi/api/objecttypeinfo":
                     await ServeContent(response, calcDepedencyData.objectTypeInfoJSON);
                     break;
-                case "/utilspbi/api/sveltenodes":
+                case "/utilspbi/api/nodes":
                     await ServeContent(response, calcDepedencyData.svelte_flow_nodes_json);
                     break;
-                case "/utilspbi/api/svelteedges":
+                case "/utilspbi/api/edges":
                     await ServeContent(response, calcDepedencyData.svelte_flow_edges_json);
                     break;
                 default:

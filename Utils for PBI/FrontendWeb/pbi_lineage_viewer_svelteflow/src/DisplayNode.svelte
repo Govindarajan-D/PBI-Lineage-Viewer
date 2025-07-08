@@ -1,7 +1,6 @@
 <script lang="ts">
   import { Handle, Position, type NodeProps } from "@xyflow/svelte";
-  let { isConnectable, id, data, highlighted = false }: NodeProps & { highlighted?: boolean } = $props();
-  // You can optionally pass color and details through `data`
+  let { isConnectable, id, data } = $props();
   const bgColor = "#f0f8ff";
 
   import TableIcon from './assets/Table.svg?url';
@@ -22,7 +21,7 @@
 
 </script>
 
-<div class="mui-node {highlighted ? 'highlighted': ''} {data.CalcType}" style="--bg-color: {bgColor}">
+<div class="mui-node {data.CalcType} {data.highlighted ? 'highlighted': ''}" style="--bg-color: {bgColor}">
   <Handle type="target" position="left" />
   <div class="mui-node-content">
     <span class="mui-node-icon">

@@ -38,7 +38,7 @@ namespace Utils_for_PBI.Models
     public class CalcDepedencyData
     {
         public List<CalcDependencyDataRow> calcDepedencyData = new List<CalcDependencyDataRow>();
-        public string dependencyNodesJSON, dependencyEdgesJSON, nodesInfoJSON, objectTypeInfoJSON, svelte_flow_nodes_json, svelte_flow_edges_json ;
+        public string nodesInfoJSON, objectTypeInfoJSON, svelte_flow_nodes_json, svelte_flow_edges_json ;
 
         /// <summary>
         /// Converts the List of Rows (CalcDependencyData) into a particular JSON string which is acceptable by the JS script for lineage
@@ -70,41 +70,21 @@ namespace Utils_for_PBI.Models
 
             // Tables are the source and referenced tables. This information will not be available in the object & refobj nodes
             var tables =  cleansedDependencyData.Select(c => new
-            {
-                OBJECT = c.SOURCE_TABLE,
-                OBJECT_TYPE = "TABLE"
-            }).Distinct();
+                                                {
+                                                    OBJECT = c.SOURCE_TABLE,
+                                                    OBJECT_TYPE = "TABLE"
+                                                }).Distinct();
 
             var refTables = cleansedDependencyData.Select(c => new
-            {
-                OBJECT = c.REFERENCED_TABLE,
-                OBJECT_TYPE = "TABLE"
-            }).Distinct();
+                                                    {
+                                                        OBJECT = c.REFERENCED_TABLE,
+                                                        OBJECT_TYPE = "TABLE"
+                                                    }).Distinct();
 
             // All objects and tables are combined to get the nodes
             var allTables = tables.Union(refTables).Distinct();
 
             var allNodes = objectNodes.Union(refObjectNodes).Union(allTables).Distinct();
-
-            // Nodes are then expanded with more information
-            var nodesJSON = allNodes.Select(r => new
-                                    {
-                                        data = new
-                                        {
-                                            id = r.OBJECT,
-                                            name = r.OBJECT,
-                                            faveColor = r.OBJECT_TYPE.ToUpper() switch
-                                            {
-                                                "CALC_COLUMN" => "#a2d9ce",
-                                                "MEASURE" => "#f9e79f",
-                                                "TABLE" => "#aed6f1",
-                                                "COLUMN" => "#d7bde2",
-                                                _ => "#1376ff"
-                                            },
-                                            objectType = r.OBJECT_TYPE.ToUpper(),
-                                            faveShape = "rectangle"
-                                        }
-                                    });
 
             var svelteflow_nodes = allNodes.Select(r => new
                                                 {
@@ -129,23 +109,9 @@ namespace Utils_for_PBI.Models
                                                     }
                                                 });
 
-            // Edges are created between the nodes. 
+            var edgesReferenceData = cleansedDependencyData.Where(c => c.REFERENCED_OBJECT_TYPE.ToUpper() != "TABLE" || (c.OBJECT_TYPE.ToUpper() == "CALC_TABLE" && c.REFERENCED_OBJECT_TYPE.ToUpper() == "TABLE"));
 
-            var edgesJSON = cleansedDependencyData.Where(c => c.REFERENCED_OBJECT_TYPE.ToUpper() != "TABLE" || (c.OBJECT_TYPE.ToUpper() == "CALC_TABLE" && c.REFERENCED_OBJECT_TYPE.ToUpper() == "TABLE"))
-                                                  .Select(c => new
-                                                    {
-                                                        data = new
-                                                        {
-                                                            source = c.REFERENCED_OBJECT,
-                                                            target = c.OBJECT,
-                                                            faveColor = "#5c658d",
-                                                            strength = 60
-                                                        }
-
-                                                    });
-
-            var svelteflow_edges = cleansedDependencyData.Where(c => c.REFERENCED_OBJECT_TYPE.ToUpper() != "TABLE" || (c.OBJECT_TYPE.ToUpper() == "CALC_TABLE" && c.REFERENCED_OBJECT_TYPE.ToUpper() == "TABLE"))
-                                      .Select(c => new
+            var svelteflow_edges = edgesReferenceData.Select(c => new
                                       {
                                           id = c.REFERENCED_OBJECT + c.OBJECT + "",
                                           source = c.REFERENCED_OBJECT,
@@ -153,19 +119,8 @@ namespace Utils_for_PBI.Models
                                           type = "bezier",
                                           animated = true
                                       });
-            var tableEdges = cleansedDependencyData.Where(c => c.REFERENCED_OBJECT_TYPE.ToUpper() != "TABLE" || (c.OBJECT_TYPE.ToUpper() == "CALC_TABLE" && c.REFERENCED_OBJECT_TYPE.ToUpper() == "TABLE"))
-                                                      .Select(c => new
-                                                      {
-                                                          data = new
-                                                          {
-                                                              source = c.SOURCE_TABLE,
-                                                              target = c.OBJECT,
-                                                              faveColor = "#5c658d",
-                                                              strength = 60
-                                                          }
-                                                      });
-            var svelteflow_tableEdges = cleansedDependencyData.Where(c => c.REFERENCED_OBJECT_TYPE.ToUpper() != "TABLE" || (c.OBJECT_TYPE.ToUpper() == "CALC_TABLE" && c.REFERENCED_OBJECT_TYPE.ToUpper() == "TABLE"))
-                                          .Select(c => new
+
+            var svelteflow_tableEdges = edgesReferenceData.Select(c => new
                                           {
                                               id = c.SOURCE_TABLE + c.OBJECT + "",
                                               source = c.SOURCE_TABLE,
@@ -174,20 +129,7 @@ namespace Utils_for_PBI.Models
                                               animated = true
                                           });
 
-            var refTableEdges = cleansedDependencyData.Where(c => c.REFERENCED_OBJECT_TYPE.ToUpper() != "TABLE" || (c.OBJECT_TYPE.ToUpper() == "CALC_TABLE" && c.REFERENCED_OBJECT_TYPE.ToUpper() == "TABLE")) 
-                                                      .Select(c => new
-                                                        {
-                                                            data = new
-                                                            {
-                                                                source = c.REFERENCED_TABLE,
-                                                                target = c.REFERENCED_OBJECT,
-                                                                faveColor = "#5c658d",
-                                                                strength = 60
-                                                            }
-                                                        });
-
-            var svelteflow_refTableEdges = cleansedDependencyData.Where(c => c.REFERENCED_OBJECT_TYPE.ToUpper() != "TABLE" || (c.OBJECT_TYPE.ToUpper() == "CALC_TABLE" && c.REFERENCED_OBJECT_TYPE.ToUpper() == "TABLE"))
-                                          .Select(c => new
+            var svelteflow_refTableEdges = edgesReferenceData.Select(c => new
                                           {
                                               id = c.REFERENCED_TABLE + c.REFERENCED_OBJECT + "",
                                               source = c.REFERENCED_TABLE,
@@ -196,7 +138,6 @@ namespace Utils_for_PBI.Models
                                               animated = true
                                           });
 
-            edgesJSON = edgesJSON.Union(tableEdges).Union(refTableEdges).Distinct();
             svelteflow_edges = svelteflow_edges.Union(svelteflow_tableEdges).Union(svelteflow_refTableEdges).Distinct();
 
             var nodesInfo = allNodes.Select(c => new
@@ -224,8 +165,6 @@ namespace Utils_for_PBI.Models
 
             objectTypeInfoJSON = Json.JsonSerializer.Serialize(objectTypeInfo, new Json.JsonSerializerOptions { WriteIndented = true });
             nodesInfoJSON = Json.JsonSerializer.Serialize(nodesInfo, new Json.JsonSerializerOptions { WriteIndented = true });
-            dependencyNodesJSON = Json.JsonSerializer.Serialize(nodesJSON, new Json.JsonSerializerOptions { WriteIndented = true});
-            dependencyEdgesJSON = Json.JsonSerializer.Serialize(edgesJSON, new Json.JsonSerializerOptions { WriteIndented = true });
             svelte_flow_nodes_json = Json.JsonSerializer.Serialize(svelteflow_nodes, new Json.JsonSerializerOptions { WriteIndented = true });
             svelte_flow_edges_json = Json.JsonSerializer.Serialize(svelteflow_edges, new Json.JsonSerializerOptions { WriteIndented = true });
         }

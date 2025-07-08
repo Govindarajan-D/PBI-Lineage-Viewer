@@ -124,7 +124,7 @@ namespace Utils_for_PBI.Forms
                 if (_dataServer == null)
                 {
                     //TO-DO: Add configuration functionality to change the port number and other settings
-                    _dataServer = new UtilsPBIHTTPServer("http://localhost:8080/utilspbi/", dependencies);
+                    _dataServer = new UtilsPBIHTTPServer(Constants.urlAddress, dependencies);
                     _dataServer.Start();
                 }
             }

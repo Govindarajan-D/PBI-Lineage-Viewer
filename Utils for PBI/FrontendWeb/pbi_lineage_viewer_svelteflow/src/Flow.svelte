@@ -12,7 +12,7 @@
     type NodeEventWithPointer,
   } from "@xyflow/svelte";
 
-  import DownloadLineage from './DownloadLineage.svelte';
+//  import DownloadLineage from './DownloadLineage.svelte';
 
   import { writable } from "svelte/store";
   import { onMount } from "svelte";
@@ -85,7 +85,6 @@
         },
       };
     });
-    
 
     return { nodes: layoutedNodes, edges };
   }
@@ -93,8 +92,8 @@
   // Fetches nodes and edges data from the API and processes it.
   // It is asynchronous and returns a promise that resolves when the data is fetched.
   async function fetchdata() {
-    const nodesURL = baseURL + "sveltenodes";
-    const edgesURL = baseURL + "svelteedges";
+    const nodesURL = baseURL + "nodes";
+    const edgesURL = baseURL + "edges";
 
     return Promise.all([
       fetch(nodesURL).then((response) => response.json()),
@@ -133,8 +132,8 @@
         svelte_edges,
         "LR",
       );
-      nodes.set(layoutedElements.nodes);
-      edges.set(layoutedElements.edges);
+
+      setNodesAndEdges(layoutedElements);
     });
   });
 
@@ -145,8 +144,7 @@
       direction,
     );
 
-    nodes.set(layoutedElements.nodes);
-    edges.set(layoutedElements.edges);
+    setNodesAndEdges(layoutedElements);
   }
 
   const filterNode = (filter_id) => {
@@ -172,21 +170,24 @@
 
     setNodesAndEdges(layoutedElements);
   }
-
+  // To handle clicking of a node, which highlights the complete lineage (front and back of node)
+  // TO-FIX: Non-related edges get highlighted and a methodology for removing highlight should be coded.
   const handleNodeClick = (event) => {
     const clickedNode = event.node.id;
     const unioned_nodes = Array.from(new Set([...getAncestors(svelte_edges, clickedNode),...getDescendants(svelte_edges, clickedNode), clickedNode]));
-    
     const highlighted_nodes = svelte_nodes.map((node) => ({
       ...node,
-      highlighted: unioned_nodes.includes(node.id),
+      data: {
+          ...node.data,
+          highlighted: unioned_nodes.includes(node.id),
+        }
     }));
 
     const highlighted_edges = svelte_edges.map((edge) => ({
       ...edge,
       style: unioned_nodes.includes(edge.source) || unioned_nodes.includes(edge.target)
-      ? { stroke: 'orange', strokeWidth: 3}
-      : {},
+      ? "stroke: orange; stroke-width: 3;"
+      : "",
     }));
 
     const layoutedElements = getLayoutedElements(
@@ -194,6 +195,7 @@
       highlighted_edges,
       "LR",
     );
+
     setNodesAndEdges(layoutedElements);
   }
 
@@ -226,6 +228,7 @@
   // Close the context menu if it's open whenever the window is clicked.
   const handlePaneClick = () => {
     menu = null;
+
   }
 </script>
 
@@ -240,7 +243,6 @@
     onnodecontextmenu={handleContextMenu}
     onpaneclick={handlePaneClick}
     connectionLineType={ConnectionLineType.SmoothStep}
-    defaultEdgeOptions={{ type: "bezier", animated: false }}
   >
     <Panel position="top-right">
       <button onclick={fitView}>Fit View</button>
@@ -248,7 +250,7 @@
       <button onclick={() => zoom("Out")}>Zoom Out</button>
     </Panel>
     <!--<DownloadLineage/>-->
-    <Background />+
+    <Background />
     <!-- Context Menu (Right-Click menu) -->
     {#if menu}
       <ContextMenu

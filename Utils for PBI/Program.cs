@@ -59,66 +59,12 @@ namespace Utils_for_PBI.Forms
         {
 
             //XmlConfigurator.Configure(new System.IO.FileInfo("log4net.config"));
-            /* GetAwaiter().GetResult() waits for the function to complete (Synchronous) while
-             * Task.Run() runs asynchronously and in case if it needs to be run synchronously, 
-             * the GetAwaiter() line can be uncommented and the Task.Run() can be commented
-             */
-            
-            //DownloadJSLibs().GetAwaiter().GetResult();
-            
-            //Task.Run(() => DownloadJSLibs());
 
             //ReportLineage reportLineage = new ReportLineage();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Logger.Info("Launching Application");
             Application.Run(new MainWindow());
-        }
-
-        /// <summary>
-        ///  DownloadJSLibs is used to check if the AppData folder is created for this application 
-        ///  and the necessary JS files for lineage graph are cached.The files are downloaded only if it does not 
-        ///  already exist (after first run, the files are not downloaded again unless the files have been deleted)
-        ///
-        /// </summary>
-        static async Task DownloadJSLibs()
-        {
-            string appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Constants.ProgramName, "js");
-
-            Dictionary<String, String> filesDict = new Dictionary<string, string>
-            {
-                { Constants.cytoscapeMinJS, Constants.cytoscapeMinJSURL },
-                { Constants.dagreJS, Constants.dagreJSURL },
-                { Constants.cytoscapeDagreJS, Constants.cytoscapeDagreJSURL }
-            };
-
-            if (!Directory.Exists(appDataPath))
-            {
-                Directory.CreateDirectory(appDataPath);
-            }
-            foreach(var (fileName, fileURL) in filesDict)
-            {
-                var fileFullPath = Path.Combine(appDataPath, fileName);
-                if (!File.Exists(fileFullPath))
-                {
-                    Logger.Info($"Downloading {fileName}");
-                    using var client = new HttpClient();
-                    using var response = await client.GetAsync(fileURL, HttpCompletionOption.ResponseHeadersRead);
-                    response.EnsureSuccessStatusCode();
-
-                    try
-                    {
-                        await using var fs = new FileStream(fileFullPath, FileMode.OpenOrCreate, FileAccess.Write);
-                        await response.Content.CopyToAsync(fs);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error(ex.Message);
-                        MessageBox.Show($"Error: {ex.Message}", "Error downloading JS to local system", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    Logger.Info($"Downloaded {fileName}");
-                }
-            }
         }
     }
 }
