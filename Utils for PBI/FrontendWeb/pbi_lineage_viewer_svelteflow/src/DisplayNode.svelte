@@ -1,6 +1,8 @@
 <script lang="ts">
   import { Handle, Position, type NodeProps } from "@xyflow/svelte";
-  let { isConnectable, id, data } = $props();
+  import { onMount } from "svelte";
+
+  let { data } = $props();
   const bgColor = "#f0f8ff";
 
   import TableIcon from './assets/Table.svg?url';
@@ -19,6 +21,15 @@
     // Add more as needed
   };
 
+  let expanded = false;
+  function toggleExpand(){
+    expanded = !expanded;
+  }
+
+  $effect(() => {
+      console.log("Rendering Custom node");
+  });
+
 </script>
 
 <div class="mui-node {data.CalcType} {data.highlighted ? 'highlighted': ''}" style="--bg-color: {bgColor}">
@@ -28,7 +39,19 @@
       <img src= {iconMap[data.CalcType]} alt="icon" class="icon-img"/>
     </span>
     <span class="mui-node-name"><b>{data.CalcName}</b></span>
+    <button class="expand-btn" on:click|stopPropagation={toggleExpand} aria-label="Expand/collapse">
+      {#if expanded}
+        &minus;
+      {:else}
+        +
+      {/if}
+    </button>
   </div>
+  {#if expanded}
+    <div class="mui-node-extra">
+      <div>More info about {data.CalcName}</div>
+    </div>
+  {/if}
   <Handle type="source" position="right" />
 </div>
 
@@ -92,7 +115,8 @@
   }
   .mui-node {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
     border-radius: 0px;
     border: none;
     box-shadow: 0 2px 8px rgba(60, 72, 100, 0.10), 0 1.5px 4px rgba(60, 72, 100, 0.08);
@@ -119,6 +143,7 @@
   }
   .mui-node-content {
     display: flex;
+    flex-direction: row;
     align-items: center;
     gap: 14px;
     padding: 10px 18px;
@@ -159,5 +184,33 @@
     object-fit: contain;
     border-radius: 4px; /* optional, for rounded icons */
     box-shadow: 0 1px 2px #0001; /* optional, for subtle depth */
+  }
+  .expand-btn {
+    margin-left: auto;
+    background: #fff;
+    border: 1px solid #bbb;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 1.6em;
+    color: #1976d2;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border 0.15s;
+    box-shadow: 0 1px 2px #0001;
+    outline: none;
+  }
+  .expand-btn:hover, .expand-btn:focus {
+    background: #e3f2fd;
+    border-color: #1976d2;
+  }
+  .mui-node-extra {
+    padding: 10px 18px;
+    background: #f9f9f9;
+    border-top: 1px solid #eee;
+    font-size: 0.95em;
+    color: #444;
   }
 </style>
