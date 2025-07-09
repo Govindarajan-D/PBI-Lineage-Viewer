@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AnalysisServices.Tabular;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Json = System.Text.Json;
@@ -54,37 +55,29 @@ namespace Utils_for_PBI.Models
                                                           .Where(c => !objectTypeNotInFilter.Contains(c.OBJECT_TYPE) && !objectTypeNotInFilter.Contains(c.REFERENCED_OBJECT_TYPE))
                                                           .Where(e => !e.OBJECT_TYPE.Contains("ACTIVE_RELATIONSHIP") && !e.OBJECT_TYPE.Contains("RELATIONSHIP") && !e.REFERENCED_OBJECT_TYPE.Contains("ACTIVE_RELATIONSHIP") && !e.REFERENCED_OBJECT_TYPE.Contains("RELATIONSHIP"));
             
-            // Object Nodes and Ref Object Nodes are Objects (MEASURE, CALC COLUMN, COLUMN)
+            // Object Nodes are Objects (MEASURE, CALC COLUMN, COLUMN)
 
-            var objectNodes = cleansedDependencyData.Select(c => new
+            var objectNodes = cleansedDependencyData.SelectMany(c => new[]
                                                 {
-                                                    c.OBJECT,
-                                                    c.OBJECT_TYPE
-                                                }).Distinct();
+                                                    new {c.OBJECT,c.OBJECT_TYPE },
+                                                    new {OBJECT = c.REFERENCED_OBJECT, OBJECT_TYPE = c.REFERENCED_OBJECT_TYPE}
 
-            var refObjectNodes = cleansedDependencyData.Select(c => new
-                                                    {
-                                                        OBJECT = c.REFERENCED_OBJECT,
-                                                        OBJECT_TYPE = c.REFERENCED_OBJECT_TYPE
-                                                    }).Distinct();
+                                                }).Distinct();
 
             // Tables are the source and referenced tables. This information will not be available in the object & refobj nodes
-            var tables =  cleansedDependencyData.Select(c => new
-                                                {
-                                                    OBJECT = c.SOURCE_TABLE,
-                                                    OBJECT_TYPE = "TABLE"
-                                                }).Distinct();
+            var allTables = cleansedDependencyData.SelectMany(c => new[]
+                                                        {
+                                                            c.SOURCE_TABLE,
+                                                            c.REFERENCED_TABLE
+                                                        })
+                                                        .Distinct()
+                                                        .Select(tableName => new
+                                                        {
+                                                            OBJECT = tableName,
+                                                            OBJECT_TYPE = "TABLE"
+                                                        });
 
-            var refTables = cleansedDependencyData.Select(c => new
-                                                    {
-                                                        OBJECT = c.REFERENCED_TABLE,
-                                                        OBJECT_TYPE = "TABLE"
-                                                    }).Distinct();
-
-            // All objects and tables are combined to get the nodes
-            var allTables = tables.Union(refTables).Distinct();
-
-            var allNodes = objectNodes.Union(refObjectNodes).Union(allTables).Distinct();
+            var allNodes = objectNodes.Union(allTables).Distinct();
 
             var svelteflow_nodes = allNodes.Select(r => new
                                                 {
@@ -111,35 +104,21 @@ namespace Utils_for_PBI.Models
 
             var edgesReferenceData = cleansedDependencyData.Where(c => c.REFERENCED_OBJECT_TYPE.ToUpper() != "TABLE" || (c.OBJECT_TYPE.ToUpper() == "CALC_TABLE" && c.REFERENCED_OBJECT_TYPE.ToUpper() == "TABLE"));
 
-            var svelteflow_edges = edgesReferenceData.Select(c => new
-                                      {
-                                          id = c.REFERENCED_OBJECT + c.OBJECT + "",
-                                          source = c.REFERENCED_OBJECT,
-                                          target = c.OBJECT,
-                                          type = "bezier",
-                                          animated = true
-                                      });
-
-            var svelteflow_tableEdges = edgesReferenceData.Select(c => new
-                                          {
-                                              id = c.SOURCE_TABLE + c.OBJECT + "",
-                                              source = c.SOURCE_TABLE,
-                                              target = c.OBJECT,
-                                              type = "bezier",
-                                              animated = true
-                                          });
-
-            var svelteflow_refTableEdges = edgesReferenceData.Select(c => new
-                                          {
-                                              id = c.REFERENCED_TABLE + c.REFERENCED_OBJECT + "",
-                                              source = c.REFERENCED_TABLE,
-                                              target = c.REFERENCED_OBJECT,
-                                              type = "bezier",
-                                              animated = true
-                                          });
-
-            svelteflow_edges = svelteflow_edges.Union(svelteflow_tableEdges).Union(svelteflow_refTableEdges).Distinct();
-
+            var svelteflow_edges = edgesReferenceData.SelectMany(c => new[]
+                                                                {
+                                                                     new { source = c.REFERENCED_OBJECT, target = c.OBJECT },
+                                                                     new { source = c.SOURCE_TABLE, target = c.OBJECT },
+                                                                     new { source = c.REFERENCED_TABLE, target = c.REFERENCED_OBJECT }
+                                                                })
+                                                                .Select(c => new
+                                                                {
+                                                                    id = c.source + c.target + "",
+                                                                    source = c.source,
+                                                                    target = c.target,
+                                                                    type = "bezier",
+                                                                    animated = true
+                                                                }).Distinct();
+                                                                
             var nodesInfo = allNodes.Select(c => new
                                             {
                                                id = c.OBJECT,
