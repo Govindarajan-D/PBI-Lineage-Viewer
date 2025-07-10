@@ -132,7 +132,14 @@
         svelte_edges,
         "LR",
       );
-
+      svelte_nodes = svelte_nodes.map((node) => ({
+        ...node,
+        data: {
+          ...node.data,
+          expanded: false
+        }
+      }));
+      
       setNodesAndEdges(layoutedElements);
     });
   });
@@ -228,8 +235,8 @@
   // Close the context menu if it's open whenever the window is clicked.
   const handlePaneClick = () => {
     menu = null;
-
   }
+
 </script>
 
 <div style="height:100vh;" bind:clientWidth bind:clientHeight>

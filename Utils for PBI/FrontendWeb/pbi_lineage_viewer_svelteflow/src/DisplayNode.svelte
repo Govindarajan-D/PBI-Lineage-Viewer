@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { Handle, Position, type NodeProps } from "@xyflow/svelte";
-  import { onMount } from "svelte";
+  import { useSvelteFlow, Handle, Position, type NodeProps } from "@xyflow/svelte";
+  let { updateNodeData } = useSvelteFlow();
 
-  let { data } = $props();
+  let { id, data } = $props();
   const bgColor = "#f0f8ff";
+
 
   import TableIcon from './assets/Table.svg?url';
   import MeasureIcon from './assets/Measure.svg?url';
@@ -21,14 +22,11 @@
     // Add more as needed
   };
 
-  let expanded = false;
   function toggleExpand(){
-    expanded = !expanded;
+    updateNodeData(id, {expanded: !data.expanded});
+    console.log(data);
   }
 
-  $effect(() => {
-      console.log("Rendering Custom node");
-  });
 
 </script>
 
@@ -40,14 +38,14 @@
     </span>
     <span class="mui-node-name"><b>{data.CalcName}</b></span>
     <button class="expand-btn" on:click|stopPropagation={toggleExpand} aria-label="Expand/collapse">
-      {#if expanded}
+      {#if data.expanded}
         &minus;
       {:else}
         +
       {/if}
     </button>
   </div>
-  {#if expanded}
+  {#if data.expanded}
     <div class="mui-node-extra">
       <div>More info about {data.CalcName}</div>
     </div>
@@ -210,7 +208,7 @@
     padding: 10px 18px;
     background: #f9f9f9;
     border-top: 1px solid #eee;
-    font-size: 0.95em;
+    font-size: 1.8em;
     color: #444;
   }
 </style>
