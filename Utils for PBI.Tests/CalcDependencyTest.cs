@@ -11,8 +11,8 @@ namespace Utils_for_PBI.Tests
 
         public CalcDependencyTest()
         {
-            CalcDepedencyData calcDepedencyData = new CalcDepedencyData();
-            calcDepedencyData.calcDepedencyData.Add(new CalcDependencyDataRow
+            CalcDependencyData calcDepedencyData = new CalcDependencyData();
+            calcDepedencyData.AddRow(new CalcDependencyDataRow
             {
                 OBJECT_TYPE = "MEASURE",
                 SOURCE_TABLE = "Sales",
@@ -23,10 +23,8 @@ namespace Utils_for_PBI.Tests
                 REFERENCED_OBJECT = "Amount"
             });
 
-            calcDepedencyData.ParseIntoJSON();
-
-            _nodes = JArray.Parse(calcDepedencyData.svelte_flow_nodes_json);
-            _edges = JArray.Parse(calcDepedencyData.svelte_flow_edges_json);
+            _nodes = JArray.Parse(calcDepedencyData.GetSvelteFlowNodesJson());
+            _edges = JArray.Parse(calcDepedencyData.GetSvelteFlowEdgesJson());
 
         }
 

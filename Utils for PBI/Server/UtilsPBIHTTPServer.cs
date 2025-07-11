@@ -19,10 +19,10 @@ namespace Utils_for_PBI.Server
         public HttpListener dataServer;
         public bool isStarted = false;
         public CancellationTokenSource cancellationTokenSource;
-        public CalcDepedencyData calcDepedencyData;
+        public CalcDependencyData calcDepedencyData;
         public String serverPrefix;
 
-        public UtilsPBIHTTPServer(string urlAddress, CalcDepedencyData argCalcDepedencyData)
+        public UtilsPBIHTTPServer(string urlAddress, CalcDependencyData argCalcDepedencyData)
         {
             calcDepedencyData = argCalcDepedencyData;
             dataServer = new HttpListener();
@@ -75,16 +75,16 @@ namespace Utils_for_PBI.Server
             switch (request.RawUrl)
             {
                 case "/utilspbi/api/nodesinfo":
-                    await ServeContent(response, calcDepedencyData.nodesInfoJSON);
+                    await ServeContent(response, calcDepedencyData.GetNodesInfo());
                     break;
                 case "/utilspbi/api/objecttypeinfo":
-                    await ServeContent(response, calcDepedencyData.objectTypeInfoJSON);
+                    await ServeContent(response, calcDepedencyData.GetObjectTypeInfo());
                     break;
                 case "/utilspbi/api/nodes":
-                    await ServeContent(response, calcDepedencyData.svelte_flow_nodes_json);
+                    await ServeContent(response, calcDepedencyData.GetSvelteFlowNodesJson());
                     break;
                 case "/utilspbi/api/edges":
-                    await ServeContent(response, calcDepedencyData.svelte_flow_edges_json);
+                    await ServeContent(response, calcDepedencyData.GetSvelteFlowEdgesJson());
                     break;
                 default:
                     response.StatusCode = 404;

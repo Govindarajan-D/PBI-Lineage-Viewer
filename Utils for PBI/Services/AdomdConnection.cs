@@ -52,10 +52,10 @@ namespace Utils_for_PBI.Services
             Logger.Info("ADOMD Connection Established");
     }
 
-        public CalcDepedencyData RetrieveCalcDependency()
+        public CalcDependencyData RetrieveCalcDependency()
         {
             String dependencySQLQuery = @"SELECT OBJECT_TYPE, [TABLE] AS SOURCE_TABLE, OBJECT, EXPRESSION, REFERENCED_OBJECT_TYPE, REFERENCED_TABLE, REFERENCED_OBJECT FROM $SYSTEM.DISCOVER_CALC_DEPENDENCY";
-            CalcDepedencyData calcDepedencyData = new CalcDepedencyData();
+            CalcDependencyData calcDepedencyData = new CalcDependencyData();
             try
             {
                 adomdConnection.Open();
@@ -94,7 +94,7 @@ namespace Utils_for_PBI.Services
             while (records.Read())
             {
                 CalcDependencyDataRow row = MapRowToObject(records);
-                calcDepedencyData.calcDepedencyData.Add(row);
+                calcDepedencyData.AddRow(row);
 
             }
 

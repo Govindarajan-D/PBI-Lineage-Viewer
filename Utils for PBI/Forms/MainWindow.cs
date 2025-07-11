@@ -119,7 +119,6 @@ namespace Utils_for_PBI.Forms
                 {
                     return;
                 }
-                dependencies.ParseIntoJSON();
 
                 if (_dataServer == null)
                 {
