@@ -1,17 +1,16 @@
 <script lang="ts">
-  import { useSvelteFlow, Handle, Position, type NodeProps } from "@xyflow/svelte";
+  import { useSvelteFlow, Handle } from "@xyflow/svelte";
   let { updateNodeData } = useSvelteFlow();
 
   let { id, data } = $props();
   const bgColor = "#f0f8ff";
-
+  let showBox = false;
 
   import TableIcon from './assets/Table.svg?url';
   import MeasureIcon from './assets/Measure.svg?url';
   import ColumnIcon from './assets/Column.svg?url';
   import CalcColumnIcon from './assets/Calc Column.svg?url';
   import CalcTableIcon from './assets/Calc Table.svg?url';
-
 
   const iconMap = {
     Table: TableIcon,
@@ -22,11 +21,15 @@
     // Add more as needed
   };
 
-  function toggleExpand(){
+  const toggleExpand = (event) => {
+    event.stopPropagation();
     updateNodeData(id, {expanded: !data.expanded});
-    console.log(data);
   }
 
+  const toggleBox = (event) => {
+    event.stopPropagation();
+    data.onShowBox(data.CalcName);
+  }
 
 </script>
 
@@ -37,12 +40,15 @@
       <img src= {iconMap[data.CalcType]} alt="icon" class="icon-img"/>
     </span>
     <span class="mui-node-name"><b>{data.CalcName}</b></span>
-    <button class="expand-btn" on:click|stopPropagation={toggleExpand} aria-label="Expand/collapse">
+    <button onclick={toggleExpand} class="node-btn" aria-label="Expand/collapse">
       {#if data.expanded}
         &minus;
       {:else}
         +
       {/if}
+    </button>
+    <button class="node-btn" onclick={toggleBox} aria-label="Open Formula">
+      ƒ  
     </button>
   </div>
   {#if data.expanded}
@@ -84,9 +90,6 @@
     background-color: rgba(0, 0, 0, 0.02);
   }
 
-  .Table .node-icon::before {
-    content: "📄";
-  }
   .node-container {
     display: flex;
     align-items: center;
@@ -183,7 +186,7 @@
     border-radius: 4px; /* optional, for rounded icons */
     box-shadow: 0 1px 2px #0001; /* optional, for subtle depth */
   }
-  .expand-btn {
+  .node-btn {
     margin-left: auto;
     background: #fff;
     border: 1px solid #bbb;
@@ -200,7 +203,7 @@
     box-shadow: 0 1px 2px #0001;
     outline: none;
   }
-  .expand-btn:hover, .expand-btn:focus {
+  .node-btn:hover, .node-btn:focus {
     background: #e3f2fd;
     border-color: #1976d2;
   }
@@ -211,4 +214,5 @@
     font-size: 1.8em;
     color: #444;
   }
+
 </style>

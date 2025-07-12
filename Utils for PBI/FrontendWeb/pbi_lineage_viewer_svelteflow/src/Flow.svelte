@@ -11,6 +11,7 @@
     type Edge,
     type NodeEventWithPointer,
   } from "@xyflow/svelte";
+  
 
 //  import DownloadLineage from './DownloadLineage.svelte';
 
@@ -18,14 +19,17 @@
   import { onMount } from "svelte";
   import DisplayNode from "./DisplayNode.svelte";
   import ContextMenu from "./ContextMenu.svelte";
+  import ModalBox from "./ModalBox.svelte";
   import "@xyflow/svelte/dist/style.css";
   import { getAncestors, getDescendants } from "./utility";
+    import { migrate } from "svelte/compiler";
 
   const nodeTypes = {
     selectorNode: DisplayNode,
   };
 
   let flowRef;
+
   const nodes = writable([]);
   const edges = writable([]);
   const nodeWidth = 172;
@@ -46,6 +50,7 @@
   } | null = $state(null);
   let clientWidth: number = $state();
   let clientHeight: number = $state();
+  let modalData = $state(null);
 
   // This function is used to layout the nodes and edges using the dagre library.
   // It sets the graph direction, adds nodes and edges to the graph, and then computes the layout.
@@ -91,7 +96,7 @@
 
   // Fetches nodes and edges data from the API and processes it.
   // It is asynchronous and returns a promise that resolves when the data is fetched.
-  async function fetchdata() {
+  async function retrieveData() {
     const nodesURL = baseURL + "nodes";
     const edgesURL = baseURL + "edges";
 
@@ -126,20 +131,23 @@
 
   // The async function fetchdata is called when the component is mounted.
   onMount(() => {
-    fetchdata().then(() => {
+    retrieveData().then(() => {
+      svelte_nodes = svelte_nodes.map((node) => ({
+        ...node,
+        data: {
+          ...node.data,
+          onShowBox: handleShowBox,
+          expanded: false,
+          showBox: false
+        }
+      }));
+
       const layoutedElements = getLayoutedElements(
         svelte_nodes,
         svelte_edges,
         "LR",
       );
-      svelte_nodes = svelte_nodes.map((node) => ({
-        ...node,
-        data: {
-          ...node.data,
-          expanded: false
-        }
-      }));
-      
+
       setNodesAndEdges(layoutedElements);
     });
   });
@@ -236,6 +244,14 @@
   const handlePaneClick = () => {
     menu = null;
   }
+  
+  const handleShowBox = () => {
+    modalData = "ABC";
+  }
+
+  const closeShowBox = () => {
+    modalData = null;
+  }
 
 </script>
 
@@ -272,4 +288,7 @@
       />
     {/if}
   </SvelteFlow>
+  {#if modalData}
+    <ModalBox modalData={modalData} closeModal={closeShowBox}/>
+  {/if}
 </div>
