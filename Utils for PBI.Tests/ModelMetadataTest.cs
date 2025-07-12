@@ -1,18 +1,19 @@
 using Utils_for_PBI.Models;
 using Newtonsoft.Json.Linq;
 using FluentAssertions;
+using Utils_for_PBI.Services;
 
 namespace Utils_for_PBI.Tests
 {
-    public class CalcDependencyTest
+    public class ModelMetadataTest
     {
         private readonly JArray _nodes;
         private readonly JArray _edges;
 
-        public CalcDependencyTest()
+        public ModelMetadataTest()
         {
-            CalcDependencyData calcDepedencyData = new CalcDependencyData();
-            calcDepedencyData.AddRow(new CalcDependencyDataRow
+            ModelMetadata modelMetadata = new ModelMetadata();
+            modelMetadata.CalcDependencyMetadataAddRow(new CalcDependencyMetadataRow
             {
                 OBJECT_TYPE = "MEASURE",
                 SOURCE_TABLE = "Sales",
@@ -23,8 +24,8 @@ namespace Utils_for_PBI.Tests
                 REFERENCED_OBJECT = "Amount"
             });
 
-            _nodes = JArray.Parse(calcDepedencyData.GetSvelteFlowNodesJson());
-            _edges = JArray.Parse(calcDepedencyData.GetSvelteFlowEdgesJson());
+            _nodes = JArray.Parse(modelMetadata.GetSvelteFlowNodesJson());
+            _edges = JArray.Parse(modelMetadata.GetSvelteFlowEdgesJson());
 
         }
 

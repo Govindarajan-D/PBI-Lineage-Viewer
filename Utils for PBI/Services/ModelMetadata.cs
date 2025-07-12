@@ -1,47 +1,34 @@
-﻿using Microsoft.AnalysisServices.Tabular;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AnalysisServices.Tabular;
 using Json = System.Text.Json;
+using Utils_for_PBI.Models;
+using log4net.Repository.Hierarchy;
+using System.Windows.Forms;
+using log4net;
+using Utils_for_PBI.Server;
+using System.Runtime.Versioning;
 
-namespace Utils_for_PBI.Models
+namespace Utils_for_PBI.Services
 {
-    /// <summary>
-    /// CalcDependencyDataRow represents the object fields for storing the data from the Semantic Model's DMV
-    ///
-    /// </summary>
-    public class CalcDependencyDataRow
-    {
-        public string OBJECT_TYPE { get; set; }
-        public string SOURCE_TABLE { get; set; }
-        public string OBJECT { get; set; }
-        public string EXPRESSION { get; set; }
-        public string REFERENCED_OBJECT_TYPE { get; set; }
-        public string REFERENCED_TABLE { get; set; }
-        public string REFERENCED_OBJECT { get; set; }
-
-        public CalcDependencyDataRow()
-        {
-            OBJECT_TYPE = string.Empty;
-            SOURCE_TABLE = string.Empty;
-            OBJECT = string.Empty;
-            EXPRESSION = string.Empty;
-            REFERENCED_OBJECT_TYPE = string.Empty;
-            REFERENCED_TABLE = string.Empty;
-            REFERENCED_OBJECT = string.Empty;
-        }
-    }
 
     /// <summary>
-    /// CalcDependencyData is a list of CalcDependencyRow. Effectively it is a table of rows which is used to process DMV data
+    /// ModelMetadata is a list of CalcDependencyRow. Effectively it is a table of rows which is used to process DMV data
     /// </summary>
     //TO-DO: Add colors and change weightage if required
-    public class CalcDependencyData
+    [SupportedOSPlatform("windows")]
+    public class ModelMetadata
     {
-        private List<CalcDependencyDataRow> _calcDependencyData = new List<CalcDependencyDataRow>();
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(UtilsPBIHTTPServer));
+
+        private List<CalcDependencyMetadataRow> _calcDependencyMetadata = new List<CalcDependencyMetadataRow>();
+        private List<MeasuresMetadataRow> _measuresMetadataRows = new List<MeasuresMetadataRow>();
         private bool _preprocessStepsDone = false;
 
-        private IEnumerable<CalcDependencyDataRow> _cleansedData;
+        private IEnumerable<CalcDependencyMetadataRow> _cleansedData;
         private IEnumerable<(string OBJECT, string OBJECT_TYPE)> _allNodes;
 
 
@@ -49,18 +36,72 @@ namespace Utils_for_PBI.Models
         //TO-DO: A measure when it uses a column from a table, has the table as a dependency as well. This should be handled in the code.
 
 
-        public void AddRow(CalcDependencyDataRow row)
+        public void CalcDependencyMetadataAddRow(CalcDependencyMetadataRow row)
         {
             if (row != null)
             {
-                _calcDependencyData.Add(row);
+                _calcDependencyMetadata.Add(row);
             }
 
             _preprocessStepsDone = false;
         }
 
+        public void CalcDependencyMetadataAddRows(IEnumerable<CalcDependencyMetadataRow> rows)
+        {
+            if (rows != null)
+            {
+                _calcDependencyMetadata.AddRange(rows);
+            }
+            _preprocessStepsDone = false;
+        }
 
-        private IEnumerable<CalcDependencyDataRow> CleanData(IEnumerable<CalcDependencyDataRow> rows)
+        public void MeasuresMetadataAddRow(MeasuresMetadataRow row)
+        {
+            if (row != null)
+            {
+                _measuresMetadataRows.Add(row);
+            }
+
+            _preprocessStepsDone = false;
+        }
+
+        public void MeasuresMetadataAddRows(IEnumerable<MeasuresMetadataRow> rows)
+        {
+            if (rows != null)
+            {
+                _measuresMetadataRows.AddRange(rows);
+            }
+            _preprocessStepsDone = false;
+        }
+
+        public void PopulateModelMetadata(AdomdConnection adomdConnection)
+        {
+            try
+            {
+                string dependencySQLQuery = @"SELECT OBJECT_TYPE, [TABLE] AS SOURCE_TABLE, OBJECT, EXPRESSION, REFERENCED_OBJECT_TYPE, REFERENCED_TABLE, REFERENCED_OBJECT FROM $SYSTEM.DISCOVER_CALC_DEPENDENCY";
+                var dependencies = adomdConnection.ExecuteQuery<CalcDependencyMetadataRow>(adomdConnection.connection, dependencySQLQuery, CalcDependencyMetadataRow.MapRowToObject);
+                this.CalcDependencyMetadataAddRows(dependencies);
+
+
+                string measureMetadataSQLQuery = @"SELECT [Name], [Expression], FormatString, IsHidden, IsSimpleMeasure, DisplayFolder, ModifiedTime FROM $SYSTEM.TMSCHEMA_MEASURES";
+                var measures = adomdConnection.ExecuteQuery<MeasuresMetadataRow>(adomdConnection.connection, measureMetadataSQLQuery, MeasuresMetadataRow.MapRowToObject);
+                this.MeasuresMetadataAddRows(measures);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
+                MessageBox.Show($"Error: {ex.Message}", "Error executing ADOMD command", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                adomdConnection.Close();
+
+            }
+
+
+        }
+
+        private IEnumerable<CalcDependencyMetadataRow> CleanData(IEnumerable<CalcDependencyMetadataRow> rows)
         {
             List<String> objectTypeNotInFilter = new List<String> { "HIERARCHY", "ATTRIBUTE_HIERARCHY", "ACTIVE_RELATIONSHIP", "RELATIONSHIP", "PARTITION", "M_EXPRESSION" };
 
@@ -72,7 +113,7 @@ namespace Utils_for_PBI.Models
 
         }
 
-        private IEnumerable<(string OBJECT, string OBJECT_TYPE)> GetAllNodes(IEnumerable<CalcDependencyDataRow> rows)
+        private IEnumerable<(string OBJECT, string OBJECT_TYPE)> GetAllNodes(IEnumerable<CalcDependencyMetadataRow> rows)
         {
 
             // Object Nodes are Objects (MEASURE, CALC COLUMN, COLUMN)
@@ -91,7 +132,7 @@ namespace Utils_for_PBI.Models
                                                             c.REFERENCED_TABLE
                                                         })
                                                         .Distinct()
-                                                        .Select(tableName => 
+                                                        .Select(tableName =>
                                                         (
                                                             OBJECT: tableName,
                                                             OBJECT_TYPE: "TABLE"
@@ -104,50 +145,50 @@ namespace Utils_for_PBI.Models
         }
 
         /// <summary>
-        /// Converts the List of Rows (CalcDependencyData) into SvelteFlow Nodes compatible format
+        /// Converts the List of Rows (ModelMetadata) into SvelteFlow Nodes compatible format
         /// </summary>
         public string GetSvelteFlowNodesJson()
         {
             if (_preprocessStepsDone == false)
             {
-                _cleansedData = CleanData(_calcDependencyData);
+                _cleansedData = CleanData(_calcDependencyMetadata);
                 _allNodes = GetAllNodes(_cleansedData);
             }
-            
+
             var svelteflowNodes = _allNodes.Select(r => new
-                                            {
-                                                id = r.OBJECT,
-                                                type = "selectorNode",
-                                                data = new
-                                                {
-                                                    CalcName = r.OBJECT,
-                                                    CalcType = r.OBJECT_TYPE.ToUpper() switch
-                                                    {
-                                                        "CALC_COLUMN" => "Calc Column",
-                                                        "MEASURE" => "Measure",
-                                                        "TABLE" => "Table",
-                                                        "CALC_TABLE" => "Calc Table",
-                                                        "COLUMN" => "Column",
-                                                        _ => "Others"
-                                                    }
-                                                },
-                                                position = new
-                                                {
-                                                    x = 0,
-                                                    y = 0
-                                                }
-                                            });
+            {
+                id = r.OBJECT,
+                type = "selectorNode",
+                data = new
+                {
+                    CalcName = r.OBJECT,
+                    CalcType = r.OBJECT_TYPE.ToUpper() switch
+                    {
+                        "CALC_COLUMN" => "Calc Column",
+                        "MEASURE" => "Measure",
+                        "TABLE" => "Table",
+                        "CALC_TABLE" => "Calc Table",
+                        "COLUMN" => "Column",
+                        _ => "Others"
+                    }
+                },
+                position = new
+                {
+                    x = 0,
+                    y = 0
+                }
+            });
             return Json.JsonSerializer.Serialize(svelteflowNodes, new Json.JsonSerializerOptions { WriteIndented = true });
         }
 
         /// <summary>
-        /// Converts the List of Rows (CalcDependencyData) into SvelteFlow Edges compatible format
+        /// Converts the List of Rows (ModelMetadata) into SvelteFlow Edges compatible format
         /// </summary>
         public string GetSvelteFlowEdgesJson()
         {
             if (_preprocessStepsDone == false)
             {
-                _cleansedData = CleanData(_calcDependencyData);
+                _cleansedData = CleanData(_calcDependencyMetadata);
                 _allNodes = GetAllNodes(_cleansedData);
             }
 
@@ -169,12 +210,12 @@ namespace Utils_for_PBI.Models
                                                     }).Distinct();
             return Json.JsonSerializer.Serialize(svelteflowEdges, new Json.JsonSerializerOptions { WriteIndented = true });
         }
-        
+
         public string GetNodesInfo()
         {
             if (_preprocessStepsDone == false)
             {
-                _cleansedData = CleanData(_calcDependencyData);
+                _cleansedData = CleanData(_calcDependencyMetadata);
                 _allNodes = GetAllNodes(_cleansedData);
             }
 
@@ -185,32 +226,32 @@ namespace Utils_for_PBI.Models
                 objectTypeID = c.OBJECT_TYPE.ToUpper()
             });
 
-           return Json.JsonSerializer.Serialize(nodesInfo, new Json.JsonSerializerOptions { WriteIndented = true });
+            return Json.JsonSerializer.Serialize(nodesInfo, new Json.JsonSerializerOptions { WriteIndented = true });
         }
 
         public string GetObjectTypeInfo()
         {
             if (_preprocessStepsDone == false)
             {
-                _cleansedData = CleanData(_calcDependencyData);
+                _cleansedData = CleanData(_calcDependencyMetadata);
                 _allNodes = GetAllNodes(_cleansedData);
             }
 
             var objectTypeInfo = _allNodes.Select(c => new
-                                        {
-                                            objectTypeID = c.OBJECT_TYPE.ToUpper()
-                                        }).Distinct().Select(r => new
-                                        {
-                                            r.objectTypeID,
-                                            objectTypeName = r.objectTypeID switch
-                                            {
-                                                "CALC_COLUMN" => "Calculated Column",
-                                                "MEASURE" => "Measure",
-                                                "TABLE" => "Table",
-                                                "COLUMN" => "Column",
-                                                _ => "Others"
-                                            }
-                                        });
+            {
+                objectTypeID = c.OBJECT_TYPE.ToUpper()
+            }).Distinct().Select(r => new
+            {
+                r.objectTypeID,
+                objectTypeName = r.objectTypeID switch
+                {
+                    "CALC_COLUMN" => "Calculated Column",
+                    "MEASURE" => "Measure",
+                    "TABLE" => "Table",
+                    "COLUMN" => "Column",
+                    _ => "Others"
+                }
+            });
 
             return Json.JsonSerializer.Serialize(objectTypeInfo, new Json.JsonSerializerOptions { WriteIndented = true });
         }

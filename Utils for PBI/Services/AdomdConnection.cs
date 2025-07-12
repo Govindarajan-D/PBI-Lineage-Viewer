@@ -1,6 +1,8 @@
 ﻿using log4net;
+using Microsoft.AnalysisServices.AdomdClient;
 using PowerBIConnections.Connections;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Runtime.Versioning;
 using System.Windows.Forms;
@@ -22,7 +24,7 @@ namespace Utils_for_PBI.Services
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(AdomdConnection));
 
-        public AdomdClient.AdomdConnection adomdConnection;
+        public AdomdClient.AdomdConnection connection;
         public bool isConnected = false;
         public bool endAdomdSession = true;
 
@@ -32,11 +34,11 @@ namespace Utils_for_PBI.Services
             {
                 if(datasetConnection.ConnectionType == ConnectionType.PowerBIService)
                 {
-                    adomdConnection = new AdomdClient.AdomdConnection($"Provider=MSOLAP;Data Source={datasetConnection.ConnectString};Initial Catalog={datasetConnection.DatabaseName}");
+                    connection = new AdomdClient.AdomdConnection($"Provider=MSOLAP;Data Source={datasetConnection.ConnectString};Initial Catalog={datasetConnection.DatabaseName}");
                 }
                 else
                 {
-                    adomdConnection = new AdomdClient.AdomdConnection("Datasource=" + datasetConnection.ConnectString);
+                    connection = new AdomdClient.AdomdConnection("Datasource=" + datasetConnection.ConnectString);
                 }
                 
                 
@@ -50,70 +52,34 @@ namespace Utils_for_PBI.Services
             isConnected = true;
 
             Logger.Info("ADOMD Connection Established");
-    }
-
-        public CalcDependencyData RetrieveCalcDependency()
-        {
-            String dependencySQLQuery = @"SELECT OBJECT_TYPE, [TABLE] AS SOURCE_TABLE, OBJECT, EXPRESSION, REFERENCED_OBJECT_TYPE, REFERENCED_TABLE, REFERENCED_OBJECT FROM $SYSTEM.DISCOVER_CALC_DEPENDENCY";
-            CalcDependencyData calcDepedencyData = new CalcDependencyData();
-            try
-            {
-                adomdConnection.Open();
-            }
-            catch (Exception ex)
-            {
-                if (ex.Message.Contains("Database is empty"))
-                {
-                    Logger.Warn("Database is empty, no data to retrieve.");
-                    MessageBox.Show("The database is empty, no data to retrieve.", "Empty Database", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return null;
-                }
-                else
-                {
-                    Logger.Error(ex.Message);
-                    MessageBox.Show($"Error: {ex.Message}", "Error establishing ADOMD connection", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return null;
-                }
-                
-            }
-
-            AdomdClient.AdomdCommand adomdCommand = new AdomdClient.AdomdCommand(dependencySQLQuery, adomdConnection);
-            AdomdClient.AdomdDataReader records;
-            try
-            {
-                records = adomdCommand.ExecuteReader();
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex.Message);
-                MessageBox.Show($"Error: {ex.Message}", "Error executing ADOMD command, Is the Model Empty?", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
-            }
-
-
-            while (records.Read())
-            {
-                CalcDependencyDataRow row = MapRowToObject(records);
-                calcDepedencyData.AddRow(row);
-
-            }
-
-            adomdCommand.Dispose();
-            adomdConnection.Close();
-
-            return calcDepedencyData;
         }
 
-        public CalcDependencyDataRow MapRowToObject(IDataRecord dataRecord) => new CalcDependencyDataRow
+        // Executes the query and maps the result to a list of objects using the provided mapping function
+        // AdomdDataReader is a class that implements IDataRecord which allows to use MapRowToObject function to map each row to an object of type T
+        public List<T> ExecuteQuery<T>(AdomdClient.AdomdConnection connection, string query, Func<AdomdDataReader, T> MapRowToObject)
         {
-            OBJECT_TYPE = Convert.ToString(dataRecord["OBJECT_TYPE"]),
-            SOURCE_TABLE = Convert.ToString(dataRecord["SOURCE_TABLE"]),
-            OBJECT = Convert.ToString(dataRecord["OBJECT"]),
-            EXPRESSION = Convert.ToString(dataRecord["EXPRESSION"]),
-            REFERENCED_OBJECT_TYPE = Convert.ToString(dataRecord["REFERENCED_OBJECT_TYPE"]),
-            REFERENCED_TABLE = Convert.ToString(dataRecord["REFERENCED_TABLE"]),
-            REFERENCED_OBJECT = Convert.ToString(dataRecord["REFERENCED_OBJECT"])
-        };
+            List<T> results = new List<T>();
+            try
+            {
+                connection.Open();
+                using (var command = new AdomdClient.AdomdCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(MapRowToObject(reader));
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return results;
+        }
 
         public void Disconnect(bool endSession = true)
         {
@@ -121,10 +87,15 @@ namespace Utils_for_PBI.Services
             Dispose();
         }
 
+        public void Close()
+        {
+            connection.Close(endAdomdSession);
+        }
+
         public void Dispose()
         {
             isConnected = false;
-            adomdConnection.Close(endAdomdSession);
+            connection.Close(endAdomdSession);
             GC.SuppressFinalize(this);
         }
     }

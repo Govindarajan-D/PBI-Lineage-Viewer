@@ -1,10 +1,11 @@
 ﻿using log4net;
 using System;
 using System.Net;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Utils_for_PBI.Models;
+using Utils_for_PBI.Services;
 
 namespace Utils_for_PBI.Server
 {
@@ -12,6 +13,7 @@ namespace Utils_for_PBI.Server
     ///  JSONDataServer starts a HTTP Listener that serves Calculation dependency data in JSON format
     ///  The Server runs in multi-threaded mode. 
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public class UtilsPBIHTTPServer
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(UtilsPBIHTTPServer));
@@ -19,12 +21,12 @@ namespace Utils_for_PBI.Server
         public HttpListener dataServer;
         public bool isStarted = false;
         public CancellationTokenSource cancellationTokenSource;
-        public CalcDependencyData calcDepedencyData;
+        public ModelMetadata modelMetadata;
         public String serverPrefix;
 
-        public UtilsPBIHTTPServer(string urlAddress, CalcDependencyData argCalcDepedencyData)
+        public UtilsPBIHTTPServer(string urlAddress, ModelMetadata argmodelMetadata)
         {
-            calcDepedencyData = argCalcDepedencyData;
+            modelMetadata = argmodelMetadata;
             dataServer = new HttpListener();
             serverPrefix = urlAddress;
             dataServer.Prefixes.Add(serverPrefix);
@@ -75,16 +77,16 @@ namespace Utils_for_PBI.Server
             switch (request.RawUrl)
             {
                 case "/utilspbi/api/nodesinfo":
-                    await ServeContent(response, calcDepedencyData.GetNodesInfo());
+                    await ServeContent(response, modelMetadata.GetNodesInfo());
                     break;
                 case "/utilspbi/api/objecttypeinfo":
-                    await ServeContent(response, calcDepedencyData.GetObjectTypeInfo());
+                    await ServeContent(response, modelMetadata.GetObjectTypeInfo());
                     break;
                 case "/utilspbi/api/nodes":
-                    await ServeContent(response, calcDepedencyData.GetSvelteFlowNodesJson());
+                    await ServeContent(response, modelMetadata.GetSvelteFlowNodesJson());
                     break;
                 case "/utilspbi/api/edges":
-                    await ServeContent(response, calcDepedencyData.GetSvelteFlowEdgesJson());
+                    await ServeContent(response, modelMetadata.GetSvelteFlowEdgesJson());
                     break;
                 default:
                     response.StatusCode = 404;

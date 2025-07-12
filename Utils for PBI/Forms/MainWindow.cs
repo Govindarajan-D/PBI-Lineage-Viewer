@@ -102,7 +102,7 @@ namespace Utils_for_PBI.Forms
             }
 
            /* HTML page is generated from the resources and then it is displayed in the WebView2 component.
-            * The calc dependencies are retrieved and then served using the UtilsPBIHTTPServer server.
+            * The modelMetadata is retrieved and then served using the UtilsPBIHTTPServer server.
             */
 
             GenerateLineagePage showDependencyGraph = new GenerateLineagePage();
@@ -113,9 +113,10 @@ namespace Utils_for_PBI.Forms
 
             if (_adomdConnection.isConnected)
             {
-                var dependencies = _adomdConnection.RetrieveCalcDependency();
+                ModelMetadata modelMetadata = new ModelMetadata();
+                modelMetadata.PopulateModelMetadata(_adomdConnection);
 
-                if (dependencies == null)
+                if (modelMetadata == null)
                 {
                     return;
                 }
@@ -123,7 +124,7 @@ namespace Utils_for_PBI.Forms
                 if (_dataServer == null)
                 {
                     //TO-DO: Add configuration functionality to change the port number and other settings
-                    _dataServer = new UtilsPBIHTTPServer(Constants.urlAddress, dependencies);
+                    _dataServer = new UtilsPBIHTTPServer(Constants.urlAddress, modelMetadata);
                     _dataServer.Start();
                 }
             }
