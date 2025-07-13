@@ -267,9 +267,9 @@
     connectionLineType={ConnectionLineType.SmoothStep}
   >
     <Panel position="top-right">
-      <button onclick={fitView}>Fit View</button>
-      <button onclick={() => zoom("In")}>Zoom In</button>
-      <button onclick={() => zoom("Out")}>Zoom Out</button>
+      <button class="button-mui" onclick={fitView}>Fit View</button>
+      <button class="button-mui" onclick={() => zoom("In")}>Zoom In</button>
+      <button class="button-mui" onclick={() => zoom("Out")}>Zoom Out</button>
     </Panel>
     <!--<DownloadLineage/>-->
     <Background />
@@ -291,3 +291,24 @@
     <ModalBox modalData={modalData} closeModal={closeShowBox}/>
   {/if}
 </div>
+<style>
+  .button-mui {
+  background: #4f7faf;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5em 1.2em;
+  font-size: 0.85em;
+  font-family: inherit;
+  cursor: pointer;
+  margin: 0 0.25em;
+  box-shadow: 0 2px 6px #1976d222;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.button-mui:hover,
+.button-mui:focus {
+  background: #1565c0;
+  box-shadow: 0 4px 12px #1976d244;
+  outline: none;
+}
+</style>
