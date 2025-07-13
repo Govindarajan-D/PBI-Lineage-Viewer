@@ -17,12 +17,11 @@
 
   import { writable } from "svelte/store";
   import { onMount } from "svelte";
-  import DisplayNode from "./DisplayNode.svelte";
+  import DisplayNode from "./flowcomponents/DisplayNode.svelte";
   import ContextMenu from "./ContextMenu.svelte";
   import ModalBox from "./ModalBox.svelte";
   import "@xyflow/svelte/dist/style.css";
-  import { getAncestors, getDescendants } from "./utility";
-    import { migrate } from "svelte/compiler";
+  import { getAncestors, getDescendants } from "../ts/utility";
 
   const nodeTypes = {
     selectorNode: DisplayNode,
@@ -38,7 +37,7 @@
   const {fitView, setZoom, getViewport} = useSvelteFlow();
 
   const baseURL = "http://localhost:8080/utilspbi/api/";
-  var svelte_nodes, svelte_edges;
+  var svelteNodes, svelteEdges;
 
   // Handling context menu
   let menu: {
@@ -109,8 +108,8 @@
           element.data.nameLength = element.data.name.length;
         }
       });
-      svelte_nodes = nodes;
-      svelte_edges = edges;
+      svelteNodes = nodes;
+      svelteEdges = edges;
     });
   }
 
@@ -132,7 +131,7 @@
   // The async function fetchdata is called when the component is mounted.
   onMount(() => {
     retrieveData().then(() => {
-      svelte_nodes = svelte_nodes.map((node) => ({
+      svelteNodes = svelteNodes.map((node) => ({
         ...node,
         data: {
           ...node.data,
@@ -143,8 +142,8 @@
       }));
 
       const layoutedElements = getLayoutedElements(
-        svelte_nodes,
-        svelte_edges,
+        svelteNodes,
+        svelteEdges,
         "LR",
       );
 
@@ -154,8 +153,8 @@
 
   const onLayout = (direction: string) => {
     const layoutedElements = getLayoutedElements(
-      svelte_nodes,
-      svelte_edges,
+      svelteNodes,
+      svelteEdges,
       direction,
     );
 
@@ -164,9 +163,9 @@
 
   const filterNode = (filter_id) => {
 
-    const unioned_nodes = Array.from(new Set([...getAncestors(svelte_edges, filter_id),...getDescendants(svelte_edges, filter_id), filter_id]));
-    const filtered_nodes = svelte_nodes.filter((node) => unioned_nodes.includes(node.id));
-    const filtered_edges = svelte_edges.filter((edge) => unioned_nodes.includes(edge.source) || unioned_nodes.includes(edge.target));
+    const unioned_nodes = Array.from(new Set([...getAncestors(svelteEdges, filter_id),...getDescendants(svelteEdges, filter_id), filter_id]));
+    const filtered_nodes = svelteNodes.filter((node) => unioned_nodes.includes(node.id));
+    const filtered_edges = svelteEdges.filter((edge) => unioned_nodes.includes(edge.source) || unioned_nodes.includes(edge.target));
     const layoutedElements = getLayoutedElements(
       filtered_nodes,
       filtered_edges,
@@ -178,8 +177,8 @@
 
   const clearFilter = () => {
     const layoutedElements = getLayoutedElements(
-      svelte_nodes,
-      svelte_edges,
+      svelteNodes,
+      svelteEdges,
       "LR",
     );
 
@@ -189,8 +188,8 @@
   // TO-FIX: Non-related edges get highlighted and a methodology for removing highlight should be coded.
   const handleNodeClick = (event) => {
     const clickedNode = event.node.id;
-    const unioned_nodes = Array.from(new Set([...getAncestors(svelte_edges, clickedNode),...getDescendants(svelte_edges, clickedNode), clickedNode]));
-    const highlighted_nodes = svelte_nodes.map((node) => ({
+    const unioned_nodes = Array.from(new Set([...getAncestors(svelteEdges, clickedNode),...getDescendants(svelteEdges, clickedNode), clickedNode]));
+    const highlighted_nodes = svelteNodes.map((node) => ({
       ...node,
       data: {
           ...node.data,
@@ -198,7 +197,7 @@
         }
     }));
 
-    const highlighted_edges = svelte_edges.map((edge) => ({
+    const highlighted_edges = svelteEdges.map((edge) => ({
       ...edge,
       style: unioned_nodes.includes(edge.source) || unioned_nodes.includes(edge.target)
       ? "stroke: orange; stroke-width: 3;"

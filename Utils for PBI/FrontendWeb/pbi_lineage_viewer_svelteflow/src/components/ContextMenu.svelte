@@ -1,6 +1,4 @@
-<script lang="ts">
-  import { useEdges, useNodes, useSvelteFlow } from '@xyflow/svelte';
- 
+<script lang="ts"> 
   let {
     id,
     top,

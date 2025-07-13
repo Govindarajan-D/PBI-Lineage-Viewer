@@ -6,11 +6,12 @@
   const bgColor = "#f0f8ff";
   let showBox = false;
 
-  import TableIcon from './assets/Table.svg?url';
-  import MeasureIcon from './assets/Measure.svg?url';
-  import ColumnIcon from './assets/Column.svg?url';
-  import CalcColumnIcon from './assets/Calc Column.svg?url';
-  import CalcTableIcon from './assets/Calc Table.svg?url';
+  import NodeTable from "./NodeTable.svelte";
+  import TableIcon from '../../assets/Table.svg?url';
+  import MeasureIcon from '../../assets/Measure.svg?url';
+  import ColumnIcon from '../../assets/Column.svg?url';
+  import CalcColumnIcon from '../../assets/Calc Column.svg?url';
+  import CalcTableIcon from '../../assets/Calc Table.svg?url';
 
   const iconMap = {
     Table: TableIcon,
@@ -47,14 +48,14 @@
         +
       {/if}
     </button>
-    <button class="node-btn" onclick={toggleBox} aria-label="Open Formula">
-      ƒ  
-    </button>
+    {#if data.AdditionalData.Expression != "N/A"}
+      <button class="node-btn" onclick={toggleBox} aria-label="Open Formula">
+        ƒ  
+      </button>
+    {/if}
   </div>
   {#if data.expanded}
-    <div class="mui-node-extra">
-      <div>More info about {data.CalcName}</div>
-    </div>
+    <NodeTable additionalData={data.AdditionalData} />
   {/if}
   <Handle type="source" position="right" />
 </div>
@@ -207,12 +208,4 @@
     background: #e3f2fd;
     border-color: #1976d2;
   }
-  .mui-node-extra {
-    padding: 10px 18px;
-    background: #f9f9f9;
-    border-top: 1px solid #eee;
-    font-size: 1.8em;
-    color: #444;
-  }
-
 </style>
