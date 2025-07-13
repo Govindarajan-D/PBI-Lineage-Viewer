@@ -245,8 +245,8 @@
     menu = null;
   }
   
-  const handleShowBox = () => {
-    modalData = "ABC";
+  const handleShowBox = (modalBoxData) => {
+    modalData = modalBoxData;
   }
 
   const closeShowBox = () => {

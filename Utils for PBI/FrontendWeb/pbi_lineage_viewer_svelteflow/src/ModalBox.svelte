@@ -1,5 +1,6 @@
 <script lang="ts">
     let {closeModal, modalData} = $props();
+    console.log(modalData);
 </script>
 
     <div class="modal-backdrop" onclick={closeModal} aria-label="Close" role="button">
@@ -7,8 +8,8 @@
         <button class="close-btn" onclick={closeModal} aria-label="Close">&times;</button>
         <div class="modal-content">
         <!-- Replace with your data display -->
-        <h3>Node Data</h3>
-        <pre>{JSON.stringify(modalData, null, 2)}</pre>
+        <h3>{modalData.Name}</h3>
+        <pre>{JSON.stringify(modalData.Expression, null, 2)}</pre>
         </div>
     </div>
     </div>

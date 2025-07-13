@@ -28,7 +28,7 @@
 
   const toggleBox = (event) => {
     event.stopPropagation();
-    data.onShowBox(data.CalcName);
+    data.onShowBox(data.AdditionalData);
   }
 
 </script>
