@@ -3,7 +3,7 @@
     console.log(modalData);
 </script>
 
-    <div class="modal-backdrop" onclick={closeModal} aria-label="Close" role="button">
+    <div class="modal-backdrop" aria-label="Close" role="button">
     <div class="modal-box" onclick={(event) => {event.stopPropagation}} aria-label="Close">
         <button class="close-btn" onclick={closeModal} aria-label="Close">&times;</button>
         <div class="modal-content">

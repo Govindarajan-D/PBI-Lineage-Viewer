@@ -64,16 +64,19 @@ namespace Utils_for_PBI.Forms
                     if(connection.ConnectionType == ConnectionType.PowerBIService)
                     {
                         SelectModelForm selectModelForm = new SelectModelForm(_tomAPIConnection.databases);
-                        if(selectModelForm.ShowDialog() == DialogResult.OK && selectModelForm.selectedDatabaseName != null)
+                        if (_tomAPIConnection.databases.Count > 0)
                         {
-                            connection.DatabaseName = selectModelForm.selectedDatabaseName;
-                            _adomdConnection.Connect(connection);
-                        }
-                        else
-                        {
-                            MessageBox.Show($"Info: No Model Selected", "Select Model", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            _tomAPIConnection.Disconnect();
-                            return;
+                            if (selectModelForm.ShowDialog() == DialogResult.OK && selectModelForm.selectedDatabaseName != null)
+                            {
+                                connection.DatabaseName = selectModelForm.selectedDatabaseName;
+                                _adomdConnection.Connect(connection);
+                            }
+                            else
+                            {
+                                MessageBox.Show($"Info: No Model Selected", "Select Model", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                _tomAPIConnection.Disconnect();
+                                return;
+                            }
                         }
                     }
                     else
@@ -85,11 +88,11 @@ namespace Utils_for_PBI.Forms
                     string connectionString;
                     if (connection.ConnectionType == ConnectionType.PowerBIDesktop)
                     {
-                        connectionString = "Local connection: " + connection.ConnectString;
+                        connectionString = "Name: " + connection.DisplayName;
                     }
                     else
                     {
-                        connectionString = "XMLA Endpoint:" + connection.ConnectString + " Model:" + connection.DatabaseName;
+                        connectionString =  "XMLA Endpoint:" + connection.ConnectString + " | Model:" + connection.DatabaseName;
                     }
 
                     modelURLStatusLabel.Text = connectionString;
@@ -121,12 +124,14 @@ namespace Utils_for_PBI.Forms
                     return;
                 }
 
-                if (_dataServer == null)
+                if (_dataServer != null)
                 {
-                    //TO-DO: Add configuration functionality to change the port number and other settings
-                    _dataServer = new UtilsPBIHTTPServer(Constants.urlAddress, modelMetadata);
-                    _dataServer.Start();
+                    _dataServer.Close();
                 }
+                //TO-DO: Add configuration functionality to change the port number and other settings
+
+                _dataServer = new UtilsPBIHTTPServer(Constants.urlAddress, modelMetadata);
+                _dataServer.Start();
             }
 
             ConnectDatasetPlaceholderLabel.Visible = false;

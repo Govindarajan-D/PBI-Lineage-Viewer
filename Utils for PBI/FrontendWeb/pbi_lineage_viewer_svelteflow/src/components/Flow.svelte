@@ -62,7 +62,7 @@
     dagreGraph.setDefaultEdgeLabel(() => ({}));
     
     const isHorizontal = direction === "LR";
-    dagreGraph.setGraph({ rankdir: direction, ranksep: rankSep, nodesep: nodeSep});
+    dagreGraph.setGraph({ rankdir: direction, ranksep: rankSep, nodesep: nodeSep, ranker: 'tight-tree'});
 
     nodes.forEach((node) => {
       dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });

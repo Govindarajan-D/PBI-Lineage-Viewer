@@ -191,7 +191,7 @@
     margin-left: auto;
     background: #fff;
     border: 1px solid #bbb;
-    border-radius: 50%;
+    border-radius: 10%;
     width: 28px;
     height: 28px;
     font-size: 1.6em;

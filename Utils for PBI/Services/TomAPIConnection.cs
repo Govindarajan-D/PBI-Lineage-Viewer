@@ -46,11 +46,22 @@ namespace Utils_for_PBI.Services
             {
                 databases.Add(server.Databases[i].Name);
             }
-
-            currentDatabase = server.Databases[0];
-            datasetConnection.DatabaseName = currentDatabase.Name;
-            model = currentDatabase.Model;
-            isConnected = true;
+            try
+            {
+                if(server != null && server.Databases.Count == 0)
+                {
+                    throw new Exception("No databases found on the server.");
+                }
+                currentDatabase = server.Databases[0];
+                datasetConnection.DatabaseName = currentDatabase.Name;
+                model = currentDatabase.Model;
+                isConnected = true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
+                MessageBox.Show($"Error: {ex.Message}", "Error fetching databases", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         public void Disconnect(bool endSession = true)

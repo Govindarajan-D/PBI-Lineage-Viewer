@@ -14,7 +14,7 @@ namespace Utils_for_PBI.Server
     ///  The Server runs in multi-threaded mode. 
     /// </summary>
     [SupportedOSPlatform("windows")]
-    public class UtilsPBIHTTPServer
+    public class UtilsPBIHTTPServer: IDisposable
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(UtilsPBIHTTPServer));
 
@@ -103,6 +103,23 @@ namespace Utils_for_PBI.Server
             response.ContentType = "application/json";
             response.ContentLength64 = buffer.Length;
             await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+        }
+
+        public void Close()
+        {
+            this.Dispose();
+        }
+        public void Dispose()
+        {
+            this.Stop();
+            dataServer = null;
+            if (cancellationTokenSource != null)
+            {
+                cancellationTokenSource.Dispose();
+                cancellationTokenSource = null;
+            }
+
+            GC.SuppressFinalize(this);
         }
     }
 }
