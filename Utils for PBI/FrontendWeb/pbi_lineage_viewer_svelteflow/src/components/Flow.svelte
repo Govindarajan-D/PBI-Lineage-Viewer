@@ -21,7 +21,8 @@
   import ContextMenu from "./ContextMenu.svelte";
   import ModalBox from "./ModalBox.svelte";
   import "@xyflow/svelte/dist/style.css";
-  import { getAncestors, getDescendants } from "../ts/utility";
+  import { getAncestors, getDescendants } from "../ts/utility-lineage";
+  import {formatDAX} from "../ts/utility-formatter";
 
   const nodeTypes = {
     selectorNode: DisplayNode,
@@ -37,7 +38,7 @@
   const {fitView, setZoom, getViewport} = useSvelteFlow();
 
   const baseURL = "http://localhost:8080/utilspbi/api/";
-  var svelteNodes, svelteEdges;
+  let svelteNodes, svelteEdges;
 
   // Handling context menu
   let menu: {
