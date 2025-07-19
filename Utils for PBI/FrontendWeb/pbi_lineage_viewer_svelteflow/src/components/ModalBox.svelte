@@ -1,6 +1,7 @@
 <script lang="ts">
+    import {formatDAX} from "../ts/utility-formatter"; 
     let {closeModal, modalData} = $props();
-    console.log(modalData);
+    
 </script>
 
     <div class="modal-backdrop" aria-label="Close" role="button">
@@ -9,7 +10,7 @@
         <div class="modal-content">
         <!-- Replace with your data display -->
         <h3>{modalData.Name}</h3>
-        <pre>{JSON.stringify(modalData.Expression, null, 2)}</pre>
+        <pre>{formatDAX(modalData.Expression)}</pre>
         </div>
     </div>
     </div>
@@ -17,7 +18,7 @@
 <style>
 .modal-backdrop {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;https://svelte.dev/e/a11y_no_static_element_interactions
+  top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.25);
   display: flex;
   align-items: center;
@@ -37,6 +38,17 @@
   flex-direction: column;
   align-items: flex-end;
   z-index: 10000;
+}
+.modal-content pre {
+  background: #f5f5f5;
+  color: #222;
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+  font-size: 1em;
+  margin: 0;
+  overflow-x: auto;
+  box-shadow: 0 1px 4px #0001;
 }
 .close-btn {
   position: absolute;

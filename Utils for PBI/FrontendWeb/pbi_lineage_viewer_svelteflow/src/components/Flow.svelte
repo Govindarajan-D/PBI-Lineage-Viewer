@@ -22,7 +22,7 @@
   import ModalBox from "./ModalBox.svelte";
   import "@xyflow/svelte/dist/style.css";
   import { getAncestors, getDescendants } from "../ts/utility-lineage";
-  import {formatDAX} from "../ts/utility-formatter";
+  import ModalDetailed from "./ModalDetailed.svelte";
 
   const nodeTypes = {
     selectorNode: DisplayNode,
@@ -51,6 +51,7 @@
   let clientWidth: number = $state();
   let clientHeight: number = $state();
   let modalData = $state(null);
+  let modalDetailedData = $state(null);
 
   // This function is used to layout the nodes and edges using the dagre library.
   // It sets the graph direction, adds nodes and edges to the graph, and then computes the layout.
@@ -137,6 +138,7 @@
         data: {
           ...node.data,
           onShowBox: handleShowBox,
+          onShowDetailed: handleShowDetailed,
           expanded: false,
           showBox: false
         }
@@ -253,6 +255,15 @@
     modalData = null;
   }
 
+  const handleShowDetailed = (modalDetailed) => {
+    modalDetailedData = modalDetailed;
+  }
+
+  const closeDetailed = () => {
+    console.log("Here in close");
+    modalDetailedData = null;
+  }
+
 </script>
 
 <div style="height:100vh;" bind:clientWidth bind:clientHeight>
@@ -290,6 +301,9 @@
   </SvelteFlow>
   {#if modalData}
     <ModalBox modalData={modalData} closeModal={closeShowBox}/>
+  {/if}
+  {#if modalDetailedData}
+    <ModalDetailed closeModal={closeDetailed}/>
   {/if}
 </div>
 <style>

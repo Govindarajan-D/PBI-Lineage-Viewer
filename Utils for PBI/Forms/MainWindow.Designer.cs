@@ -64,14 +64,14 @@
             // connectToolStripMenuItem
             // 
             connectToolStripMenuItem.Name = "connectToolStripMenuItem";
-            connectToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            connectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             connectToolStripMenuItem.Text = "Connect Model";
             connectToolStripMenuItem.Click += connectDesktopModelToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
@@ -97,7 +97,7 @@
             DisplayLineageWebView.Location = new System.Drawing.Point(0, 24);
             DisplayLineageWebView.Name = "DisplayLineageWebView";
             DisplayLineageWebView.Size = new System.Drawing.Size(933, 473);
-            DisplayLineageWebView.Source = new System.Uri(" https://www.microsoft.com", System.UriKind.Absolute);
+            DisplayLineageWebView.Source = new System.Uri("https://www.webpagetest.org/blank.html", System.UriKind.Absolute);
             DisplayLineageWebView.TabIndex = 0;
             DisplayLineageWebView.Visible = false;
             DisplayLineageWebView.ZoomFactor = 1D;
@@ -141,6 +141,7 @@
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Name = "MainWindow";
             Text = "PBI Lineage Viewer";
+            WindowState = System.Windows.Forms.FormWindowState.Maximized;
             Load += MainWindow_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();

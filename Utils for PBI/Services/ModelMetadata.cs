@@ -16,7 +16,8 @@ namespace Utils_for_PBI.Services
 {
 
     /// <summary>
-    /// ModelMetadata is a list of CalcDependencyRow. Effectively it is a table of rows which is used to process DMV data
+    /// ModelMetadata is a list of CalcDependencyRow and other Metadata objects. 
+    /// Effectively it is a list of tables which is used to process DMV data
     /// </summary>
     //TO-DO: Add colors and change weightage if required
     [SupportedOSPlatform("windows")]
@@ -89,11 +90,12 @@ namespace Utils_for_PBI.Services
         {
             try
             {
+                // Query for retrieving the CalcDependency Results
                 string dependencySQLQuery = @"SELECT OBJECT_TYPE, [TABLE] AS SOURCE_TABLE, OBJECT, EXPRESSION, REFERENCED_OBJECT_TYPE, REFERENCED_TABLE, REFERENCED_OBJECT FROM $SYSTEM.DISCOVER_CALC_DEPENDENCY";
                 var dependencies = adomdConnection.ExecuteQuery<CalcDependencyMetadataRow>(adomdConnection.connection, dependencySQLQuery, CalcDependencyMetadataRow.MapRowToObject);
                 this.CalcDependencyMetadataAddRows(dependencies);
 
-
+                // Query for retrieving the Measure Metadata Results
                 string measureMetadataSQLQuery = @"SELECT [Name], [Expression], FormatString, IsHidden, IsSimpleMeasure, DisplayFolder, ModifiedTime FROM $SYSTEM.TMSCHEMA_MEASURES";
                 var measures = adomdConnection.ExecuteQuery<MeasuresMetadataRow>(adomdConnection.connection, measureMetadataSQLQuery, MeasuresMetadataRow.MapRowToObject);
                 this.MeasuresMetadataAddRows(measures);

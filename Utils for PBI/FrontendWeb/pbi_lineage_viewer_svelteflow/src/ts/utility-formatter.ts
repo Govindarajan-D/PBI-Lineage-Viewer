@@ -8,11 +8,13 @@ export function formatDAX(daxString: string){
 
         if(['('].includes(currentChar)){
             bracket_stack.push(currentChar);
+            formattedStringArr.push('\n');
             indentationCount++;
             formattedStringArr.push(indentation.repeat(indentationCount));
         }
         else if ([')'].includes(currentChar)){
             bracket_stack.pop();
+            formattedStringArr.push('\n');
             indentationCount--;
             formattedStringArr.push(indentation.repeat(indentationCount));
         }

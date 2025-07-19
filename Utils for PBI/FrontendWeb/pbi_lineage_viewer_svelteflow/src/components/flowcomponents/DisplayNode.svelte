@@ -31,6 +31,10 @@
     event.stopPropagation();
     data.onShowBox(data.AdditionalData);
   }
+  const toggleDetailed = (event) => {
+    event.stopPropagation();
+    data.onShowDetailed(id);
+  }
 
 </script>
 
@@ -53,6 +57,9 @@
         ƒ  
       </button>
     {/if}
+      <button class="node-btn" onclick={toggleDetailed} aria-label="Open Formula">
+        🡕  
+      </button>
   </div>
   {#if data.expanded}
     <NodeTable additionalData={data.AdditionalData} />

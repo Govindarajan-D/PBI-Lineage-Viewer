@@ -9,6 +9,9 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Utils_for_PBI.Models
 {
+    /// <summary>
+    /// Represents metadata of Power BI Measures (Retrieved from DMV)
+    /// </summary>
     public class MeasuresMetadataRow
     {
         public string NAME { get; set; }
