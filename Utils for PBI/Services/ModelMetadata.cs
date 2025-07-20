@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using log4net;
 using Utils_for_PBI.Server;
 using System.Runtime.Versioning;
+using PowerBIConnections.Connections;
 
 namespace Utils_for_PBI.Services
 {
@@ -23,10 +24,11 @@ namespace Utils_for_PBI.Services
     [SupportedOSPlatform("windows")]
     public partial class ModelMetadata
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(UtilsPBIHTTPServer));
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(ModelMetadata));
 
         private List<CalcDependencyMetadataRow> _calcDependencyMetadataRows = new List<CalcDependencyMetadataRow>();
         private List<MeasuresMetadataRow> _measuresMetadataRows = new List<MeasuresMetadataRow>();
+        private List<TablesMetadataRow> _tablesMetadataRows = new List<TablesMetadataRow>();
         private bool _preprocessStepsDone = false;
 
         private IEnumerable<CalcDependencyMetadataRow> _cleansedData;
@@ -83,32 +85,73 @@ namespace Utils_for_PBI.Services
             _preprocessStepsDone = false;
         }
 
+        public void TablesMetadataAddRow(TablesMetadataRow row)
+        {
+            if (row != null)
+            {
+                _tablesMetadataRows.Add(row);
+            }
+
+            _preprocessStepsDone = false;
+        }
+        /// <summary>
+        /// Add rows in batch to the List of TablesMetadataRow.
+        /// </summary>
+        public void TablesMetadataAddRows(IEnumerable<TablesMetadataRow> rows)
+        {
+            if (rows != null)
+            {
+                _tablesMetadataRows.AddRange(rows);
+            }
+            _preprocessStepsDone = false;
+        }
+
         /// <summary>
         /// Populates the ModelMetadata with data from the ADOMD connection. Contains queries to fetch the metadata for calculation dependencies and measures. 
         /// </summary>
-        public void PopulateModelMetadata(AdomdConnection adomdConnection)
+        public void PopulateModelMetadata(DatasetConnection connection)
         {
             try
             {
-                // Query for retrieving the CalcDependency Results
-                string dependencySQLQuery = @"SELECT OBJECT_TYPE, [TABLE] AS SOURCE_TABLE, OBJECT, EXPRESSION, REFERENCED_OBJECT_TYPE, REFERENCED_TABLE, REFERENCED_OBJECT FROM $SYSTEM.DISCOVER_CALC_DEPENDENCY";
-                var dependencies = adomdConnection.ExecuteQuery<CalcDependencyMetadataRow>(adomdConnection.connection, dependencySQLQuery, CalcDependencyMetadataRow.MapRowToObject);
-                this.CalcDependencyMetadataAddRows(dependencies);
+                //TO-DO: Simple blocking parallelism using Task. Can be converted to Async
+                var dependenciesTask = Task.Run(() => 
+                        AdomdConnection.ExecuteQuery<CalcDependencyMetadataRow>(
+                            connection, 
+                            ModelMetadataQueries.DependencyQuery, 
+                            CalcDependencyMetadataRow.MapRowToObject)
+                        );
+                var measuresTask = Task.Run(() =>
+                    AdomdConnection.ExecuteQuery<MeasuresMetadataRow>(
+                        connection, 
+                        ModelMetadataQueries.MeasureMetadataQuery, 
+                        MeasuresMetadataRow.MapRowToObject)
+                    );
 
-                // Query for retrieving the Measure Metadata Results
-                string measureMetadataSQLQuery = @"SELECT [Name], [Expression], FormatString, IsHidden, IsSimpleMeasure, DisplayFolder, ModifiedTime FROM $SYSTEM.TMSCHEMA_MEASURES";
-                var measures = adomdConnection.ExecuteQuery<MeasuresMetadataRow>(adomdConnection.connection, measureMetadataSQLQuery, MeasuresMetadataRow.MapRowToObject);
-                this.MeasuresMetadataAddRows(measures);
+                var tablesTask = Task.Run(() =>
+                    AdomdConnection.ExecuteQuery<TablesMetadataRow>(
+                        connection, 
+                        ModelMetadataQueries.TableMetadataQuery,
+                        TablesMetadataRow.MapRowToObject)
+                    );
+
+                Task.WaitAll(dependenciesTask, measuresTask, tablesTask);
+
+                if (dependenciesTask.Result == null ||
+                    measuresTask.Result == null ||
+                    tablesTask.Result == null)
+                {
+                    throw new Exception("Failed to retrieve data from ADOMD connection.");
+                }
+
+                this.CalcDependencyMetadataAddRows(dependenciesTask.Result);
+                this.MeasuresMetadataAddRows(measuresTask.Result);
+                this.TablesMetadataAddRows(tablesTask.Result);
+
             }
             catch (Exception ex)
             {
                 Logger.Error(ex.Message);
                 MessageBox.Show($"Error: {ex.Message}", "Error executing ADOMD command", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                adomdConnection.Close();
-
             }
         }
     }

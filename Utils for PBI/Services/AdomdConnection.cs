@@ -28,6 +28,16 @@ namespace Utils_for_PBI.Services
         public bool isConnected = false;
         public bool endAdomdSession = true;
 
+        public AdomdConnection()
+        {
+            // Default constructor for AdomdConnection
+        }
+
+        public AdomdConnection(DatasetConnection connection)
+        {
+            Connect(connection);
+        }
+
         public void Connect(DatasetConnection datasetConnection)
         {
             try
@@ -56,13 +66,15 @@ namespace Utils_for_PBI.Services
 
         // Executes the query and maps the result to a list of objects using the provided mapping function
         // AdomdDataReader is a class that implements IDataRecord which allows to use MapRowToObject function to map each row to an object of type T
-        public List<T> ExecuteQuery<T>(AdomdClient.AdomdConnection connection, string query, Func<AdomdDataReader, T> MapRowToObject)
+        public static List<T> ExecuteQuery<T>(DatasetConnection connection, string query, Func<AdomdDataReader, T> MapRowToObject)
         {
             List<T> results = new List<T>();
+            var adomdConnection = new AdomdConnection(connection).connection;
+
             try
             {
-                connection.Open();
-                using (var command = new AdomdClient.AdomdCommand(query, connection))
+                adomdConnection.Open();
+                using (var command = new AdomdClient.AdomdCommand(query, adomdConnection))
                 {
                     using (var reader = command.ExecuteReader())
                     {
@@ -75,7 +87,7 @@ namespace Utils_for_PBI.Services
             }
             finally
             {
-                connection.Close();
+                adomdConnection.Close();
             }
 
             return results;

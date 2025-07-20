@@ -17,8 +17,8 @@ namespace Utils_for_PBI.Forms
         private static readonly ILog Logger = LogManager.GetLogger(typeof(MainWindow));
         public List<GenerateLineagePage> lineagePages;
         private UtilsPBIHTTPServer _dataServer;
-        private AdomdConnection _adomdConnection;
         private TomAPIConnection _tomAPIConnection;
+        private DatasetConnection _connection;
         public MainWindow()
         {
             InitializeComponent();
@@ -29,7 +29,7 @@ namespace Utils_for_PBI.Forms
         {
         }
 
-        /* Once the user presses, connect, a new TOM API Connection and Adomd Connection are created.
+        /* Once the user presses connect, the connection string is being created from the user selection.
          * Since the connection string required for PBI Service and PBI Desktop differs, a check is performed and connection string 
          * is formatted accordingly. The status bar is also set to show the connection information.
          * Once the connection is established, the internal HTTP Server starts and serves the data for the lineage view
@@ -49,27 +49,25 @@ namespace Utils_for_PBI.Forms
                 {
                     _dataServer.Stop();
                 }
-                var connection = connectDatasetWindow.selectedConnection;
-                if (connection != null)
+                _connection = connectDatasetWindow.selectedConnection;
+                if (_connection != null)
                 {
                     _tomAPIConnection = new TomAPIConnection();
-                    _adomdConnection = new AdomdConnection();
 
-                    _tomAPIConnection.Connect(connection);
+                    _tomAPIConnection.Connect(_connection);
 
                     /* If the connection is of Power BI Service type, show a dialog box to the user
                      * to get the Semantic model (database) to connect.
                      */
 
-                    if(connection.ConnectionType == ConnectionType.PowerBIService)
+                    if(_connection.ConnectionType == ConnectionType.PowerBIService)
                     {
                         SelectModelForm selectModelForm = new SelectModelForm(_tomAPIConnection.databases);
                         if (_tomAPIConnection.databases.Count > 0)
                         {
                             if (selectModelForm.ShowDialog() == DialogResult.OK && selectModelForm.selectedDatabaseName != null)
                             {
-                                connection.DatabaseName = selectModelForm.selectedDatabaseName;
-                                _adomdConnection.Connect(connection);
+                                _connection.DatabaseName = selectModelForm.selectedDatabaseName;
                             }
                             else
                             {
@@ -79,20 +77,16 @@ namespace Utils_for_PBI.Forms
                             }
                         }
                     }
-                    else
-                    {
-                        _adomdConnection.Connect(connection);
-                    }
 
                     //Check the type of connection and status bar is set accordingly
                     string connectionString;
-                    if (connection.ConnectionType == ConnectionType.PowerBIDesktop)
+                    if (_connection.ConnectionType == ConnectionType.PowerBIDesktop)
                     {
-                        connectionString = "Name: " + connection.DisplayName;
+                        connectionString = "Name: " + _connection.DisplayName;
                     }
                     else
                     {
-                        connectionString =  "XMLA Endpoint:" + connection.ConnectString + " | Model:" + connection.DatabaseName;
+                        connectionString =  "XMLA Endpoint:" + _connection.ConnectString + " | Model:" + _connection.DatabaseName;
                     }
 
                     modelURLStatusLabel.Text = connectionString;
@@ -111,28 +105,25 @@ namespace Utils_for_PBI.Forms
             GenerateLineagePage showDependencyGraph = new GenerateLineagePage();
             string filePath = showDependencyGraph.GenerateHTMLPage();
 
+            ModelMetadata modelMetadata = new ModelMetadata();
+            modelMetadata.PopulateModelMetadata(_connection);
+
+            if (modelMetadata == null)
+            {
+                return;
+            }
+
+            if (_dataServer != null)
+            {
+                _dataServer.Close();
+            }
+            //TO-DO: Add configuration functionality to change the port number and other settings
+
+            _dataServer = new UtilsPBIHTTPServer(Constants.urlAddress, modelMetadata);
+            _dataServer.Start();
+
             string fileUri = new Uri(filePath).AbsoluteUri;
             DisplayLineageWebView.CoreWebView2.Navigate(fileUri);
-
-            if (_adomdConnection.isConnected)
-            {
-                ModelMetadata modelMetadata = new ModelMetadata();
-                modelMetadata.PopulateModelMetadata(_adomdConnection);
-
-                if (modelMetadata == null)
-                {
-                    return;
-                }
-
-                if (_dataServer != null)
-                {
-                    _dataServer.Close();
-                }
-                //TO-DO: Add configuration functionality to change the port number and other settings
-
-                _dataServer = new UtilsPBIHTTPServer(Constants.urlAddress, modelMetadata);
-                _dataServer.Start();
-            }
 
             ConnectDatasetPlaceholderLabel.Visible = false;
             DisplayLineageWebView.Visible = true;
@@ -153,7 +144,6 @@ namespace Utils_for_PBI.Forms
         private void OnDisconnection()
         {
             _dataServer.Stop();
-            _adomdConnection.Disconnect();
             _tomAPIConnection.Disconnect();
         }
 
