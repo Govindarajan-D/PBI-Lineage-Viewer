@@ -29,6 +29,7 @@ namespace Utils_for_PBI.Services
         private List<CalcDependencyMetadataRow> _calcDependencyMetadataRows = new List<CalcDependencyMetadataRow>();
         private List<MeasuresMetadataRow> _measuresMetadataRows = new List<MeasuresMetadataRow>();
         private List<TablesMetadataRow> _tablesMetadataRows = new List<TablesMetadataRow>();
+        private List<ColumnsMetadataRow> _columnsMetadataRows = new List<ColumnsMetadataRow>();
         private bool _preprocessStepsDone = false;
 
         private IEnumerable<CalcDependencyMetadataRow> _cleansedData;
@@ -106,39 +107,69 @@ namespace Utils_for_PBI.Services
             _preprocessStepsDone = false;
         }
 
+        public void ColumnsMetadataAddRow(ColumnsMetadataRow row)
+        {
+            if (row != null)
+            {
+                _columnsMetadataRows.Add(row);
+            }
+
+            _preprocessStepsDone = false;
+        }
         /// <summary>
-        /// Populates the ModelMetadata with data from the ADOMD connection. Contains queries to fetch the metadata for calculation dependencies and measures. 
+        /// Add rows in batch to the List of TablesMetadataRow.
         /// </summary>
-        public void PopulateModelMetadata(DatasetConnection connection)
+        public void ColumnsMetadataAddRows(IEnumerable<ColumnsMetadataRow> rows)
+        {
+            if (rows != null)
+            {
+                _columnsMetadataRows.AddRange(rows);
+            }
+            _preprocessStepsDone = false;
+        }
+
+        /// <summary>
+        /// Populates the ModelMetadata with data from the connectionInfo. Contains queries to fetch the metadata for calculation dependencies and measures. 
+        /// </summary>
+        public void PopulateModelMetadata(DatasetConnection connectionInfo)
         {
             try
             {
                 //TO-DO: Simple blocking parallelism using Task. Can be converted to Async
                 var dependenciesTask = Task.Run(() => 
                         AdomdConnection.ExecuteQuery<CalcDependencyMetadataRow>(
-                            connection, 
+                            connectionInfo, 
                             ModelMetadataQueries.DependencyQuery, 
                             CalcDependencyMetadataRow.MapRowToObject)
                         );
                 var measuresTask = Task.Run(() =>
                     AdomdConnection.ExecuteQuery<MeasuresMetadataRow>(
-                        connection, 
+                        connectionInfo, 
                         ModelMetadataQueries.MeasureMetadataQuery, 
                         MeasuresMetadataRow.MapRowToObject)
                     );
 
                 var tablesTask = Task.Run(() =>
                     AdomdConnection.ExecuteQuery<TablesMetadataRow>(
-                        connection, 
+                        connectionInfo, 
                         ModelMetadataQueries.TableMetadataQuery,
                         TablesMetadataRow.MapRowToObject)
                     );
 
-                Task.WaitAll(dependenciesTask, measuresTask, tablesTask);
+                var columnsTask = Task.Run(() =>
+                    AdomdConnection.ExecuteQuery<ColumnsMetadataRow>(
+                        connectionInfo,
+                        ModelMetadataQueries.ColumnMetadataQuery,
+                        ColumnsMetadataRow.MapRowToObject)
+                    );
+
+
+                Task.WaitAll(dependenciesTask, measuresTask, tablesTask, columnsTask);
 
                 if (dependenciesTask.Result == null ||
                     measuresTask.Result == null ||
-                    tablesTask.Result == null)
+                    tablesTask.Result == null || 
+                    columnsTask.Result == null)
                 {
                     throw new Exception("Failed to retrieve data from ADOMD connection.");
                 }
@@ -146,6 +177,7 @@ namespace Utils_for_PBI.Services
                 this.CalcDependencyMetadataAddRows(dependenciesTask.Result);
                 this.MeasuresMetadataAddRows(measuresTask.Result);
                 this.TablesMetadataAddRows(tablesTask.Result);
+                this.ColumnsMetadataAddRows(columnsTask.Result);
 
             }
             catch (Exception ex)

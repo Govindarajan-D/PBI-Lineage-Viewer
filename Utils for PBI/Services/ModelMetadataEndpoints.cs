@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils_for_PBI.Models;
+using static System.Windows.Forms.DataFormats;
 using Json = System.Text.Json;
 
 namespace Utils_for_PBI.Services
@@ -64,29 +65,11 @@ namespace Utils_for_PBI.Services
                 _allNodes = GetAllNodes(_cleansedData);
             }
 
-            var svelteflowNodes = _allNodes.Select(r => new
-                                            {
-                                                id = r.OBJECT,
-                                                type = "selectorNode",
-                                                data = new
-                                                {
-                                                    CalcName = r.OBJECT,
-                                                    CalcType = r.OBJECT_TYPE.ToUpper() switch
-                                                    {
-                                                        "CALC_COLUMN" => "Calc Column",
-                                                        "MEASURE" => "Measure",
-                                                        "TABLE" => "Table",
-                                                        "CALC_TABLE" => "Calc Table",
-                                                        "COLUMN" => "Column",
-                                                        _ => "Others"
-                                                    }
-                                                },
-                                                position = new
-                                                {
-                                                    x = 0,
-                                                    y = 0
-                                                }
-                                            });
+            /* We generate the data according to the Svelte Node configuration required
+             * https://svelteflow.dev/api-reference/types/node
+             * The necessary data for lineage graph is generated within 'data' field
+             * and any other additional data is generated in the AdditionalData field within the data
+             */
 
             var svelteflowNodesAddlData = _allNodes.GroupJoin(
                                                 _measuresMetadataRows,
@@ -145,6 +128,10 @@ namespace Utils_for_PBI.Services
                 _allNodes = GetAllNodes(_cleansedData);
             }
 
+           /* We generate the data according to the Svelte Edge configuration required
+             * https://svelteflow.dev/api-reference/types/edge
+             */
+
             var edgesReferenceData = _cleansedData.Where(c => c.REFERENCED_OBJECT_TYPE.ToUpper() != "TABLE" || (c.OBJECT_TYPE.ToUpper() == "CALC_TABLE" && c.REFERENCED_OBJECT_TYPE.ToUpper() == "TABLE"));
 
             var svelteflowEdges = edgesReferenceData.SelectMany(c => new[]
@@ -173,11 +160,11 @@ namespace Utils_for_PBI.Services
             }
 
             var nodesInfo = _allNodes.Select(c => new
-            {
-                id = c.OBJECT,
-                name = c.OBJECT,
-                objectTypeID = c.OBJECT_TYPE.ToUpper()
-            });
+                                    {
+                                        id = c.OBJECT,
+                                        name = c.OBJECT,
+                                        objectTypeID = c.OBJECT_TYPE.ToUpper()
+                                    });
 
             return Json.JsonSerializer.Serialize(nodesInfo, new Json.JsonSerializerOptions { WriteIndented = true });
         }
@@ -191,22 +178,68 @@ namespace Utils_for_PBI.Services
             }
 
             var objectTypeInfo = _allNodes.Select(c => new
-            {
-                objectTypeID = c.OBJECT_TYPE.ToUpper()
-            }).Distinct().Select(r => new
-            {
-                r.objectTypeID,
-                objectTypeName = r.objectTypeID switch
-                {
-                    "CALC_COLUMN" => "Calculated Column",
-                    "MEASURE" => "Measure",
-                    "TABLE" => "Table",
-                    "COLUMN" => "Column",
-                    _ => "Others"
-                }
-            });
+                                            {
+                                                objectTypeID = c.OBJECT_TYPE.ToUpper()
+                                            }).Distinct().Select(r => new
+                                            {
+                                                r.objectTypeID,
+                                                objectTypeName = r.objectTypeID switch
+                                                {
+                                                    "CALC_COLUMN" => "Calculated Column",
+                                                    "MEASURE" => "Measure",
+                                                    "TABLE" => "Table",
+                                                    "COLUMN" => "Column",
+                                                    _ => "Others"
+                                                }
+                                            });
 
             return Json.JsonSerializer.Serialize(objectTypeInfo, new Json.JsonSerializerOptions { WriteIndented = true });
+        }
+
+        public string GetTablesInfo()
+        {
+            var tablesInfo = _tablesMetadataRows.Select(c => new
+                                                    {
+                                                        id = c.ID,
+                                                        name = c.NAME,
+                                                        dataCategory = c.DATA_CATEGORY,
+                                                        isHidden = c.IS_HIDDEN,
+                                                        modifiedTime = c.MODIFIED_TIME,
+                                                        structureModifiedTime = c.STRUCTURE_MODIFIED_TIME,
+                                                        systemFlags = c.SYSTEM_FLAGS,
+                                                        calculationGroupID = c.CALCULATION_GROUP_ID,
+                                                        excludeFromModelRefresh = c.EXCLUDE_FROM_MODEL_REFRESH
+                                                    });
+
+            return Json.JsonSerializer.Serialize(tablesInfo, new Json.JsonSerializerOptions { WriteIndented = true });
+        }
+
+        public string GetColumnsInfo()
+        {
+            var columnsInfo = _columnsMetadataRows.Select(c => new
+                                                {
+                                                    id = c.ID,
+                                                    tableID = c.TABLE_ID,
+                                                    explicitName = c.EXPLICIT_NAME,
+                                                    inferredName = c.INFERRED_NAME,
+                                                    explicitDataType = c.EXPLICIT_DATA_TYPE,
+                                                    inferredDataType = c.INFERRED_DATA_TYPE,
+                                                    description = c.DESCRIPTION,
+                                                    isHidden = c.IS_HIDDEN,
+                                                    isUnique = c.IS_UNIQUE,
+                                                    isKey = c.IS_KEY,
+                                                    isNullable = c.IS_NULLABLE,
+                                                    summarizeBy = c.SUMMARIZE_BY,
+                                                    type = c.TYPE,
+                                                    expression = c.EXPRESSION,
+                                                    isAvailableInMDX = c.IS_AVAILABLE_IN_MDX,
+                                                    sortByColumnID = c.SORT_BY_COLUMN_ID,
+                                                    modifiedTime = c.MODIFIED_TIME,
+                                                    structureModifiedTime = c.STRUCTURE_MODIFIED_TIME,
+                                                    refreshedTime = c.REFRESHED_TIME,
+                                                    systemFlags = c.SYSTEM_FLAGS
+                                                });
+            return Json.JsonSerializer.Serialize(columnsInfo, new Json.JsonSerializerOptions { WriteIndented = true });
         }
     }
 }

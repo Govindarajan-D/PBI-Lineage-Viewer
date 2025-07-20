@@ -88,11 +88,16 @@ namespace Utils_for_PBI.Server
                 case "/utilspbi/api/edges":
                     await ServeContent(response, modelMetadata.GetSvelteFlowEdgesJson());
                     break;
+                case "/utilspbi/api/tables":
+                    await ServeContent(response, modelMetadata.GetTablesInfo());
+                    break;
+                case "/utilspbi/api/columns":
+                    await ServeContent(response, modelMetadata.GetColumnsInfo());
+                    break;
                 default:
                     response.StatusCode = 404;
                     await ServeContent(response, "Invalid URL. No data");
                     break;
-
             }
             response.OutputStream.Close();
         }

@@ -4,45 +4,53 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Utils_for_PBI.Models
 {
     public class TablesMetadataRow
     {
-        public string ModelID { get; set; }
-        public string Name { get; set; }
-        public string DataCategory { get; set; }
-        public string IsHidden { get; set; }
-        public string ModifiedTime { get; set; }
-        public string StructureModifiedTime { get; set; }
-        public string SystemFlags { get; set; }
-        public string CalculationGroupID { get; set; }
-        public string ExcludeFromModelRefresh { get; set; }
+        public int ID { get; set; }
+        public int MODEL_ID { get; set; }
+        public string NAME { get; set; }
+        public string DESCRIPTION { get; set; }
+        public string DATA_CATEGORY { get; set; }
+        public bool IS_HIDDEN { get; set; }
+        public string MODIFIED_TIME { get; set; }
+        public string STRUCTURE_MODIFIED_TIME { get; set; }
+        public string SYSTEM_FLAGS { get; set; }
+        public string CALCULATION_GROUP_ID { get; set; }
+        public bool EXCLUDE_FROM_MODEL_REFRESH { get; set; }
 
         public TablesMetadataRow()
         {
-            ModelID = string.Empty;
-            Name = string.Empty;
-            DataCategory = string.Empty;
-            IsHidden = string.Empty;
-            ModifiedTime = string.Empty;
-            StructureModifiedTime = string.Empty;
-            SystemFlags = string.Empty;
-            CalculationGroupID = string.Empty;
-            ExcludeFromModelRefresh = string.Empty;
+            ID = 0;
+            MODEL_ID = 0;
+            NAME = string.Empty;
+            DESCRIPTION = string.Empty;
+            DATA_CATEGORY = string.Empty;
+            IS_HIDDEN = false;
+            MODIFIED_TIME = string.Empty;
+            STRUCTURE_MODIFIED_TIME = string.Empty;
+            SYSTEM_FLAGS = string.Empty;
+            CALCULATION_GROUP_ID = string.Empty;
+            EXCLUDE_FROM_MODEL_REFRESH = false;
         }
 
         public static TablesMetadataRow MapRowToObject(IDataRecord dataRecord) => new TablesMetadataRow
         {
-            ModelID = Convert.ToString(dataRecord["ModelID"]),
-            Name = Convert.ToString(dataRecord["Name"]),
-            DataCategory = Convert.ToString(dataRecord["DataCategory"]),
-            IsHidden = Convert.ToString(dataRecord["IsHidden"]),
-            ModifiedTime = Convert.ToString(dataRecord["ModifiedTime"]),
-            StructureModifiedTime = Convert.ToString(dataRecord["StructureModifiedTime"]),
-            SystemFlags = Convert.ToString(dataRecord["SystemFlags"]),
-            CalculationGroupID = Convert.ToString(dataRecord["CalculationGroupID"]),
-            ExcludeFromModelRefresh = Convert.ToString(dataRecord["ExcludeFromModelRefresh"])
+            ID = Convert.ToInt32(dataRecord["ID"]),
+            MODEL_ID = Convert.ToInt32(dataRecord["ModelID"]),
+            NAME = Convert.ToString(dataRecord["Name"]),
+            DESCRIPTION = Convert.ToString(dataRecord["Description"]),
+            DATA_CATEGORY = Convert.ToString(dataRecord["DataCategory"]),
+            IS_HIDDEN = bool.Parse(Convert.ToString(dataRecord["IsHidden"])),
+            MODIFIED_TIME = Convert.ToString(dataRecord["ModifiedTime"]),
+            STRUCTURE_MODIFIED_TIME = Convert.ToString(dataRecord["StructureModifiedTime"]),
+            SYSTEM_FLAGS = Convert.ToString(dataRecord["SystemFlags"]),
+            CALCULATION_GROUP_ID = Convert.ToString(dataRecord["CalculationGroupID"]),
+            EXCLUDE_FROM_MODEL_REFRESH = bool.Parse(Convert.ToString(dataRecord["ExcludeFromModelRefresh"]))
         };
+
     }
 }

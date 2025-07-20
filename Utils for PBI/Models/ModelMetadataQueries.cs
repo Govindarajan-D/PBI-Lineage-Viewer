@@ -38,15 +38,42 @@ namespace Utils_for_PBI.Models
         // Query for retrieving the Table Metadata Results
         public const string TableMetadataQuery = @"
                                                 SELECT 
-                                                    ModelID, 
-                                                    [Name], 
-                                                    DataCategory, 
+                                                [ID],
+                                                ModelID, 
+                                                [Name], 
+                                                [Description],
+                                                DataCategory, 
+                                                IsHidden, 
+                                                ModifiedTime, 
+                                                StructureModifiedTime, 
+                                                SystemFlags, 
+                                                CalculationGroupID, 
+                                                ExcludeFromModelRefresh 
+                                            FROM $SYSTEM.TMSCHEMA_TABLES";
+
+        // Query for retrieving the Column Metadata Results
+        public const string ColumnMetadataQuery = @"
+                                               SELECT 
+                                                    [ID], 
+                                                    TableID, 
+                                                    ExplicitName, 
+                                                    InferredName, 
+                                                    ExplicitDataType, 
+                                                    InferredDataType,  
+                                                    [Description], 
                                                     IsHidden, 
+                                                    IsUnique, 
+                                                    IsKey, 
+                                                    IsNullable, 
+                                                    SummarizeBy, 
+                                                    [Type], 
+                                                    Expression, 
+                                                    IsAvailableInMDX, 
+                                                    SortByColumnID, 
                                                     ModifiedTime, 
                                                     StructureModifiedTime, 
-                                                    SystemFlags, 
-                                                    CalculationGroupID, 
-                                                    ExcludeFromModelRefresh 
-                                                FROM $SYSTEM.TMSCHEMA_TABLES";
+                                                    RefreshedTime, 
+                                                    SystemFlags
+                                                FROM $SYSTEM.TMSCHEMA_COLUMNS";
     }
 }
