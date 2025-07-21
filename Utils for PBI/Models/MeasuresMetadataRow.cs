@@ -17,8 +17,8 @@ namespace Utils_for_PBI.Models
         public string NAME { get; set; }
         public string EXPRESSION { get; set; }
         public string FORMAT_STRING { get; set; }
-        public string IS_HIDDEN { get; set; }
-        public string IS_SIMPLE_MEASURE { get; set; }
+        public bool IS_HIDDEN { get; set; }
+        public bool IS_SIMPLE_MEASURE { get; set; }
         public string DISPLAY_FOLDER { get; set; }
         public string MODIFIED_TIME { get; set; }
 
@@ -27,8 +27,8 @@ namespace Utils_for_PBI.Models
             NAME = string.Empty;
             EXPRESSION = string.Empty;
             FORMAT_STRING = string.Empty;
-            IS_HIDDEN = string.Empty;
-            IS_SIMPLE_MEASURE = string.Empty;
+            IS_HIDDEN = false;
+            IS_SIMPLE_MEASURE = false;
             DISPLAY_FOLDER = string.Empty;
             MODIFIED_TIME = string.Empty;
         }
@@ -38,8 +38,8 @@ namespace Utils_for_PBI.Models
             NAME = Convert.ToString(dataRecord["Name"]),
             EXPRESSION = Convert.ToString(dataRecord["Expression"]),
             FORMAT_STRING = Convert.ToString(dataRecord["FormatString"]),
-            IS_HIDDEN = Convert.ToString(dataRecord["IsHidden"]),
-            IS_SIMPLE_MEASURE = Convert.ToString(dataRecord["IsSimpleMeasure"]),
+            IS_HIDDEN = bool.Parse(Convert.ToString(dataRecord["IsHidden"])),
+            IS_SIMPLE_MEASURE = bool.Parse(Convert.ToString(dataRecord["IsSimpleMeasure"])),
             DISPLAY_FOLDER = Convert.ToString(dataRecord["DisplayFolder"]),
             MODIFIED_TIME = Convert.ToString(dataRecord["ModifiedTime"])
         };

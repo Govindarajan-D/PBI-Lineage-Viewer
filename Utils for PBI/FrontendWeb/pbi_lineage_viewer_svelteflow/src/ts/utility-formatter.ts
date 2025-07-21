@@ -1,4 +1,5 @@
 export function formatDAX(daxString: string){
+    //TO-DO: $SYSTEM.DISCOVER_KEYWORDS - Format Keywords by getting the list of keywords from this table
     const bracket_stack: string[] = [];
     let indentation = "    ", indentationCount = 0;
     let formattedStringArr: string[] = [];
@@ -18,9 +19,15 @@ export function formatDAX(daxString: string){
             indentationCount--;
             formattedStringArr.push(indentation.repeat(indentationCount));
         }
+        // TO-DO: Need to enhance to exclude commas in "," or commas succeeding a bracket
+        // else if ([','].includes(currentChar)){
+        //     formattedStringArr.push('\n');
+        //     formattedStringArr.push(indentation.repeat(indentationCount));
+        // }
     }
     let formattedString: string = formattedStringArr.join('');
     return formattedString;
 }
 
+//TO-DO: Code can be removed in final version. Here to debug the function through browser
 (window as any).formatDAX = formatDAX;

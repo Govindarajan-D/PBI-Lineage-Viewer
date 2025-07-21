@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+
+//Enum values specified based on the official docs: https://learn.microsoft.com/en-us/openspecs/sql_server_protocols/ms-ssas-t/f85cd3b9-690c-4bc7-a1f0-a854d7daecd8
 
 namespace Utils_for_PBI.Models
 {
@@ -18,7 +21,7 @@ namespace Utils_for_PBI.Models
         public bool IS_HIDDEN { get; set; }
         public string MODIFIED_TIME { get; set; }
         public string STRUCTURE_MODIFIED_TIME { get; set; }
-        public string SYSTEM_FLAGS { get; set; }
+        public int SYSTEM_FLAGS { get; set; }
         public string CALCULATION_GROUP_ID { get; set; }
         public bool EXCLUDE_FROM_MODEL_REFRESH { get; set; }
 
@@ -32,7 +35,7 @@ namespace Utils_for_PBI.Models
             IS_HIDDEN = false;
             MODIFIED_TIME = string.Empty;
             STRUCTURE_MODIFIED_TIME = string.Empty;
-            SYSTEM_FLAGS = string.Empty;
+            SYSTEM_FLAGS = 0;
             CALCULATION_GROUP_ID = string.Empty;
             EXCLUDE_FROM_MODEL_REFRESH = false;
         }
@@ -47,10 +50,19 @@ namespace Utils_for_PBI.Models
             IS_HIDDEN = bool.Parse(Convert.ToString(dataRecord["IsHidden"])),
             MODIFIED_TIME = Convert.ToString(dataRecord["ModifiedTime"]),
             STRUCTURE_MODIFIED_TIME = Convert.ToString(dataRecord["StructureModifiedTime"]),
-            SYSTEM_FLAGS = Convert.ToString(dataRecord["SystemFlags"]),
+            SYSTEM_FLAGS = Convert.ToInt32(dataRecord["SystemFlags"]),
             CALCULATION_GROUP_ID = Convert.ToString(dataRecord["CalculationGroupID"]),
             EXCLUDE_FROM_MODEL_REFRESH = bool.Parse(Convert.ToString(dataRecord["ExcludeFromModelRefresh"]))
         };
+
+        public enum SystemFlagsEnum
+        {
+            [Description("Table")]
+            Table = 0,
+
+            [Description("Calculated Table")]
+            CalculatedTable = 2
+        }
 
     }
 }

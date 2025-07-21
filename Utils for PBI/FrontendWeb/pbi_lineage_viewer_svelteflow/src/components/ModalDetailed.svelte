@@ -1,17 +1,33 @@
 <script lang="ts">
     import APIDropdown from './APIDropdown.svelte';
+    import { Table } from "@flowbite-svelte-plugins/datatable";
+    import { baseURL } from '../ts/Constant';
+    import { onMount } from 'svelte';
     let {closeModal} = $props();
+
+    let tableData = $state([]);
 
     let objectTypeComponent;
     let objectsComponent;
     
-
     const onObjectTypeSelected = () => {
 
     }
     const onObjectSelected = () => {
 
     }
+
+    const retrieveData = async () => {
+        const tableInfoURL = baseURL + 'tables';
+
+        const response = await fetch(tableInfoURL);
+
+        return response.json();
+    }
+    
+    const dataPromise = retrieveData();
+
+    
 
 </script>
 <div class="modal-backdrop" aria-label="Close" role="button">
@@ -40,6 +56,11 @@
                 on:select = {onObjectSelected}
             />
     </div>
+    {#await dataPromise}
+    <p>Loading table data...</p>
+    {:then data}
+    <Table items={data} />
+    {/await}
 </div>
 </div>
 <style>

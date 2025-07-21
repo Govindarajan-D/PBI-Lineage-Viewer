@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils_for_PBI.Models;
 using static System.Windows.Forms.DataFormats;
+using static Utils_for_PBI.Models.TablesMetadataRow;
 using Json = System.Text.Json;
 
 namespace Utils_for_PBI.Services
@@ -101,8 +102,8 @@ namespace Utils_for_PBI.Services
                                                            Expression = measure?.EXPRESSION ?? "N/A",
                                                            DisplayFolder = measure?.DISPLAY_FOLDER ?? "N/A",
                                                            FormatString = measure?.FORMAT_STRING ?? "N/A",
-                                                           IsHidden = measure?.IS_HIDDEN ?? "N/A",
-                                                           IsSimpleMeasure = measure?.IS_SIMPLE_MEASURE ?? "N/A",
+                                                           IsHidden = measure?.IS_HIDDEN,
+                                                           IsSimpleMeasure = measure?.IS_SIMPLE_MEASURE,
                                                            ModifiedTime = measure?.MODIFIED_TIME ?? "N/A"
 
                                                        }
@@ -206,7 +207,7 @@ namespace Utils_for_PBI.Services
                                                         isHidden = c.IS_HIDDEN,
                                                         modifiedTime = c.MODIFIED_TIME,
                                                         structureModifiedTime = c.STRUCTURE_MODIFIED_TIME,
-                                                        systemFlags = c.SYSTEM_FLAGS,
+                                                        systemFlags = ((SystemFlagsEnum)c.SYSTEM_FLAGS).GetEnumDescription(),
                                                         calculationGroupID = c.CALCULATION_GROUP_ID,
                                                         excludeFromModelRefresh = c.EXCLUDE_FROM_MODEL_REFRESH
                                                     });

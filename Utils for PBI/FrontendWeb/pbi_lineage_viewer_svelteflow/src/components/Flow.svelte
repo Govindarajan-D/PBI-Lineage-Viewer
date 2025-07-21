@@ -10,6 +10,7 @@
     type Node,
     type Edge,
     type NodeEventWithPointer,
+    type ColorMode,
   } from "@xyflow/svelte";
   
 
@@ -17,11 +18,12 @@
 
   import { writable } from "svelte/store";
   import { onMount } from "svelte";
+  import { getAncestors, getDescendants } from "../ts/utility-lineage";
   import DisplayNode from "./flowcomponents/DisplayNode.svelte";
+  import { baseURL } from '../ts/Constant';
   import ContextMenu from "./ContextMenu.svelte";
   import ModalBox from "./ModalBox.svelte";
   import "@xyflow/svelte/dist/style.css";
-  import { getAncestors, getDescendants } from "../ts/utility-lineage";
   import ModalDetailed from "./ModalDetailed.svelte";
 
   const nodeTypes = {
@@ -29,7 +31,7 @@
   };
 
   let flowRef;
-
+  const colorMode: ColorMode = $state('system');
   const nodes = writable([]);
   const edges = writable([]);
   const nodeWidth = 172;
@@ -37,7 +39,6 @@
 
   const {fitView, setZoom, getViewport} = useSvelteFlow();
 
-  const baseURL = "http://localhost:8080/utilspbi/api/";
   let svelteNodes, svelteEdges;
 
   // Handling context menu
@@ -97,7 +98,7 @@
 
   // Fetches nodes and edges data from the API and processes it.
   // It is asynchronous and returns a promise that resolves when the data is fetched.
-  async function retrieveData() {
+  const retrieveData = async () => {
     const nodesURL = baseURL + "nodes";
     const edgesURL = baseURL + "edges";
 
@@ -260,7 +261,6 @@
   }
 
   const closeDetailed = () => {
-    console.log("Here in close");
     modalDetailedData = null;
   }
 
