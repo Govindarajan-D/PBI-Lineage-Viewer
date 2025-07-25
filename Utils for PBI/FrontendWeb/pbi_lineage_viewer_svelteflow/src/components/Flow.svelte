@@ -116,19 +116,22 @@
     });
   }
 
-  const setNodesAndEdges = (layoutedElements) => {
+  const setNodesAndEdges = (layoutedElements, resetView: boolean) => {
     nodes.set(layoutedElements.nodes);
     edges.set(layoutedElements.edges);
 
-    const fitViewOptions = {
-      padding: 0.5,
-      duration: 800,
-      maxZoom: 2
-    };
+    if(resetView){
+      const fitViewOptions = {
+        padding: 0.5,
+        duration: 800,
+        maxZoom: 2
+      };
 
-    setTimeout(() => {
-      fitView(fitViewOptions);
-    }, 0);
+      setTimeout(() => {
+        fitView(fitViewOptions);
+      }, 0);
+    }
+
   }
 
   // The async function fetchdata is called when the component is mounted.
@@ -151,7 +154,7 @@
         "LR",
       );
 
-      setNodesAndEdges(layoutedElements);
+      setNodesAndEdges(layoutedElements, true);
     });
   });
 
@@ -162,11 +165,10 @@
       direction,
     );
 
-    setNodesAndEdges(layoutedElements);
+    setNodesAndEdges(layoutedElements, false);
   }
 
   const filterNode = (filter_id) => {
-
     const unioned_nodes = Array.from(new Set([...getAncestors(svelteEdges, filter_id),...getDescendants(svelteEdges, filter_id), filter_id]));
     const filtered_nodes = svelteNodes.filter((node) => unioned_nodes.includes(node.id));
     const filtered_edges = svelteEdges.filter((edge) => unioned_nodes.includes(edge.source) || unioned_nodes.includes(edge.target));
@@ -176,7 +178,9 @@
       "LR",
     );
     
-    setNodesAndEdges(layoutedElements);
+    setNodesAndEdges(layoutedElements, true);
+
+    
   }
 
   const clearFilter = () => {
@@ -186,7 +190,7 @@
       "LR",
     );
 
-    setNodesAndEdges(layoutedElements);
+    setNodesAndEdges(layoutedElements, true);
   }
   // To handle clicking of a node, which highlights the complete lineage (front and back of node)
   // TO-FIX: Non-related edges get highlighted and a methodology for removing highlight should be coded.
@@ -203,7 +207,7 @@
 
     const highlighted_edges = svelteEdges.map((edge) => ({
       ...edge,
-      style: unioned_nodes.includes(edge.source) || unioned_nodes.includes(edge.target)
+      style: unioned_nodes.includes(edge.source) && unioned_nodes.includes(edge.target)
       ? "stroke: orange; stroke-width: 3;"
       : "",
     }));
@@ -214,7 +218,7 @@
       "LR",
     );
 
-    setNodesAndEdges(layoutedElements);
+    setNodesAndEdges(layoutedElements, false);
   }
 
   const handleContextMenu: NodeEventWithPointer = ({ event, node }) => {

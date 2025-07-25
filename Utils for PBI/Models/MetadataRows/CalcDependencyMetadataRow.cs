@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using Json = System.Text.Json;
 
-namespace Utils_for_PBI.Models
+namespace Utils_for_PBI.Models.MetadataRows
 {
     /// <summary>
     /// CalcDependencyMetadataRow represents the object fields for storing the data from the Semantic Model's DMV

@@ -12,6 +12,7 @@ using log4net;
 using Utils_for_PBI.Server;
 using System.Runtime.Versioning;
 using PowerBIConnections.Connections;
+using Utils_for_PBI.Models.MetadataRows;
 
 namespace Utils_for_PBI.Services
 {

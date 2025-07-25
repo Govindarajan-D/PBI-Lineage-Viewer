@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Utils_for_PBI.Models
+namespace Utils_for_PBI.Models.MetadataRows
 {
     /// <summary>
     /// Represents metadata of Power BI Measures (Retrieved from DMV)

@@ -2,10 +2,8 @@
     import APIDropdown from './APIDropdown.svelte';
     import { Table } from "@flowbite-svelte-plugins/datatable";
     import { baseURL } from '../ts/Constant';
-    import { onMount } from 'svelte';
+    import type { DataTableOptions } from "simple-datatables";
     let {closeModal} = $props();
-
-    let tableData = $state([]);
 
     let objectTypeComponent;
     let objectsComponent;
@@ -24,18 +22,19 @@
 
         return response.json();
     }
-    
+
     const dataPromise = retrieveData();
 
-    
+    const paginationOptions: DataTableOptions = {
+        paging: true,
+        perPage: 7,
+        sortable: true
+    };
 
 </script>
 <div class="modal-backdrop" aria-label="Close" role="button">
 <div class="modalbox-detailed">
     <button class="close-btn" onclick={closeModal} aria-label="Close">&times;</button>
-    <h3>
-        Detailed Metadata
-    </h3>
     <div class="top-bar d-flex align-items-center justify-content-start">
             <APIDropdown
                 dropdownName = 'ObjectType'
@@ -59,11 +58,28 @@
     {#await dataPromise}
     <p>Loading table data...</p>
     {:then data}
-    <Table items={data} />
+    <div class="table-scroll">
+    <Table items={data} striped dataTableOptions={paginationOptions} />
+    </div>
     {/await}
 </div>
 </div>
 <style>
+:global(.data-table tbody){
+    max-height: 60vh;
+    overflow-y: auto;
+}
+:global(.datatable-table tbody tr:nth-child(even)) {
+  background-color: #f5f5f5;
+}
+:global(.datatable-table td) {
+  border-right: 1px solid #f3f2f2;
+  border-left: 1px solid #f3f2f2;
+}
+
+:global(.datatable-table tbody tr:last-child ) {
+  border-bottom: 1px solid #f3f2f2;
+}
 .modal-backdrop {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;

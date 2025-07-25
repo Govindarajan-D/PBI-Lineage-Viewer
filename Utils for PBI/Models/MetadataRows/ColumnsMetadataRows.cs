@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Utils_for_PBI.Models
+namespace Utils_for_PBI.Models.MetadataRows
 {
     public class ColumnsMetadataRow
     {

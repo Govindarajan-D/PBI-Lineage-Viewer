@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Utils_for_PBI.Models;
+using Utils_for_PBI.Models.MetadataRows;
+using Utils_for_PBI.Models.SerializationModel;
 using static System.Windows.Forms.DataFormats;
-using static Utils_for_PBI.Models.TablesMetadataRow;
+using static Utils_for_PBI.Models.MetadataRows.TablesMetadataRow;
 using Json = System.Text.Json;
 
 namespace Utils_for_PBI.Services
@@ -199,17 +200,17 @@ namespace Utils_for_PBI.Services
 
         public string GetTablesInfo()
         {
-            var tablesInfo = _tablesMetadataRows.Select(c => new
-                                                    {
-                                                        id = c.ID,
-                                                        name = c.NAME,
-                                                        dataCategory = c.DATA_CATEGORY,
-                                                        isHidden = c.IS_HIDDEN,
-                                                        modifiedTime = c.MODIFIED_TIME,
-                                                        structureModifiedTime = c.STRUCTURE_MODIFIED_TIME,
-                                                        systemFlags = ((SystemFlagsEnum)c.SYSTEM_FLAGS).GetEnumDescription(),
-                                                        calculationGroupID = c.CALCULATION_GROUP_ID,
-                                                        excludeFromModelRefresh = c.EXCLUDE_FROM_MODEL_REFRESH
+            var tablesInfo = _tablesMetadataRows.Select(c => new TableMetadataDTO
+            {
+                                                        Id = c.ID,
+                                                        Name = c.NAME,
+                                                        DataCategory = c.DATA_CATEGORY,
+                                                        IsHidden = c.IS_HIDDEN,
+                                                        ModifiedTime = c.MODIFIED_TIME,
+                                                        StructureModifiedTime = c.STRUCTURE_MODIFIED_TIME,
+                                                        SystemFlags = ((SystemFlagsEnum)c.SYSTEM_FLAGS).GetEnumDescription(),
+                                                        CalculationGroupId = c.CALCULATION_GROUP_ID,
+                                                        ExcludeFromModelRefresh = c.EXCLUDE_FROM_MODEL_REFRESH
                                                     });
 
             return Json.JsonSerializer.Serialize(tablesInfo, new Json.JsonSerializerOptions { WriteIndented = true });
