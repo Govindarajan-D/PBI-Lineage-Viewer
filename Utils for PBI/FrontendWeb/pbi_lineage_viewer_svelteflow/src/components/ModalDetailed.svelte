@@ -1,7 +1,7 @@
 <script lang="ts">
     import APIDropdown from './APIDropdown.svelte';
     import { Table } from "@flowbite-svelte-plugins/datatable";
-    import { baseURL } from '../ts/Constant';
+    import { baseURL } from '../ts/constant';
     import type { DataTableOptions } from "simple-datatables";
     let {closeModal} = $props();
 

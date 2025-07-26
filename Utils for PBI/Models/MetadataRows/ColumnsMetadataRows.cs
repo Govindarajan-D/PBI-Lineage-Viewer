@@ -79,7 +79,7 @@ namespace Utils_for_PBI.Models.MetadataRows
         };
 
 
-        public enum SummarizeBy
+        public enum SummarizeByEnum
         {
             Default = 1,
             None = 2,
@@ -89,6 +89,19 @@ namespace Utils_for_PBI.Models.MetadataRows
             Count = 6,
             Average = 7,
             DistinctCount = 8
+        }
+
+        public enum DataTypeEnum
+        {
+            Automatic = 1,
+            String = 2,
+            Int64 = 6,
+            Double = 8,
+            DateTime = 9,
+            Decimal = 10,
+            Boolean = 11,
+            Binary = 17,
+            Unknown = 19
         }
     }
 }

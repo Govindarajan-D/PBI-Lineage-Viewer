@@ -20,7 +20,7 @@
   import { onMount } from "svelte";
   import { getAncestors, getDescendants } from "../ts/utility-lineage";
   import DisplayNode from "./flowcomponents/DisplayNode.svelte";
-  import { baseURL } from '../ts/Constant';
+  import { baseURL } from '../ts/constant';
   import ContextMenu from "./ContextMenu.svelte";
   import ModalBox from "./ModalBox.svelte";
   import "@xyflow/svelte/dist/style.css";
@@ -193,7 +193,6 @@
     setNodesAndEdges(layoutedElements, true);
   }
   // To handle clicking of a node, which highlights the complete lineage (front and back of node)
-  // TO-FIX: Non-related edges get highlighted and a methodology for removing highlight should be coded.
   const handleNodeClick = (event) => {
     const clickedNode = event.node.id;
     const unioned_nodes = Array.from(new Set([...getAncestors(svelteEdges, clickedNode),...getDescendants(svelteEdges, clickedNode), clickedNode]));
@@ -215,6 +214,17 @@
     const layoutedElements = getLayoutedElements(
       highlighted_nodes,
       highlighted_edges,
+      "LR",
+    );
+
+    setNodesAndEdges(layoutedElements, false);
+  }
+  
+  const clearHighlight = () => {
+    
+    const layoutedElements = getLayoutedElements(
+      svelteNodes,
+      svelteEdges,
       "LR",
     );
 
@@ -250,6 +260,7 @@
   // Close the context menu if it's open whenever the window is clicked.
   const handlePaneClick = () => {
     menu = null;
+    clearHighlight();
   }
   
   const handleShowBox = (modalBoxData) => {

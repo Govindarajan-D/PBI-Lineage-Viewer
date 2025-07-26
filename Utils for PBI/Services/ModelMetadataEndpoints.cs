@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Utils_for_PBI.Models.MetadataRows;
 using Utils_for_PBI.Models.SerializationModel;
 using static System.Windows.Forms.DataFormats;
+using static Utils_for_PBI.Models.MetadataRows.ColumnsMetadataRow;
 using static Utils_for_PBI.Models.MetadataRows.TablesMetadataRow;
 using Json = System.Text.Json;
 
@@ -218,28 +219,28 @@ namespace Utils_for_PBI.Services
 
         public string GetColumnsInfo()
         {
-            var columnsInfo = _columnsMetadataRows.Select(c => new
-                                                {
-                                                    id = c.ID,
-                                                    tableID = c.TABLE_ID,
-                                                    explicitName = c.EXPLICIT_NAME,
-                                                    inferredName = c.INFERRED_NAME,
-                                                    explicitDataType = c.EXPLICIT_DATA_TYPE,
-                                                    inferredDataType = c.INFERRED_DATA_TYPE,
-                                                    description = c.DESCRIPTION,
-                                                    isHidden = c.IS_HIDDEN,
-                                                    isUnique = c.IS_UNIQUE,
-                                                    isKey = c.IS_KEY,
-                                                    isNullable = c.IS_NULLABLE,
-                                                    summarizeBy = c.SUMMARIZE_BY,
-                                                    type = c.TYPE,
-                                                    expression = c.EXPRESSION,
-                                                    isAvailableInMDX = c.IS_AVAILABLE_IN_MDX,
-                                                    sortByColumnID = c.SORT_BY_COLUMN_ID,
-                                                    modifiedTime = c.MODIFIED_TIME,
-                                                    structureModifiedTime = c.STRUCTURE_MODIFIED_TIME,
-                                                    refreshedTime = c.REFRESHED_TIME,
-                                                    systemFlags = c.SYSTEM_FLAGS
+            var columnsInfo = _columnsMetadataRows.Select(c => new ColumnMetadataDTO
+            {
+                                                    Id = c.ID,
+                                                    TableId = c.TABLE_ID,
+                                                    ExplicitName = c.EXPLICIT_NAME,
+                                                    InferredName = c.INFERRED_NAME,
+                                                    ExplicitDataType = ((DataTypeEnum)c.EXPLICIT_DATA_TYPE).GetEnumDescription(),
+                                                    InferredDataType = ((DataTypeEnum)c.INFERRED_DATA_TYPE).GetEnumDescription(),
+                                                    Description = c.DESCRIPTION,
+                                                    IsHidden = c.IS_HIDDEN,
+                                                    IsUnique = c.IS_UNIQUE,
+                                                    IsKey = c.IS_KEY,
+                                                    IsNullable = c.IS_NULLABLE,
+                                                    SummarizeBy = ((SummarizeByEnum)c.SUMMARIZE_BY).GetEnumDescription(),
+                                                    Type = c.TYPE,
+                                                    Expression = c.EXPRESSION,
+                                                    IsAvailableInMDX = c.IS_AVAILABLE_IN_MDX,
+                                                    SortByColumnId = c.SORT_BY_COLUMN_ID,
+                                                    ModifiedTime = c.MODIFIED_TIME,
+                                                    StructureModifiedTime = c.STRUCTURE_MODIFIED_TIME,
+                                                    RefreshedTime = c.REFRESHED_TIME,
+                                                    SystemFlags = c.SYSTEM_FLAGS
                                                 });
             return Json.JsonSerializer.Serialize(columnsInfo, new Json.JsonSerializerOptions { WriteIndented = true });
         }
