@@ -1,4 +1,4 @@
-using Utils_for_PBI.Models;
+using Utils_for_PBI.Models.MetadataRows;
 using Newtonsoft.Json.Linq;
 using FluentAssertions;
 using Utils_for_PBI.Services;

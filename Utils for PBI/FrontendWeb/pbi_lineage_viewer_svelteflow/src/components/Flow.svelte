@@ -39,8 +39,8 @@
 
   const {fitView, setZoom, getViewport} = useSvelteFlow();
 
-  let svelteNodes, svelteEdges;
-
+  let svelteNodes, svelteEdges, filteredNodes = null, filteredEdges = null;
+  let highlight_enabled;
   // Handling context menu
   let menu: {
     id: string;
@@ -169,21 +169,19 @@
   }
 
   const filterNode = (filter_id) => {
-    const unioned_nodes = Array.from(new Set([...getAncestors(svelteEdges, filter_id),...getDescendants(svelteEdges, filter_id), filter_id]));
-    const filtered_nodes = svelteNodes.filter((node) => unioned_nodes.includes(node.id));
-    const filtered_edges = svelteEdges.filter((edge) => unioned_nodes.includes(edge.source) || unioned_nodes.includes(edge.target));
+    const unionedNodes = Array.from(new Set([...getAncestors(svelteEdges, filter_id),...getDescendants(svelteEdges, filter_id), filter_id]));
+    filteredNodes = svelteNodes.filter((node) => unionedNodes.includes(node.id));
+    filteredEdges = svelteEdges.filter((edge) => unionedNodes.includes(edge.source) && unionedNodes.includes(edge.target));
     const layoutedElements = getLayoutedElements(
-      filtered_nodes,
-      filtered_edges,
+      filteredNodes,
+      filteredEdges,
       "LR",
     );
-    
     setNodesAndEdges(layoutedElements, true);
-
-    
   }
 
   const clearFilter = () => {
+
     const layoutedElements = getLayoutedElements(
       svelteNodes,
       svelteEdges,
@@ -191,12 +189,26 @@
     );
 
     setNodesAndEdges(layoutedElements, true);
+
+    //Making the variables so that correct nodes and edges are being used for highlighting
+    filteredNodes = null;
+    filteredEdges = null;
   }
   // To handle clicking of a node, which highlights the complete lineage (front and back of node)
   const handleNodeClick = (event) => {
+    let tempNodes, tempEdges;
+
+    if (filteredNodes === null){
+      tempNodes = svelteNodes;
+      tempEdges = svelteEdges;
+    }
+    else{
+      tempNodes = filteredNodes;
+      tempEdges = filteredEdges;
+    }
     const clickedNode = event.node.id;
-    const unioned_nodes = Array.from(new Set([...getAncestors(svelteEdges, clickedNode),...getDescendants(svelteEdges, clickedNode), clickedNode]));
-    const highlighted_nodes = svelteNodes.map((node) => ({
+    const unioned_nodes = Array.from(new Set([...getAncestors(tempEdges, clickedNode),...getDescendants(tempEdges, clickedNode), clickedNode]));
+    const highlighted_nodes = tempNodes.map((node) => ({
       ...node,
       data: {
           ...node.data,
@@ -204,7 +216,7 @@
         }
     }));
 
-    const highlighted_edges = svelteEdges.map((edge) => ({
+    const highlighted_edges = tempEdges.map((edge) => ({
       ...edge,
       style: unioned_nodes.includes(edge.source) && unioned_nodes.includes(edge.target)
       ? "stroke: orange; stroke-width: 3;"
@@ -218,17 +230,30 @@
     );
 
     setNodesAndEdges(layoutedElements, false);
+    highlight_enabled = true;
   }
   
   const clearHighlight = () => {
-    
-    const layoutedElements = getLayoutedElements(
-      svelteNodes,
-      svelteEdges,
-      "LR",
-    );
+    let tempNodes, tempEdges;
+    if (filteredNodes === null){
+      tempNodes = svelteNodes;
+      tempEdges = svelteEdges;
+    }
+    else{
+      tempNodes = filteredNodes;
+      tempEdges = filteredEdges;
+    }
 
-    setNodesAndEdges(layoutedElements, false);
+    if(highlight_enabled){
+      const layoutedElements = getLayoutedElements(
+        tempNodes,
+        tempEdges,
+        "LR",
+      );
+
+      setNodesAndEdges(layoutedElements, false);
+      highlight_enabled = false;
+    }
   }
 
   const handleContextMenu: NodeEventWithPointer = ({ event, node }) => {
