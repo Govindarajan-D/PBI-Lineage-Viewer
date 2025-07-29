@@ -58,7 +58,7 @@
 
     function handleSelect(option){
         selectedValue = option.name;
-        handleDropdownSelect();
+        handleDropdownSelect(selectedValue);
     }
     
     export function clearFilter(){

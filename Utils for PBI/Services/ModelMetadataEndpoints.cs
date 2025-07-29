@@ -14,6 +14,9 @@ namespace Utils_for_PBI.Services
 {
     public partial class ModelMetadata
     {
+        /// <summary>
+        /// Cleans the data by removing unnecessary objects not required for the lineage graph
+        /// </summary>
         private IEnumerable<CalcDependencyMetadataRow> CleanData(IEnumerable<CalcDependencyMetadataRow> rows)
         {
             List<String> objectTypeNotInFilter = new List<String> { "HIERARCHY", "ATTRIBUTE_HIERARCHY", "ACTIVE_RELATIONSHIP", "RELATIONSHIP", "PARTITION", "M_EXPRESSION" };
@@ -25,6 +28,11 @@ namespace Utils_for_PBI.Services
             return cleansedData;
 
         }
+
+        /// <summary>
+        /// Gets all the nodes (OBJECTS, OBJECT_TYPE) from the CalcDependencyMetadataRow data. 
+        /// The nodes are nothing but objects like Measure, Calculated column, Columns
+        /// </summary>
 
         private IEnumerable<(string OBJECT, string OBJECT_TYPE)> GetAllNodes(IEnumerable<CalcDependencyMetadataRow> rows)
         {
@@ -199,6 +207,10 @@ namespace Utils_for_PBI.Services
             return Json.JsonSerializer.Serialize(objectTypeInfo, new Json.JsonSerializerOptions { WriteIndented = true });
         }
 
+        /// <summary>
+        /// Converts the List of Rows (TableMetadata) into Table JSON String
+        /// </summary>
+
         public string GetTablesInfo()
         {
             var tablesInfo = _tablesMetadataRows.Select(c => new TableMetadataDTO
@@ -216,6 +228,10 @@ namespace Utils_for_PBI.Services
 
             return Json.JsonSerializer.Serialize(tablesInfo, new Json.JsonSerializerOptions { WriteIndented = true });
         }
+
+        /// <summary>
+        /// Converts the List of Rows (ColumnMetadata) into Column JSON String
+        /// </summary>
 
         public string GetColumnsInfo()
         {

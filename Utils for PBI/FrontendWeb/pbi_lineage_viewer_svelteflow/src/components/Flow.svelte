@@ -168,7 +168,7 @@
     setNodesAndEdges(layoutedElements, false);
   }
 
-  const filterNode = (filter_id) => {
+  export const filterNode = (filter_id) => {
     const unionedNodes = Array.from(new Set([...getAncestors(svelteEdges, filter_id),...getDescendants(svelteEdges, filter_id), filter_id]));
     filteredNodes = svelteNodes.filter((node) => unionedNodes.includes(node.id));
     filteredEdges = svelteEdges.filter((edge) => unionedNodes.includes(edge.source) && unionedNodes.includes(edge.target));
