@@ -180,7 +180,7 @@
     setNodesAndEdges(layoutedElements, true);
   }
 
-  const clearFilter = () => {
+  export const clearFilter = () => {
 
     const layoutedElements = getLayoutedElements(
       svelteNodes,

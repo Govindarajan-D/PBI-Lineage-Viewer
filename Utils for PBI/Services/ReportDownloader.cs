@@ -9,5 +9,6 @@ namespace Utils_for_PBI.Services
     public class ReportDownloader
     {
 
+
     }
 }

@@ -51,17 +51,23 @@
     });
 
     // Apply filter based on the selected value (from an external source like another dropdown)
-    export function filterObjects(filterColumn, filterValue){
+    export const filterObjects = (filterColumn, filterValue) => {
         filteredOptions = apiData.filter((option) => option[filterColumn] == filterValue)
                                  .map((option) => ({id: option[idKey], name: option[nameKey]}));
     }
 
-    function handleSelect(option){
-        selectedValue = option.name;
+    export const handleSelect = (option) => {
+        if(option.id == "SIG_DD_CLEAR" ){
+            selectedValue = 'All';
+        }
+        else{
+            selectedValue = option.name;
+        }
         handleDropdownSelect(selectedValue);
+
     }
     
-    export function clearFilter(){
+    export const clearFilter = () => {
         selectedValue = 'All';
         filteredOptions = apiData.map((option) => ({id: option[idKey], name: option[nameKey]}));
     }
