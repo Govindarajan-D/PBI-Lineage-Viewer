@@ -35,6 +35,8 @@ namespace Utils_for_PBI.Services
             try
             {
                 server.Connect(datasetConnection.ConnectString);
+                
+                ReportDownloader reportDownloader = new ReportDownloader(server.AccessToken.Token);
             }
             catch (Exception ex)
             {

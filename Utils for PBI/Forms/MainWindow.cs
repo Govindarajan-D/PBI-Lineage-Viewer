@@ -36,6 +36,11 @@ namespace Utils_for_PBI.Forms
          */
         private void connectDesktopModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            var token = "";
+
+
+            ReportDownloader reportDownloader = new ReportDownloader(token);
+
             ConnectDataset connectDatasetWindow = new ConnectDataset();
             connectDatasetWindow.NotifyAction += OnConnection;
 
