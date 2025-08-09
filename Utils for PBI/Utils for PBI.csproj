@@ -52,9 +52,11 @@
     <PackageReference Include="Microsoft.Identity.Client.NativeInterop" Version="0.17.2" />
     <PackageReference Include="Microsoft.IdentityModel.Abstractions" Version="8.2.1" />
     <PackageReference Include="Microsoft.PowerBI.Api" Version="4.22.0" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.5.2" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="9.0.0" />
+    <PackageReference Include="System.Management.Automation" Version="7.4.11" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.0" />
     <PackageReference Include="Tools.InnoSetup" Version="6.4.3" />
   </ItemGroup>

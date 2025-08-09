@@ -33,6 +33,7 @@
             fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            addPBIServiceReportsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             DisplayLineageWebView = new Microsoft.Web.WebView2.WinForms.WebView2();
@@ -56,7 +57,7 @@
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { connectToolStripMenuItem, exitToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { connectToolStripMenuItem, addPBIServiceReportsToolStripMenuItem, exitToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             fileToolStripMenuItem.Text = "File";
@@ -64,16 +65,23 @@
             // connectToolStripMenuItem
             // 
             connectToolStripMenuItem.Name = "connectToolStripMenuItem";
-            connectToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            connectToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
             connectToolStripMenuItem.Text = "Connect Model";
             connectToolStripMenuItem.Click += connectDesktopModelToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            exitToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
+            // 
+            // addPBIServiceReportsToolStripMenuItem
+            // 
+            addPBIServiceReportsToolStripMenuItem.Name = "addPBIServiceReportsToolStripMenuItem";
+            addPBIServiceReportsToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            addPBIServiceReportsToolStripMenuItem.Text = "Add PBI Service Reports ";
+            addPBIServiceReportsToolStripMenuItem.Click += addPBIServiceReportsToolStripMenuItem_Click;
             // 
             // helpToolStripMenuItem
             // 
@@ -163,5 +171,6 @@
         private Microsoft.Web.WebView2.WinForms.WebView2 DisplayLineageWebView;
         private System.Windows.Forms.Label ConnectDatasetPlaceholderLabel;
         private System.Windows.Forms.ToolStripStatusLabel modelURLStatusLabel;
+        private System.Windows.Forms.ToolStripMenuItem addPBIServiceReportsToolStripMenuItem;
     }
 }

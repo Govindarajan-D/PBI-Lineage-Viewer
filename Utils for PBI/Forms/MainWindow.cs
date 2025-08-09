@@ -36,11 +36,6 @@ namespace Utils_for_PBI.Forms
          */
         private void connectDesktopModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var token = "";
-
-
-            ReportDownloader reportDownloader = new ReportDownloader(token);
-
             ConnectDataset connectDatasetWindow = new ConnectDataset();
             connectDatasetWindow.NotifyAction += OnConnection;
 
@@ -65,7 +60,7 @@ namespace Utils_for_PBI.Forms
                      * to get the Semantic model (database) to connect.
                      */
 
-                    if(_connection.ConnectionType == ConnectionType.PowerBIService)
+                    if (_connection.ConnectionType == ConnectionType.PowerBIService)
                     {
                         SelectModelForm selectModelForm = new SelectModelForm(_tomAPIConnection.databases);
                         if (_tomAPIConnection.databases.Count > 0)
@@ -91,7 +86,7 @@ namespace Utils_for_PBI.Forms
                     }
                     else
                     {
-                        connectionString =  "XMLA Endpoint:" + _connection.ConnectString + " | Model:" + _connection.DatabaseName;
+                        connectionString = "XMLA Endpoint:" + _connection.ConnectString + " | Model:" + _connection.DatabaseName;
                     }
 
                     modelURLStatusLabel.Text = connectionString;
@@ -103,9 +98,9 @@ namespace Utils_for_PBI.Forms
                 return;
             }
 
-           /* HTML page is generated from the resources and then it is displayed in the WebView2 component.
-            * The modelMetadata is retrieved and then served using the UtilsPBIHTTPServer server.
-            */
+            /* HTML page is generated from the resources and then it is displayed in the WebView2 component.
+             * The modelMetadata is retrieved and then served using the UtilsPBIHTTPServer server.
+             */
 
             GenerateLineagePage showDependencyGraph = new GenerateLineagePage();
             string filePath = showDependencyGraph.GenerateHTMLPage();
@@ -157,5 +152,21 @@ namespace Utils_for_PBI.Forms
 
         }
 
+        private async void addPBIServiceReportsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConnectDataset connectDatasetWindow = new ConnectDataset();
+            DatasetConnection connection = new DatasetConnection();
+
+            connectDatasetWindow.NotifyAction += OnConnection;
+
+            var connectionWindow = connectDatasetWindow.ShowDialog();
+
+            if (connectionWindow == DialogResult.OK)
+            {
+                connection = connectDatasetWindow.selectedConnection;
+            }
+            var adomd = new AdomdConnection(connection);
+            await ReportDownloader.InitializeDownload(adomd.connection.AccessToken.ToString(), "160a74e2-2dd3-4829-8fc6-af753b98c922", "67c8cf35-86ea-49ff-83f8-7abaac3cba11");  
+        }
     }
 }
