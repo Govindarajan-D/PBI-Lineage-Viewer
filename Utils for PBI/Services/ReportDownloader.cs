@@ -18,12 +18,13 @@ namespace Utils_for_PBI.Services
 
         }
 
-        public static async Task InitializeDownload(string AccessToken, string group_id = "", string report_id = "")
+        public static async Task<String> InitializeDownload(string AccessToken, string group_id = "", string report_id = "")
         {
             var instance = new ReportDownloader();
             var fileBytes = await instance.DownloadReportAsync(AccessToken, $"https://api.powerbi.com/v1.0/myorg/groups/{group_id}/reports/{report_id}/Export?downloadType=LiveConnect");
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Constants.ProgramName, $"{report_id}.pbix");
             await File.WriteAllBytesAsync(filePath, fileBytes);
+            return filePath;
 
         }
         public async Task<byte[]> DownloadReportAsync(string AccessToken, string reportUrl)
@@ -34,9 +35,9 @@ namespace Utils_for_PBI.Services
 
             using HttpResponseMessage response = await httpClient.SendAsync(requestMessage);
 
-            var jsonResponse = await response.Content.ReadAsStringAsync();
+            var responseContent = await response.Content.ReadAsByteArrayAsync();
 
-            return Encoding.ASCII.GetBytes(jsonResponse);
+            return responseContent;
         }
     }
 }

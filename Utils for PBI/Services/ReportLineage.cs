@@ -14,16 +14,15 @@ namespace Utils_for_PBI.Services
     /// </summary>
     public class ReportLineage
     {
-        public ReportLineage()
-        {
-            var extractionFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Constants.ProgramName, "ReportLineage");
-            var zipFileName = "SimpleDAX.pbix";
-            var zipFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Constants.ProgramName, zipFileName);
-
-            System.IO.Compression.ZipFile.ExtractToDirectory(zipFilePath, extractionFilePath);
+        public ReportLineage(string filePath)
+        { 
+            var extractionFilePath = Path.GetFileNameWithoutExtension(filePath);
+            System.IO.Compression.ZipFile.ExtractToDirectory(sourceArchiveFileName: filePath, destinationDirectoryName: Path.Combine(Path.GetDirectoryName(filePath), extractionFilePath), overwriteFiles: true);
 
             string jsonFileData = File.ReadAllText(Path.Combine(extractionFilePath, "Report/Layout"), Encoding.Unicode);
             Section reportSection = new Section();
+            List<PageObject> pageObjects = new List<PageObject>();
+            reportSection.pageObjects = pageObjects;
 
             using (JsonDocument jsonDocument = JsonDocument.Parse(jsonFileData))
             {
@@ -41,7 +40,8 @@ namespace Utils_for_PBI.Services
                     List<VisualContainerObject> visualContainers = new List<VisualContainerObject>();
                     pageObject.name = jsonSection.GetProperty("name").GetString();
                     pageObject.pageDisplayName = jsonSection.GetProperty("displayName").GetString();
-                    pageObject.ordinal = jsonSection.GetProperty("ordinal").GetString();
+
+                    pageObject.ordinal = jsonSection.TryGetProperty("ordinal", out var ordinalElement) ? ordinalElement.ToString() : "0";
 
                     foreach (JsonElement jsonContainer in jsonVisualContainers.EnumerateArray())
                     {

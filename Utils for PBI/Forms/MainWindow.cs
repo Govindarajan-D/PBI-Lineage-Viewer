@@ -155,8 +155,8 @@ namespace Utils_for_PBI.Forms
         private async void addPBIServiceReportsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var accessToken = await PBIPowerShell.GetPowerBIAccessTokenAsync();
-            await ReportDownloader.InitializeDownload(accessToken, "160a74e2-2dd3-4829-8fc6-af753b98c922", "67c8cf35-86ea-49ff-83f8-7abaac3cba11");
-
+            var fileDownloadedPath = await ReportDownloader.InitializeDownload(accessToken, "160a74e2-2dd3-4829-8fc6-af753b98c922", "67c8cf35-86ea-49ff-83f8-7abaac3cba11");
+            var reportLineage = new ReportLineage(fileDownloadedPath);
         }
     }
 }
