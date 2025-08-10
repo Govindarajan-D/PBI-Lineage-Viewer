@@ -8,7 +8,7 @@ using Utils_for_PBI.Models.SerializationModel;
 using static System.Windows.Forms.DataFormats;
 using static Utils_for_PBI.Models.MetadataRows.ColumnsMetadataRow;
 using static Utils_for_PBI.Models.MetadataRows.TablesMetadataRow;
-using Json = System.Text.Json;
+using SysJson = System.Text.Json;
 
 namespace Utils_for_PBI.Services
 {
@@ -125,7 +125,7 @@ namespace Utils_for_PBI.Services
                                                    }
                                                }
                                             );
-            return Json.JsonSerializer.Serialize(svelteflowNodesAddlData, new Json.JsonSerializerOptions { WriteIndented = true });
+            return SysJson.JsonSerializer.Serialize(svelteflowNodesAddlData, new SysJson.JsonSerializerOptions { WriteIndented = true });
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace Utils_for_PBI.Services
                                                         type = "bezier",
                                                         animated = true
                                                     }).Distinct();
-            return Json.JsonSerializer.Serialize(svelteflowEdges, new Json.JsonSerializerOptions { WriteIndented = true });
+            return SysJson.JsonSerializer.Serialize(svelteflowEdges, new SysJson.JsonSerializerOptions { WriteIndented = true });
         }
 
         public string GetNodesInfo()
@@ -177,7 +177,7 @@ namespace Utils_for_PBI.Services
                                         objectTypeID = c.OBJECT_TYPE.ToUpper()
                                     });
 
-            return Json.JsonSerializer.Serialize(nodesInfo, new Json.JsonSerializerOptions { WriteIndented = true });
+            return SysJson.JsonSerializer.Serialize(nodesInfo, new SysJson.JsonSerializerOptions { WriteIndented = true });
         }
 
         public string GetObjectTypeInfo()
@@ -204,7 +204,7 @@ namespace Utils_for_PBI.Services
                                                 }
                                             });
 
-            return Json.JsonSerializer.Serialize(objectTypeInfo, new Json.JsonSerializerOptions { WriteIndented = true });
+            return SysJson.JsonSerializer.Serialize(objectTypeInfo, new SysJson.JsonSerializerOptions { WriteIndented = true });
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace Utils_for_PBI.Services
                                                         ExcludeFromModelRefresh = c.EXCLUDE_FROM_MODEL_REFRESH
                                                     });
 
-            return Json.JsonSerializer.Serialize(tablesInfo, new Json.JsonSerializerOptions { WriteIndented = true });
+            return SysJson.JsonSerializer.Serialize(tablesInfo, new SysJson.JsonSerializerOptions { WriteIndented = true });
         }
 
         /// <summary>
@@ -258,7 +258,7 @@ namespace Utils_for_PBI.Services
                                                     RefreshedTime = c.REFRESHED_TIME,
                                                     SystemFlags = c.SYSTEM_FLAGS
                                                 });
-            return Json.JsonSerializer.Serialize(columnsInfo, new Json.JsonSerializerOptions { WriteIndented = true });
+            return SysJson.JsonSerializer.Serialize(columnsInfo, new SysJson.JsonSerializerOptions { WriteIndented = true });
         }
     }
 }

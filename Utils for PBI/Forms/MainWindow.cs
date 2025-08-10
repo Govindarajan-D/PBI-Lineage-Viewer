@@ -154,19 +154,9 @@ namespace Utils_for_PBI.Forms
 
         private async void addPBIServiceReportsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ConnectDataset connectDatasetWindow = new ConnectDataset();
-            DatasetConnection connection = new DatasetConnection();
+            var accessToken = await PBIPowerShell.GetPowerBIAccessTokenAsync();
+            await ReportDownloader.InitializeDownload(accessToken, "160a74e2-2dd3-4829-8fc6-af753b98c922", "67c8cf35-86ea-49ff-83f8-7abaac3cba11");
 
-            connectDatasetWindow.NotifyAction += OnConnection;
-
-            var connectionWindow = connectDatasetWindow.ShowDialog();
-
-            if (connectionWindow == DialogResult.OK)
-            {
-                connection = connectDatasetWindow.selectedConnection;
-            }
-            var adomd = new AdomdConnection(connection);
-            await ReportDownloader.InitializeDownload(adomd.connection.AccessToken.ToString(), "160a74e2-2dd3-4829-8fc6-af753b98c922", "67c8cf35-86ea-49ff-83f8-7abaac3cba11");  
         }
     }
 }
