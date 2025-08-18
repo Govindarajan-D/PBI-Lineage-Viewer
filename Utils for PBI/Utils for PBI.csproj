@@ -42,6 +42,7 @@
     <ProjectReference Include="..\PowerBIConnections\PowerBIConnections.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="log4net" Version="3.0.3" />
     <PackageReference Include="log4net.Ext.Json" Version="3.0.1" />
     <PackageReference Include="Microsoft.AnalysisServices.AdomdClient.NetCore.retail.amd64" Version="19.84.1" />

@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using Utils_for_PBI.Models;
 
-namespace Utils_for_PBI.Services
+namespace Utils_for_PBI.Services.ReportServices
 {
     /// <summary>
     /// ReportLineage class reads the pbix file and unzips it into the AppData folder where it reads the layout file

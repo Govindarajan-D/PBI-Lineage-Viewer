@@ -9,6 +9,8 @@ using log4net;
 using log4net.Config;
 using System.Runtime.Versioning;
 using Utils_for_PBI.Services;
+using CommandLine;
+using System.Runtime.InteropServices;
 
 /* TO-DO:
  * Check for errors in lineage - Add Relationship (Active, Inactive)
@@ -50,6 +52,13 @@ namespace Utils_for_PBI.Forms
     internal static class Program
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool AllocConsole();
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool FreeConsole();
+
         /*
          * STAThread ensures the Main program runs as a single thread, but Main() cannot be run
          * as Async Task as there seems to be a bug that does not allow STAThread and Async together
@@ -57,14 +66,39 @@ namespace Utils_for_PBI.Forms
         [STAThread]
         static void Main(string[] args)
         {
+            if (args.Length == 0)
+            {
+                Logger.Info("No arguments received. Starting GUI Window");
+                //XmlConfigurator.Configure(new System.IO.FileInfo("log4net.config"));
 
-            //XmlConfigurator.Configure(new System.IO.FileInfo("log4net.config"));
+                //ReportLineage reportLineage = new ReportLineage();
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Logger.Info("Launching Application");
+                Application.Run(new MainWindow());
 
-            //ReportLineage reportLineage = new ReportLineage();
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Logger.Info("Launching Application");
-            Application.Run(new MainWindow());
+            }
+            else if (args.Length >= 1)
+            {
+                Logger.Info("Arguments received. Starting command line");
+
+                AllocConsole();
+
+                Console.WriteLine("Arguments received: " + string.Join(",", args));
+
+                Parser.Default.ParseArguments<CommandLineOptions>(args)
+                              .WithParsed<CommandLineOptions>(options => {
+                                
+                              })
+                              .WithNotParsed<CommandLineOptions>(errs =>
+                              {
+                                  Console.WriteLine("Error parsing command line arguments. Please check the syntax by running --help");
+                              });
+
+                FreeConsole();
+
+            }
+
         }
     }
 }

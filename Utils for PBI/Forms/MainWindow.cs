@@ -7,6 +7,7 @@ using log4net.Repository.Hierarchy;
 using PowerBIConnections.Connections;
 using Utils_for_PBI.Services;
 using Utils_for_PBI.Server;
+using Utils_for_PBI.Services.ReportServices;
 
 
 namespace Utils_for_PBI.Forms
@@ -119,7 +120,7 @@ namespace Utils_for_PBI.Forms
             }
             //TO-DO: Add configuration functionality to change the port number and other settings
 
-            _dataServer = new UtilsPBIHTTPServer(Constants.urlAddress, modelMetadata);
+            _dataServer = new UtilsPBIHTTPServer(Constants.InternalServerURLAddress, modelMetadata);
             _dataServer.Start();
 
             string fileUri = new Uri(filePath).AbsoluteUri;
@@ -155,7 +156,7 @@ namespace Utils_for_PBI.Forms
         private async void addPBIServiceReportsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var accessToken = await PBIPowerShell.GetPowerBIAccessTokenAsync();
-            var fileDownloadedPath = await ReportDownloader.InitializeDownload(accessToken, "160a74e2-2dd3-4829-8fc6-af753b98c922", "67c8cf35-86ea-49ff-83f8-7abaac3cba11");
+            var fileDownloadedPath = await ReportDownloader.DownloadReportAsync(accessToken, "160a74e2-2dd3-4829-8fc6-af753b98c922", "67c8cf35-86ea-49ff-83f8-7abaac3cba11");
             var reportLineage = new ReportLineage(fileDownloadedPath);
         }
     }

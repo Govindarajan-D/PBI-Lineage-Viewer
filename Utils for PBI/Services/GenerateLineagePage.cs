@@ -14,7 +14,7 @@ namespace Utils_for_PBI.Services
         {
             string HTMLContent;
             var assembly = Assembly.GetExecutingAssembly();
-            var HTMLFileResource = Constants.lineageGraphHTML;
+            var HTMLFileResource = Constants.LineageGraphHTML;
 
 
             using (Stream stream = assembly.GetManifestResourceStream(HTMLFileResource))
