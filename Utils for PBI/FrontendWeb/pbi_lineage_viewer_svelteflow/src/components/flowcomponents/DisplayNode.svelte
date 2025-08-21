@@ -12,14 +12,17 @@
   import ColumnIcon from '../../assets/Column.svg?url';
   import CalcColumnIcon from '../../assets/Calc Column.svg?url';
   import CalcTableIcon from '../../assets/Calc Table.svg?url';
+  import ReportIcon from '../../assets/Report.svg?url';
+  import DashboardIcon from '../../assets/Dashboard.svg?url';
 
   const iconMap = {
     Table: TableIcon,
     Measure: MeasureIcon,
     Column: ColumnIcon,
     'Calc Column': CalcColumnIcon,
-    'Calc Table': CalcTableIcon
-    // Add more as needed
+    'Calc Table': CalcTableIcon,
+    'Report': ReportIcon,
+    'Dashboard': DashboardIcon,
   };
 
   const toggleExpand = (event) => {

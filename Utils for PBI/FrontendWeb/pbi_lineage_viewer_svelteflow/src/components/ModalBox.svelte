@@ -8,7 +8,6 @@
     <div class="modal-box" onclick={(event) => {event.stopPropagation}} aria-label="Close">
         <button class="close-btn" onclick={closeModal} aria-label="Close">&times;</button>
         <div class="modal-content">
-        <!-- Replace with your data display -->
         <h3>{modalData.Name}</h3>
         <pre>{formatDAX(modalData.Expression)}</pre>
         </div>
@@ -16,6 +15,7 @@
     </div>
 
 <style>
+  
 .modal-backdrop {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;

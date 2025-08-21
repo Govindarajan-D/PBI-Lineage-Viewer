@@ -8,22 +8,25 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Utils_for_PBI.Models.ServiceModels;
 
 namespace Utils_for_PBI.Services.ReportServices
 {
-    public class GetServiceMetadata
+    public class ServiceMetadata
     {
         private static readonly HttpClient httpClient = new HttpClient();
+        private List<ServiceMetadataRow> _serviceMetadataRows = new List<ServiceMetadataRow>();
 
-        public GetServiceMetadata()
+        public ServiceMetadata()
         {
 
 
         }
 
-        public static async Task<String> FetchAdminMetadata(string AccessToken)
+        public async Task<String> FetchAdminMetadata(string AccessToken)
         {
             var serviceMetadataAPIURL = $"{Constants.PowerBIAdminAPIURL}/groups?$expand=reports&$top=1000";
 
@@ -38,13 +41,25 @@ namespace Utils_for_PBI.Services.ReportServices
 
             foreach (JsonElement workspace in workspaces.EnumerateArray())
             {
+                var workspaceId = workspace.GetProperty("id").ToString();
+                var workspaceName = workspace.GetProperty("name").ToString();
+
                 JsonElement reportItems = workspace.GetProperty("reports");
 
                 foreach (JsonElement reportItem in reportItems.EnumerateArray())
                 {
+                    var serviceMetadataRow = new ServiceMetadataRow
+                    {
+                        workspaceId = workspaceId,
+                        workspaceName = workspaceName,
+                        reportId = reportItem.GetProperty("id").ToString(),
+                        reportName = reportItem.GetProperty("name").ToString(),
+                        datasetId = reportItem.GetProperty("datasetId").ToString()
+                    };
+
+                    _serviceMetadataRows.Add(serviceMetadataRow);
 
                 }
-
             }
 
             return responseContent;

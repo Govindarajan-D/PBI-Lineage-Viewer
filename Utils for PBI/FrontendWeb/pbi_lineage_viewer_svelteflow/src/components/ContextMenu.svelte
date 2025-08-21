@@ -43,7 +43,7 @@
     position: absolute;
     z-index: 10;
     min-width: 170px;
-    font-family: 'Segoe UI', Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     padding: 0.5em 0;
     animation: fadeIn 0.15s;
   }

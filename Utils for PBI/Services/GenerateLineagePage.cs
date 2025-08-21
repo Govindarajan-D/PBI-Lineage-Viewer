@@ -16,7 +16,8 @@ namespace Utils_for_PBI.Services
             var assembly = Assembly.GetExecutingAssembly();
             var HTMLFileResource = Constants.LineageGraphHTML;
 
-
+            // The HTML file is an 'Embedded Resource' in the build property. The file is embedded into the assembly.
+            // This HTML file is copied to the AppData folder so that it can be served by the local web server.
             using (Stream stream = assembly.GetManifestResourceStream(HTMLFileResource))
             using (StreamReader reader = new StreamReader(stream))
             {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Utils_for_PBI.Models.ReportMetadata
+namespace Utils_for_PBI.Models.ServiceModels
 {
-    public class ServiceMetadata
+    public class ServiceMetadataRow
     {
         public string workspaceId { get; set; }
         public string workspaceName { get; set; }

@@ -1,5 +1,6 @@
 @import url('./xy-theme.css');
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 @plugin 'flowbite/plugin';
 
@@ -8,7 +9,7 @@
 html,
 body {
   margin: 0;
-  font-family: sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 #app {
