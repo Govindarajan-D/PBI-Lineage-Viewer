@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 
 namespace Utils_for_PBI.Models.ServiceModels
 {
+    /// <summary>
+    /// Represents metadata fetched from Power BI REST API for each reoirt
+    /// </summary>
     public class ServiceMetadataRow
     {
-        public string workspaceId { get; set; }
-        public string workspaceName { get; set; }
-        public string reportId { get; set; }
-        public string reportName { get; set; }
-        public string datasetId { get; set; }
+        public string WorkspaceID { get; set; }
+        public string WorkspaceName { get; set; }
+        public string ReportID { get; set; }
+        public string ReportName { get; set; }
+        public string DatasetID { get; set; }
     }
 }
