@@ -14,9 +14,11 @@ namespace Utils_for_PBI.Services.ReportServices
     /// </summary>
     public class ReportLineage
     {
-        public Section reportSection = new Section();
+        public static ReportSection reportSection = new ReportSection();
 
-        public ReportLineage(string filePath)
+        public ReportLineage() { }
+
+        public static ReportSection ProcessReportLineage(string filePath)
         { 
             var extractionFilePath = Path.GetFileNameWithoutExtension(filePath);
             System.IO.Compression.ZipFile.ExtractToDirectory(sourceArchiveFileName: filePath, destinationDirectoryName: Path.Combine(Path.GetDirectoryName(filePath), extractionFilePath), overwriteFiles: true);
@@ -80,13 +82,15 @@ namespace Utils_for_PBI.Services.ReportServices
                     reportSection.pageObjects.Add(pageObject);
                 }
             }
+
+            return reportSection;
         }
 
         /// <summary>
         /// FindPropertyRecursive function is used to find the necessary property by recursively searching for it. Recursive function 
         /// is necessary as the property can appear at any level of nested json.
         /// </summary>
-        public string FindPropertyRecursive(string rootPropertyName, JsonElement jsonElement, string searchPropertyName, List<VisualObject> visualObjects)
+        public static string FindPropertyRecursive(string rootPropertyName, JsonElement jsonElement, string searchPropertyName, List<VisualObject> visualObjects)
         {
             bool propertyFound = false;
             if(jsonElement.ValueKind == JsonValueKind.Object)

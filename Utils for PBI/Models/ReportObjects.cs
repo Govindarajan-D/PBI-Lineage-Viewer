@@ -6,7 +6,7 @@ namespace Utils_for_PBI.Models
     /// <summary>
     /// Section is the top-most level in a report layout and it contains an array of pages 
     /// </summary>
-    public class Section
+    public class ReportSection
     {
         // List of PageObjects which store page-level information
         public List<PageObject> pageObjects;
