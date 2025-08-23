@@ -13,6 +13,7 @@ using Utils_for_PBI.Server;
 using System.Runtime.Versioning;
 using PowerBIConnections.Connections;
 using Utils_for_PBI.Models.MetadataRows;
+using Utils_for_PBI.Services.Connections;
 
 namespace Utils_for_PBI.Services
 {

@@ -8,6 +8,7 @@ using PowerBIConnections.Connections;
 using Utils_for_PBI.Services;
 using Utils_for_PBI.Server;
 using Utils_for_PBI.Services.ReportServices;
+using Utils_for_PBI.Services.Connections;
 
 
 namespace Utils_for_PBI.Forms

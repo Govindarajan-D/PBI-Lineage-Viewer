@@ -10,7 +10,7 @@ using Utils_for_PBI.Models;
 using AdomdClient = Microsoft.AnalysisServices.AdomdClient;
 
 
-namespace Utils_for_PBI.Services
+namespace Utils_for_PBI.Services.Connections
 {
     /// <summary>
     /// The Adomd Connection class establishes a adomd connection which is used to retrive the DMV data
@@ -74,7 +74,7 @@ namespace Utils_for_PBI.Services
             try
             {
                 adomdConnection.Open();
-                using (var command = new AdomdClient.AdomdCommand(query, adomdConnection))
+                using (var command = new AdomdCommand(query, adomdConnection))
                 {
                     using (var reader = command.ExecuteReader())
                     {

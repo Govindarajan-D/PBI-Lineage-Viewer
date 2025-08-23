@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Utils_for_PBI.Models.ServiceModels;
 
-namespace Utils_for_PBI.Services.ReportServices
+namespace Utils_for_PBI.Services.Metadata
 {
     /// <summary>
     /// ServiceMetadata class reads data from Admin API for getting metadata for every workspace 
@@ -50,9 +50,7 @@ namespace Utils_for_PBI.Services.ReportServices
                 var responseContent = await response.Content.ReadAsStringAsync();
 
                 JArray jArray = JArray.Parse(responseContent);
-                return jArray.Select(
-                                        item => item["id"].ToString()
-                                    ).ToArray();
+                return jArray.Select(item => item["id"].ToString()).ToArray();
             }
             return null;
 
@@ -117,7 +115,6 @@ namespace Utils_for_PBI.Services.ReportServices
                             ParseAdminMetadata(await scanResultResponse.Content.ReadAsStringAsync());
 
                             scanResultStatus = scanResultStatusResponse.IsSuccessStatusCode.ToString();
-
                         }
                     }
                 }
@@ -173,6 +170,12 @@ namespace Utils_for_PBI.Services.ReportServices
             }
         }
 
-
+        public void GetServiceMetadata()
+        {
+            _serviceMetadataRows.Select(c => new
+            {
+                _serviceMetadataRow = c,
+            });
+        }
     }
 }

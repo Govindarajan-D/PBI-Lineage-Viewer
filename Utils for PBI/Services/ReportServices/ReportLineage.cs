@@ -14,13 +14,14 @@ namespace Utils_for_PBI.Services.ReportServices
     /// </summary>
     public class ReportLineage
     {
+        public Section reportSection = new Section();
+
         public ReportLineage(string filePath)
         { 
             var extractionFilePath = Path.GetFileNameWithoutExtension(filePath);
             System.IO.Compression.ZipFile.ExtractToDirectory(sourceArchiveFileName: filePath, destinationDirectoryName: Path.Combine(Path.GetDirectoryName(filePath), extractionFilePath), overwriteFiles: true);
 
             string jsonFileData = File.ReadAllText(Path.Combine(extractionFilePath, "Report/Layout"), Encoding.Unicode);
-            Section reportSection = new Section();
             List<PageObject> pageObjects = new List<PageObject>();
             reportSection.pageObjects = pageObjects;
 
@@ -78,9 +79,7 @@ namespace Utils_for_PBI.Services.ReportServices
                     pageObject.visualContainers = visualContainers;
                     reportSection.pageObjects.Add(pageObject);
                 }
-
             }
-
         }
 
         /// <summary>

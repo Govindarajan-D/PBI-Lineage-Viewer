@@ -8,14 +8,14 @@ using Tabular = Microsoft.AnalysisServices.Tabular;
 
 //TO-DO: Move it to a separate project if necessary for creating DLLs
 
-namespace Utils_for_PBI.Services
+namespace Utils_for_PBI.Services.Connections
 {
     [SupportedOSPlatform("windows")]
     public class TomAPIConnection : IDisposable
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(TomAPIConnection));
         public Tabular.Server server = new Tabular.Server();
-        public List<String> databases = new List<String>();
+        public List<string> databases = new List<string>();
         public Tabular.Database currentDatabase;
         public Tabular.Model model;
         public bool isConnected = false;
