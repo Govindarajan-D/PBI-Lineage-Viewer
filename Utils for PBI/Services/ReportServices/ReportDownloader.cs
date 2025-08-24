@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.IO;
+using log4net;
+using Utils_for_PBI.Forms;
 
 namespace Utils_for_PBI.Services.ReportServices
 {
     public class ReportDownloader
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(ReportDownloader));
         private static readonly HttpClient httpClient = new HttpClient();
 
         private ReportDownloader()
@@ -20,9 +23,12 @@ namespace Utils_for_PBI.Services.ReportServices
 
         public static async Task<string> DownloadReportAsync(string AccessToken, string group_id = "", string report_id = "")
         {
+            Logger.Info($"Downloading {report_id} report from {group_id} workspace");
             var fileBytes = await ReportDownloader.FetchReportFromAPIAsync(AccessToken, $"{Constants.PowerBIAPIURL}/groups/{group_id}/reports/{report_id}/Export?downloadType=LiveConnect");
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Constants.ProgramName, $"{report_id}.pbix");
             await File.WriteAllBytesAsync(filePath, fileBytes);
+            Logger.Info($"Download complete for {report_id} report from {group_id} workspace");
+
             return filePath;
 
         }

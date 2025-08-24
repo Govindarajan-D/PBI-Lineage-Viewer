@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using
 
 using Utils_for_PBI.Models;
 
@@ -13,9 +12,10 @@ namespace Utils_for_PBI.Services.Metadata
     {
         private List<ReportSection> reportSections = new List<ReportSection>();
         
-        public ReportMetadata()
+        public ReportMetadata(ReportSection reportSection)
         {
             //TO-DO: Build a loop to go over all the reports and download only the necessary reports for finding the lineage and adding it to the List
+            reportSections.Add(reportSection);
         }
 
         public void GetReportLineage()
@@ -29,14 +29,11 @@ namespace Utils_for_PBI.Services.Metadata
                           {
                               PageName = page.pageDisplayName,
                               VisualType = visualContainer.visualType,
-                              VisualObjectName = visualObject.name,
+                              SourceObjectName = visualObject.name,
                               SourceTable = visualContainer.sources[visualObject.source]
 
                           };
 
         }
-
-
-
     }
 }

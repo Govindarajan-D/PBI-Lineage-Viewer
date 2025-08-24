@@ -9,6 +9,7 @@ using Utils_for_PBI.Services;
 using Utils_for_PBI.Server;
 using Utils_for_PBI.Services.ReportServices;
 using Utils_for_PBI.Services.Connections;
+using Utils_for_PBI.Services.Metadata;
 
 
 namespace Utils_for_PBI.Forms
@@ -158,7 +159,9 @@ namespace Utils_for_PBI.Forms
         {
             var accessToken = await PBIPowerShell.GetPowerBIAccessTokenAsync();
             var fileDownloadedPath = await ReportDownloader.DownloadReportAsync(accessToken, "160a74e2-2dd3-4829-8fc6-af753b98c922", "67c8cf35-86ea-49ff-83f8-7abaac3cba11");
-            var reportLineage = new ReportLineage(fileDownloadedPath);
+            var reportLineage = ReportLineage.ProcessReportLineage(fileDownloadedPath);
+            var reportMetadata = new ReportMetadata(reportLineage);
+            reportMetadata.GetReportLineage();
         }
     }
 }

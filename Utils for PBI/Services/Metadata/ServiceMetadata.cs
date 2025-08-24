@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Management.Automation.Language;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Web.Services.Description;
-using System.Windows.Forms;
 
-using Newtonsoft.Json;
+
 using Newtonsoft.Json.Linq;
 using Utils_for_PBI.Models.ServiceModels;
+using log4net;
 
 namespace Utils_for_PBI.Services.Metadata
 {
@@ -28,6 +24,7 @@ namespace Utils_for_PBI.Services.Metadata
     // TO-DO: Right now the function doesn't support paging of results. Need to expand it for querying metadata from larger number of workspaces
     public class ServiceMetadata
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(ServiceMetadata));
         private static readonly HttpClient httpClient = new HttpClient();
         private List<ServiceMetadataRow> _serviceMetadataRows = new List<ServiceMetadataRow>();
         private string[] _workspaces;
@@ -40,6 +37,7 @@ namespace Utils_for_PBI.Services.Metadata
         // Function to fetch the list of all the workspace IDs in the tenant
         public async Task<string[]> FetchWorkspaces(string AccessToken)
         {
+            Logger.Info("Fetching all workspaces from the tenant");
             var workspaceMetadataAPIURL = $"{Constants.PowerBIAdminAPIURL}/groups?$top=100";
             using HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, workspaceMetadataAPIURL);
             requestMessage.Headers.Add("Authorization", AccessToken);
@@ -68,6 +66,9 @@ namespace Utils_for_PBI.Services.Metadata
             // Once the workspace IDs are fetched, it is passed as body content to the getInfo API
             // getInfo API returns a scan ID which needs to be passed to scanStatus API to know if the result is ready to be fetched
             // Once the result is ready, it is fetched using scanResult API and parsed into object
+
+            Logger.Info("Calling Workspaces Scan API for workspace metadata");
+
 
             var serviceMetadataAPIURL = $"{Constants.PowerBIAdminAPIURL}/workspaces/getInfo?lineage=true&datasourceDetails=true&datasetSchema=false&datasetExpressions=false&getArtifactUsers=true";
 
@@ -115,6 +116,7 @@ namespace Utils_for_PBI.Services.Metadata
                             ParseAdminMetadata(await scanResultResponse.Content.ReadAsStringAsync());
 
                             scanResultStatus = scanResultStatusResponse.IsSuccessStatusCode.ToString();
+                            Logger.Info("Fetch complete for workspaces Scan Result");
                         }
                     }
                 }

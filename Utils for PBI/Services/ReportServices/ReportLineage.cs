@@ -1,4 +1,6 @@
-﻿using System;
+﻿using log4net;
+using log4net.Repository.Hierarchy;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -14,12 +16,14 @@ namespace Utils_for_PBI.Services.ReportServices
     /// </summary>
     public class ReportLineage
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(ReportLineage));
         public static ReportSection reportSection = new ReportSection();
 
         public ReportLineage() { }
 
         public static ReportSection ProcessReportLineage(string filePath)
-        { 
+        {
+            Logger.Info($"Processing report lineage for file: {filePath}");
             var extractionFilePath = Path.GetFileNameWithoutExtension(filePath);
             System.IO.Compression.ZipFile.ExtractToDirectory(sourceArchiveFileName: filePath, destinationDirectoryName: Path.Combine(Path.GetDirectoryName(filePath), extractionFilePath), overwriteFiles: true);
 
@@ -82,7 +86,7 @@ namespace Utils_for_PBI.Services.ReportServices
                     reportSection.pageObjects.Add(pageObject);
                 }
             }
-
+            Logger.Info($"Processing complete for report lineage for file: {filePath}");
             return reportSection;
         }
 
