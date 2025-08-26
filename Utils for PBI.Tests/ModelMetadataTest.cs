@@ -24,8 +24,8 @@ namespace Utils_for_PBI.Tests
                 REFERENCED_OBJECT = "Amount"
             });
 
-            _nodes = JArray.Parse(modelMetadata.GetSvelteFlowNodesJson());
-            _edges = JArray.Parse(modelMetadata.GetSvelteFlowEdgesJson());
+            _nodes = JArray.Parse(modelMetadata.GetModelSvelteFlowNodesJson());
+            _edges = JArray.Parse(modelMetadata.GetModelSvelteFlowEdgesJson());
 
         }
 

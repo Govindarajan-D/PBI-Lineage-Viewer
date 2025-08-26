@@ -68,7 +68,7 @@ namespace Utils_for_PBI.Services
         /// <summary>
         /// Converts the List of Rows (ModelMetadata) into SvelteFlow Nodes compatible format
         /// </summary>
-        public string GetSvelteFlowNodesJson()
+        public IEnumerable<dynamic> GetModelSvelteFlowNodes()
         {
             if (_preprocessStepsDone == false)
             {
@@ -82,7 +82,7 @@ namespace Utils_for_PBI.Services
              * and any other additional data is generated in the AdditionalData field within the data
              */
 
-            var svelteflowNodesAddlData = _allNodes.GroupJoin(
+            SvelteFlowNodes = _allNodes.GroupJoin(
                                                 _measuresMetadataRows,
                                                 node => node.OBJECT,
                                                 measure => measure.NAME,
@@ -125,13 +125,19 @@ namespace Utils_for_PBI.Services
                                                    }
                                                }
                                             );
-            return SysJson.JsonSerializer.Serialize(svelteflowNodesAddlData, new SysJson.JsonSerializerOptions { WriteIndented = true });
+            return SvelteFlowNodes;
+        }
+
+        public string GetModelSvelteFlowNodesJson()
+        {
+            return SysJson.JsonSerializer.Serialize(SvelteFlowNodes, new SysJson.JsonSerializerOptions { WriteIndented = true });
+
         }
 
         /// <summary>
         /// Converts the List of Rows (ModelMetadata) into SvelteFlow Edges compatible format
         /// </summary>
-        public string GetSvelteFlowEdgesJson()
+        public IEnumerable<dynamic> GetModelSvelteFlowEdges()
         {
             if (_preprocessStepsDone == false)
             {
@@ -145,7 +151,7 @@ namespace Utils_for_PBI.Services
 
             var edgesReferenceData = _cleansedData.Where(c => c.REFERENCED_OBJECT_TYPE.ToUpper() != "TABLE" || (c.OBJECT_TYPE.ToUpper() == "CALC_TABLE" && c.REFERENCED_OBJECT_TYPE.ToUpper() == "TABLE"));
 
-            var svelteflowEdges = edgesReferenceData.SelectMany(c => new[]
+            SvelteFlowEdges = edgesReferenceData.SelectMany(c => new[]
                                                     {
                                                             new { source = c.REFERENCED_OBJECT, target = c.OBJECT },
                                                             new { source = c.SOURCE_TABLE, target = c.OBJECT },
@@ -159,7 +165,12 @@ namespace Utils_for_PBI.Services
                                                         type = "bezier",
                                                         animated = true
                                                     }).Distinct();
-            return SysJson.JsonSerializer.Serialize(svelteflowEdges, new SysJson.JsonSerializerOptions { WriteIndented = true });
+            return SvelteFlowEdges;
+        }
+
+        public string GetModelSvelteFlowEdgesJson()
+        {
+            return SysJson.JsonSerializer.Serialize(SvelteFlowEdges, new SysJson.JsonSerializerOptions { WriteIndented = true });
         }
 
         public string GetNodesInfo()

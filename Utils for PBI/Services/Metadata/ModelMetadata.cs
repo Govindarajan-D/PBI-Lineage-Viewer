@@ -37,6 +37,10 @@ namespace Utils_for_PBI.Services
         private IEnumerable<CalcDependencyMetadataRow> _cleansedData;
         private IEnumerable<(string OBJECT, string OBJECT_TYPE)> _allNodes;
 
+        public IEnumerable<dynamic> SvelteFlowNodes;
+        public IEnumerable<dynamic> SvelteFlowEdges;
+
+
 
         //TO-DO: Add a relationship for Column to Table (For e.g. Amount and Year should have base as predecessor
         //TO-DO: A measure when it uses a column from a table, has the table as a dependency as well. This should be handled in the code.

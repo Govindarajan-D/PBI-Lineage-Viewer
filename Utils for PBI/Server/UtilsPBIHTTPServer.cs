@@ -83,10 +83,10 @@ namespace Utils_for_PBI.Server
                     await ServeContent(response, modelMetadata.GetObjectTypeInfo());
                     break;
                 case "/utilspbi/api/nodes":
-                    await ServeContent(response, modelMetadata.GetSvelteFlowNodesJson());
+                    await ServeContent(response, modelMetadata.GetModelSvelteFlowNodesJson());
                     break;
                 case "/utilspbi/api/edges":
-                    await ServeContent(response, modelMetadata.GetSvelteFlowEdgesJson());
+                    await ServeContent(response, modelMetadata.GetModelSvelteFlowEdgesJson());
                     break;
                 case "/utilspbi/api/tables":
                     await ServeContent(response, modelMetadata.GetTablesInfo());
