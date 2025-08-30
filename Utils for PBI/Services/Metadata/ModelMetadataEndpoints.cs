@@ -130,6 +130,10 @@ namespace Utils_for_PBI.Services
 
         public string GetModelSvelteFlowNodesJson()
         {
+            if (SvelteFlowNodes == null)
+            {
+                GetModelSvelteFlowNodes();
+            }
             return SysJson.JsonSerializer.Serialize(SvelteFlowNodes, new SysJson.JsonSerializerOptions { WriteIndented = true });
 
         }
@@ -170,6 +174,10 @@ namespace Utils_for_PBI.Services
 
         public string GetModelSvelteFlowEdgesJson()
         {
+            if (SvelteFlowEdges == null)
+            {
+                GetModelSvelteFlowEdges();
+            }
             return SysJson.JsonSerializer.Serialize(SvelteFlowEdges, new SysJson.JsonSerializerOptions { WriteIndented = true });
         }
 

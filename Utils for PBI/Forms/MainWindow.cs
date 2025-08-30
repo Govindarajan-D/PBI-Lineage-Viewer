@@ -22,6 +22,8 @@ namespace Utils_for_PBI.Forms
         private UtilsPBIHTTPServer _dataServer;
         private TomAPIConnection _tomAPIConnection;
         private DatasetConnection _connection;
+        public ModelMetadata modelMetadata = new ModelMetadata();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -108,7 +110,6 @@ namespace Utils_for_PBI.Forms
             GenerateLineagePage showDependencyGraph = new GenerateLineagePage();
             string filePath = showDependencyGraph.GenerateHTMLPage();
 
-            ModelMetadata modelMetadata = new ModelMetadata();
             modelMetadata.PopulateModelMetadata(_connection);
 
             if (modelMetadata == null)
@@ -162,6 +163,10 @@ namespace Utils_for_PBI.Forms
             var reportLineage = ReportLineage.ProcessReportLineage(fileDownloadedPath);
             var reportMetadata = new ReportMetadata(reportLineage);
             reportMetadata.GetReportLineage();
+
+            LineageAggregator lineageAggregator = new LineageAggregator(modelMetadata, reportMetadata);
+            lineageAggregator.AggregateLineage();
+
         }
     }
 }

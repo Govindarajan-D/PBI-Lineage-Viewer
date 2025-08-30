@@ -13,9 +13,11 @@ using CommandLine;
 using System.Runtime.InteropServices;
 
 /* TO-DO:
+ * Add Groupings in the SvelteFlow diagram
+ * Use threading to parallely download reports
+ * Show Report outline in detailed view
+ * Show user information
  * Check for errors in lineage - Add Relationship (Active, Inactive)
- * Build script in github for automated building of exe
- * Add Installer for the program
  * Make classes more aligned with best practices (IDisposable)
  * See if async can be done for any other parts
  * Memory Leakage Check (windbg, MS CLR profiler)
@@ -36,7 +38,6 @@ using System.Runtime.InteropServices;
 /* TO-DO in HTML Page
  * Use mapData for width control
  * Add option to move from LR/RL
- * Try preset for Cytoscape
  * Use a proper color palette - Yellow or Green to align with PBI
  */
 

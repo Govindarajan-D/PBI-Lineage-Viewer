@@ -53,6 +53,7 @@ namespace Utils_for_PBI.Services.ReportServices
                     foreach (JsonElement jsonContainer in jsonVisualContainers.EnumerateArray())
                     {
                         var jsonConfig = JsonDocument.Parse(jsonContainer.GetProperty("config").GetString());
+                        var id = jsonContainer.GetProperty("id").ToString();
                         JsonElement singleVisual = jsonConfig.RootElement.GetProperty("singleVisual");
 
                         var sources = new Dictionary<string, string>();
@@ -69,16 +70,17 @@ namespace Utils_for_PBI.Services.ReportServices
                         //var deserializedObject = JsonSerializer.Deserialize<SingleVisual>(jsonConfig.RootElement.GetProperty("singleVisual"));
 
 
-                        VisualContainerObject currentReportPage = new VisualContainerObject();
+                        VisualContainerObject currentReportVisual = new VisualContainerObject();
                         List<VisualObject> visualObjects = new List<VisualObject>();
 
                         var value = FindPropertyRecursive("singleVisual", singleVisual, "Property", visualObjects);
 
-                        currentReportPage.visualType = singleVisual.GetProperty("visualType").GetString();
-                        currentReportPage.visualObjects = visualObjects;
-                        currentReportPage.sources = sources;
+                        currentReportVisual.id = id;
+                        currentReportVisual.visualType = singleVisual.GetProperty("visualType").GetString();
+                        currentReportVisual.visualObjects = visualObjects;
+                        currentReportVisual.sources = sources;
 
-                        visualContainers.Add(currentReportPage);
+                        visualContainers.Add(currentReportVisual);
 
                     }
 

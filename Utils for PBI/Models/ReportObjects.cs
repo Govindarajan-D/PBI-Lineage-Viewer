@@ -32,6 +32,8 @@ namespace Utils_for_PBI.Models
     /// </summary>
     public class VisualContainerObject
     {
+        // ID of the visual
+        public string id { get; set; }
         // Type of the visual - Table, Chart
         public string visualType { get; set; }
 
