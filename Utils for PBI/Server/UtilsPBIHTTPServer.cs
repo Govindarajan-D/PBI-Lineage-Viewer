@@ -22,6 +22,7 @@ namespace Utils_for_PBI.Server
         public bool isStarted = false;
         public CancellationTokenSource cancellationTokenSource;
         public ModelMetadata modelMetadata;
+        public LineageAggregator lineageAggregator;
         public String serverPrefix;
 
         public UtilsPBIHTTPServer(string urlAddress, ModelMetadata argmodelMetadata)
@@ -46,6 +47,12 @@ namespace Utils_for_PBI.Server
             dataServer.Stop();
             Logger.Info($"HTTP Server running at: {serverPrefix} stopped");
         }
+
+        public void SetLineageVariable(LineageAggregator aggregatedLineage)
+        {
+            lineageAggregator = aggregatedLineage;
+        }
+
         public async Task HandleRequests(CancellationToken token)
         {
             while (true)
@@ -93,6 +100,12 @@ namespace Utils_for_PBI.Server
                     break;
                 case "/utilspbi/api/columns":
                     await ServeContent(response, modelMetadata.GetColumnsInfo());
+                    break;
+                case "/utilspbi/api/allnodes": 
+                    await ServeContent(response, lineageAggregator.GetAggregatedSvelteFlowNodesJson());
+                    break;
+                case "/utilspbi/api/alledges":
+                    await ServeContent(response, lineageAggregator.GetAggregatedSvelteFlowEdgesJson());
                     break;
                 default:
                     response.StatusCode = 404;

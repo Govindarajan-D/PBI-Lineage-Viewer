@@ -1,11 +1,9 @@
-﻿using System;
+﻿using log4net;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Runtime.Versioning;
-using System.Text;
-using System.Threading.Tasks;
 using Utils_for_PBI.Services.Metadata;
+using SysJson = System.Text.Json;
 
 namespace Utils_for_PBI.Services
 {
@@ -17,8 +15,14 @@ namespace Utils_for_PBI.Services
 
     public class LineageAggregator
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(LineageAggregator));
+
         public ModelMetadata _modelMetadata = new ModelMetadata();
         public ReportMetadata _reportMetadata = new ReportMetadata();
+
+        public IEnumerable<dynamic> aggregatedSvelteFlowNodes, aggregatedSvelteFlowEdges;
+
+
 
         public LineageAggregator(ModelMetadata modelMetadata, ReportMetadata reportMetadata)
         {
@@ -28,12 +32,14 @@ namespace Utils_for_PBI.Services
 
         public void AggregateLineage()
         {
+            Logger.Info("Aggregating Lineage by combining nodes from multiple sources");
+
             var modelNodes = _modelMetadata.GetModelSvelteFlowNodes();
             var modelEdges = _modelMetadata.GetModelSvelteFlowEdges();
 
             var reportNodes = _reportMetadata.GetReportSvelteFlowNodes();
 
-            var allNodes = modelNodes.Concat(reportNodes);
+            aggregatedSvelteFlowNodes = modelNodes.Concat(reportNodes);
 
             var reportEdges = reportNodes.Join(
                 modelNodes,
@@ -47,6 +53,18 @@ namespace Utils_for_PBI.Services
                     type = "bezier",
                     animated = true
                 });
+
+            aggregatedSvelteFlowEdges = modelEdges.Concat(reportEdges);
+        }
+
+        public string GetAggregatedSvelteFlowNodesJson()
+        {
+            return SysJson.JsonSerializer.Serialize(aggregatedSvelteFlowNodes, new SysJson.JsonSerializerOptions { WriteIndented = true }); ;
+        }
+
+        public string GetAggregatedSvelteFlowEdgesJson()
+        {
+            return SysJson.JsonSerializer.Serialize(aggregatedSvelteFlowEdges, new SysJson.JsonSerializerOptions { WriteIndented = true }); ;
         }
     }
 }

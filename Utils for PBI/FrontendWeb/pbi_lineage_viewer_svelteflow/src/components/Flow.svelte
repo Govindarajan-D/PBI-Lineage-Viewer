@@ -58,7 +58,7 @@
   // It sets the graph direction, adds nodes and edges to the graph, and then computes the layout.
   const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = "TB") => {
     //Define constants for the graph layout
-    const rankSep = 250; // Space between ranks - Horizontally
+    const rankSep = 400; // Space between ranks - Horizontally
     const nodeSep = 50;
 
     const dagreGraph = new dagre.graphlib.Graph();
@@ -99,8 +99,8 @@
   // Fetches nodes and edges data from the API and processes it.
   // It is asynchronous and returns a promise that resolves when the data is fetched.
   const retrieveData = async () => {
-    const nodesURL = baseURL + "nodes";
-    const edgesURL = baseURL + "edges";
+    const nodesURL = baseURL + "allnodes";
+    const edgesURL = baseURL + "alledges";
 
     return Promise.all([
       fetch(nodesURL).then((response) => response.json()),

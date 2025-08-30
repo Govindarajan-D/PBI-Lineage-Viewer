@@ -167,6 +167,7 @@ namespace Utils_for_PBI.Forms
             LineageAggregator lineageAggregator = new LineageAggregator(modelMetadata, reportMetadata);
             lineageAggregator.AggregateLineage();
 
+            _dataServer.SetLineageVariable(lineageAggregator);
         }
     }
 }
