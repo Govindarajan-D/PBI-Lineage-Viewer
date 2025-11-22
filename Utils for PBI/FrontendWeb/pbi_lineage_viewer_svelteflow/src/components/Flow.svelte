@@ -99,8 +99,8 @@
   // Fetches nodes and edges data from the API and processes it.
   // It is asynchronous and returns a promise that resolves when the data is fetched.
   const retrieveData = async () => {
-    const nodesURL = baseURL + "allnodes";
-    const edgesURL = baseURL + "alledges";
+    const nodesURL = baseURL + "nodes";
+    const edgesURL = baseURL + "edges";
 
     return Promise.all([
       fetch(nodesURL).then((response) => response.json()),

@@ -10,10 +10,10 @@
         enableFiltering = false
     } = $props();
 
-    let options = [];
-    let filteredOptions = $state([]);
+    let options = $state([]);
+    //let filteredOptions = $state([]);
     let selectedValue = $state('All');
-    let dropdownSearchQuery =  $state('');
+    let dropdownSearchQuery = $state('');
     let dropdownOpen =  $state(false);
     let isLoading =  $state(false);
     let error = null;
@@ -35,7 +35,6 @@
             apiData = await response.json();
             options = apiData.map((option) => ({id: option[idKey], name: option[nameKey]}))
                              .sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-            filteredOptions = options;
         } catch (err){
             error = err.message;
         } finally {
@@ -44,15 +43,15 @@
     });
 
     // React to the search query typed in the Search box
-    $effect(() => {
-            filteredOptions = options.filter(option => 
+    let filteredOptions = $derived(
+        options.filter(option => 
                     option.name?.toString().toLowerCase().includes(dropdownSearchQuery.toLowerCase())
-            );
-    });
+        )
+    );
 
     // Apply filter based on the selected value (from an external source like another dropdown)
     export const filterObjects = (filterColumn, filterValue) => {
-        filteredOptions = apiData.filter((option) => option[filterColumn] == filterValue)
+        options = apiData.filter((option) => option[filterColumn] == filterValue)
                                  .map((option) => ({id: option[idKey], name: option[nameKey]}));
     }
 
@@ -63,13 +62,15 @@
         else{
             selectedValue = option.name;
         }
+        dropdownSearchQuery = '';
         handleDropdownSelect(selectedValue);
 
     }
     
     export const clearFilter = () => {
         selectedValue = 'All';
-        filteredOptions = apiData.map((option) => ({id: option[idKey], name: option[nameKey]}));
+        dropdownSearchQuery = '';
+        options = apiData.map((option) => ({id: option[idKey], name: option[nameKey]}));
     }
 
 </script>
@@ -80,7 +81,7 @@
             {selectedValue}
         </DropdownToggle>
         <DropdownMenu class="dropdown-scroll">
-            <DropdownItem on:click={() => handleSelect({id:"SIG_DD_CLEAR", name: "Clear"})}>
+            <DropdownItem onclick={() => handleSelect({id:"SIG_DD_CLEAR", name: "Clear"})}>
                 Clear Filter
             </DropdownItem>
             <DropdownItem divider />
@@ -96,7 +97,7 @@
             {/if}
         {#if filteredOptions.length > 0}
         {#each filteredOptions as option}
-            <DropdownItem on:click={() => handleSelect(option)}>
+            <DropdownItem onclick={() => handleSelect(option)}>
                 {option.name}
             </DropdownItem>
         {/each}
